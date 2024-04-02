@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rental_room_app/color_palete.dart';
+import 'package:rental_room_app/themes/color_palete.dart';
 
 extension ExtendedTextStyle on TextStyle {
   TextStyle get light {
