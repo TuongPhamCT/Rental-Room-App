@@ -78,7 +78,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 38),
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: Register handle
+                          String email = emailController.value.text;
+                          GoRouter.of(context).goNamed('pincode',
+                              pathParameters: {'email': email});
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorPalette.primaryColor,
@@ -112,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 color: ColorPalette.greenText),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // GoRouter.of(context).go('/signup');
+                                context.pop();
                               })
                       ]),
                     ),
