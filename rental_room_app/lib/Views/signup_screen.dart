@@ -7,23 +7,17 @@ import 'package:iconly/iconly.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final emailController = TextEditingController();
   FocusNode emailFocus = FocusNode();
   bool firstEnterEmailTF = false;
-
-  final passwordController = TextEditingController();
-  FocusNode passwordFocus = FocusNode();
-  bool firstEnterPasswordTF = false;
-
-  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,23 +36,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(100),
+                    const Gap(150),
                     SizedBox(
                       height: 120,
                       width: 120,
                       child: Image.asset(
-                        'assets/images/login_logo.png',
+                        'assets/images/signup_logo.png',
                         fit: BoxFit.cover,
                       ),
                     ),
                     const Gap(40),
                     Text(
-                      "LOGIN",
+                      "Register",
                       style: TextStyles.h1.copyWith(
                           fontFamily: GoogleFonts.ntr().fontFamily,
                           color: ColorPalette.darkBlueText),
                     ),
-                    const Gap(30),
+                    const Gap(100),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: TextField(
@@ -68,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () => {firstEnterEmailTF = true},
                         style: TextStyles.h6,
                         decoration: InputDecoration(
-                          hintText: "Email",
+                          hintText: "Email Address",
                           hintStyle: TextStyles.h5.copyWith(
                               fontFamily: GoogleFonts.ntr().fontFamily,
                               color: ColorPalette.detailBorder),
@@ -79,52 +73,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: false,
                       ),
                     ),
-                    const Gap(10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextField(
-                        controller: passwordController,
-                        focusNode: passwordFocus,
-                        onTap: () => {firstEnterPasswordTF = true},
-                        style: TextStyles.h6,
-                        decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.detailBorder),
-                            prefixIcon: const Icon(IconlyLight.lock),
-                            prefixIconColor: ColorPalette.detailBorder,
-                            helperText: ""),
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Gap(35),
-                        Checkbox(
-                          value: _isChecked,
-                          onChanged: (value) =>
-                              setState(() => _isChecked = value!),
-                          checkColor: ColorPalette.backgroundColor,
-                          side: const BorderSide(
-                              width: 2, color: ColorPalette.primaryColor),
-                          activeColor: ColorPalette.primaryColor,
-                        ),
-                        Text(
-                          'Remember me',
-                          style: TextStyles.h6.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: ColorPalette.primaryColor),
-                        ),
-                      ],
-                    ),
-                    const Gap(30),
+                    const Gap(40),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 38),
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: login handle
+                          // TODO: Register handle
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorPalette.primaryColor,
@@ -137,43 +91,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 15.0, horizontal: 80),
                           child: Text(
-                            'LOG IN',
+                            'Register',
                             style: TextStyles.h4.copyWith(
                                 fontFamily: GoogleFonts.ntr().fontFamily),
                           ),
                         ),
                       ),
                     ),
-                    const Gap(30),
+                    const Gap(50),
                     RichText(
                       text: TextSpan(style: TextStyles.h6, children: <TextSpan>[
                         TextSpan(
-                            text: "Don't have account?       ",
+                            text: "Already have an account?  ",
                             style: TextStyles.h5.copyWith(
                                 fontFamily: GoogleFonts.ntr().fontFamily)),
                         TextSpan(
-                            text: "Register Now!",
+                            text: "Log In",
                             style: TextStyles.h5.copyWith(
                                 fontFamily: GoogleFonts.ntr().fontFamily,
                                 color: ColorPalette.greenText),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                GoRouter.of(context).go('/sign_up');
+                                // GoRouter.of(context).go('/signup');
                               })
                       ]),
                     ),
-                    const Gap(20),
-                    RichText(
-                        text: TextSpan(
-                            text: "Forgot password?",
-                            style: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.greenText),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                //TODO: Handle forgot password screen
-                                // GoRouter.of(context).go('/signup');
-                              })),
                   ],
                 ),
               ),
