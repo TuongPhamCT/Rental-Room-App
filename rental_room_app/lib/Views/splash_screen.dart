@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rental_room_app/asset_helper.dart';
-import 'package:rental_room_app/color_palete.dart';
-import 'package:rental_room_app/text_styles.dart';
+import 'package:rental_room_app/config/asset_helper.dart';
+import 'package:rental_room_app/themes/color_palete.dart';
+import 'package:rental_room_app/themes/text_styles.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = 'splash_screen';
@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Text(
             'Paradise',
             style: TextStyles.slo.copyWith(shadows: [
-              BoxShadow(
+              const BoxShadow(
                   color: Colors.black26, offset: Offset(0, 4), blurRadius: 6),
             ]),
           ),
