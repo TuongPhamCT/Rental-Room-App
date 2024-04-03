@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:rental_room_app/Presenter/login_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
@@ -14,7 +15,11 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    implements LoginViewContract {
+  LoginPresenter? _loginPresenter;
+  final _formKey = GlobalKey<FormState>();
+
   final emailController = TextEditingController();
   FocusNode emailFocus = FocusNode();
   bool firstEnterEmailTF = false;
@@ -24,6 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool firstEnterPasswordTF = false;
 
   bool _isChecked = false;
+
+  @override
+  void initState() {
+    _loginPresenter = LoginPresenter(this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,148 +50,183 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: ColorPalette.backgroundColor,
                 height: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Gap(100),
-                    SizedBox(
-                      height: 120,
-                      width: 120,
-                      child: Image.asset(
-                        'assets/images/login_logo.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const Gap(40),
-                    Text(
-                      "LOGIN",
-                      style: TextStyles.h1.copyWith(
-                          fontFamily: GoogleFonts.ntr().fontFamily,
-                          color: ColorPalette.darkBlueText),
-                    ),
-                    const Gap(30),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextField(
-                        controller: emailController,
-                        focusNode: emailFocus,
-                        keyboardType: TextInputType.emailAddress,
-                        onTap: () => {firstEnterEmailTF = true},
-                        style: TextStyles.h6,
-                        decoration: InputDecoration(
-                          hintText: "Email",
-                          hintStyle: TextStyles.h5.copyWith(
-                              fontFamily: GoogleFonts.ntr().fontFamily,
-                              color: ColorPalette.detailBorder),
-                          prefixIcon: const Icon(IconlyLight.profile),
-                          prefixIconColor: ColorPalette.detailBorder,
-                          helperText: "",
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Gap(100),
+                      SizedBox(
+                        height: 120,
+                        width: 120,
+                        child: Image.asset(
+                          'assets/images/login_logo.png',
+                          fit: BoxFit.cover,
                         ),
-                        obscureText: false,
                       ),
-                    ),
-                    const Gap(10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextField(
-                        controller: passwordController,
-                        focusNode: passwordFocus,
-                        onTap: () => {firstEnterPasswordTF = true},
-                        style: TextStyles.h6,
-                        decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.detailBorder),
-                            prefixIcon: const Icon(IconlyLight.lock),
-                            prefixIconColor: ColorPalette.detailBorder,
-                            helperText: ""),
-                        obscureText: true,
-                        obscuringCharacter: '*',
+                      const Gap(40),
+                      Text(
+                        "LOGIN",
+                        style: TextStyles.h1.copyWith(
+                            fontFamily: GoogleFonts.ntr().fontFamily,
+                            color: ColorPalette.darkBlueText),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const Gap(35),
-                        Checkbox(
-                          value: _isChecked,
-                          onChanged: (value) =>
-                              setState(() => _isChecked = value!),
-                          checkColor: ColorPalette.backgroundColor,
-                          side: const BorderSide(
-                              width: 2, color: ColorPalette.primaryColor),
-                          activeColor: ColorPalette.primaryColor,
-                        ),
-                        Text(
-                          'Remember me',
-                          style: TextStyles.h6.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: ColorPalette.primaryColor),
-                        ),
-                      ],
-                    ),
-                    const Gap(30),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 38),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: login handle
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorPalette.primaryColor,
-                          foregroundColor: ColorPalette.blackText,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                      const Gap(30),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                            child: TextFormField(
+                              controller: emailController,
+                              focusNode: emailFocus,
+                              validator: _loginPresenter?.validateEmail,
+                              keyboardType: TextInputType.emailAddress,
+                              style: TextStyles.h6,
+                              decoration: InputDecoration(
+                                hintText: "Email",
+                                hintStyle: TextStyles.h5.copyWith(
+                                    fontFamily: GoogleFonts.ntr().fontFamily,
+                                    color: ColorPalette.detailBorder),
+                                prefixIcon: const Icon(IconlyLight.profile),
+                                prefixIconColor: ColorPalette.detailBorder,
+                                helperText: "",
+                              ),
+                              obscureText: false,
+                            ),
+                          ),
+                          const Gap(10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                            child: TextFormField(
+                              controller: passwordController,
+                              focusNode: passwordFocus,
+                              validator: _loginPresenter?.validatePassword,
+                              style: TextStyles.h6,
+                              decoration: InputDecoration(
+                                  hintText: "Password",
+                                  hintStyle: TextStyles.h5.copyWith(
+                                      fontFamily: GoogleFonts.ntr().fontFamily,
+                                      color: ColorPalette.detailBorder),
+                                  prefixIcon: const Icon(IconlyLight.lock),
+                                  prefixIconColor: ColorPalette.detailBorder,
+                                  helperText: ""),
+                              obscureText: true,
+                              obscuringCharacter: '*',
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Gap(35),
+                          Checkbox(
+                            value: _isChecked,
+                            onChanged: (value) =>
+                                setState(() => _isChecked = value!),
+                            checkColor: ColorPalette.backgroundColor,
+                            side: const BorderSide(
+                                width: 2, color: ColorPalette.primaryColor),
+                            activeColor: ColorPalette.primaryColor,
+                          ),
+                          Text(
+                            'Remember me',
+                            style: TextStyles.h6.copyWith(
+                                fontStyle: FontStyle.italic,
+                                color: ColorPalette.primaryColor),
+                          ),
+                        ],
+                      ),
+                      const Gap(30),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 38),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _loginPresenter?.login(emailController.text,
+                                  passwordController.text);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorPalette.primaryColor,
+                            foregroundColor: ColorPalette.blackText,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15.0, horizontal: 80),
+                            child: Text(
+                              'LOG IN',
+                              style: TextStyles.h4.copyWith(
+                                  fontFamily: GoogleFonts.ntr().fontFamily),
+                            ),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 80),
-                          child: Text(
-                            'LOG IN',
-                            style: TextStyles.h4.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily),
-                          ),
-                        ),
                       ),
-                    ),
-                    const Gap(30),
-                    RichText(
-                      text: TextSpan(style: TextStyles.h6, children: <TextSpan>[
-                        TextSpan(
-                            text: "Don't have account?       ",
-                            style: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily)),
-                        TextSpan(
-                            text: "Register Now!",
-                            style: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.greenText),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                GoRouter.of(context).go('/sign_up');
-                              })
-                      ]),
-                    ),
-                    const Gap(20),
-                    RichText(
-                        text: TextSpan(
-                            text: "Forgot password?",
-                            style: TextStyles.h5.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.greenText),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                //TODO: Handle forgot password screen
-                                // GoRouter.of(context).go('/signup');
-                              })),
-                  ],
+                      const Gap(30),
+                      RichText(
+                        text:
+                            TextSpan(style: TextStyles.h6, children: <TextSpan>[
+                          TextSpan(
+                              text: "Don't have account?       ",
+                              style: TextStyles.h5.copyWith(
+                                  fontFamily: GoogleFonts.ntr().fontFamily)),
+                          TextSpan(
+                              text: "Register Now!",
+                              style: TextStyles.h5.copyWith(
+                                  fontFamily: GoogleFonts.ntr().fontFamily,
+                                  color: ColorPalette.greenText),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  GoRouter.of(context).go('/sign_up');
+                                })
+                        ]),
+                      ),
+                      const Gap(20),
+                      RichText(
+                          text: TextSpan(
+                              text: "Forgot password?",
+                              style: TextStyles.h5.copyWith(
+                                  fontFamily: GoogleFonts.ntr().fontFamily,
+                                  color: ColorPalette.greenText),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  //TODO: Handle forgot password screen
+                                  // GoRouter.of(context).go('/signup');
+                                })),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         );
       }),
+    );
+  }
+
+  @override
+  void onLoginFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Wrong Email or Password. Please try again!',
+          style: TextStyle(color: ColorPalette.redColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onLoginSucceeded() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Login Succeeded',
+          style: TextStyle(color: ColorPalette.redColor),
+        ),
+      ),
     );
   }
 }
