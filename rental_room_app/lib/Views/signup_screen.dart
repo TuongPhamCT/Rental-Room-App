@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:rental_room_app/Contract/signup_contract.dart';
+import 'package:rental_room_app/Presenter/signup_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
@@ -14,10 +16,18 @@ class SignupScreen extends StatefulWidget {
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
-  final emailController = TextEditingController();
-  FocusNode emailFocus = FocusNode();
-  bool firstEnterEmailTF = false;
+class _SignupScreenState extends State<SignupScreen>
+    implements SignupViewContract {
+  final _emailController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  SignupPresenter? _signupPresenter;
+
+  @override
+  void initState() {
+    _signupPresenter = SignupPresenter(this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,24 +63,26 @@ class _SignupScreenState extends State<SignupScreen> {
                           color: ColorPalette.darkBlueText),
                     ),
                     const Gap(100),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextField(
-                        controller: emailController,
-                        focusNode: emailFocus,
-                        keyboardType: TextInputType.emailAddress,
-                        onTap: () => {firstEnterEmailTF = true},
-                        style: TextStyles.h6,
-                        decoration: InputDecoration(
-                          hintText: "Email Address",
-                          hintStyle: TextStyles.h5.copyWith(
-                              fontFamily: GoogleFonts.ntr().fontFamily,
-                              color: ColorPalette.detailBorder),
-                          prefixIcon: const Icon(IconlyLight.profile),
-                          prefixIconColor: ColorPalette.detailBorder,
-                          helperText: "",
+                    Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        child: TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: _signupPresenter?.validateEmail,
+                          style: TextStyles.h6,
+                          decoration: InputDecoration(
+                            hintText: "Email Address",
+                            hintStyle: TextStyles.h5.copyWith(
+                                fontFamily: GoogleFonts.ntr().fontFamily,
+                                color: ColorPalette.detailBorder),
+                            prefixIcon: const Icon(IconlyLight.profile),
+                            prefixIconColor: ColorPalette.detailBorder,
+                            helperText: "",
+                          ),
+                          obscureText: false,
                         ),
-                        obscureText: false,
                       ),
                     ),
                     const Gap(40),
@@ -78,9 +90,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 38),
                       child: ElevatedButton(
                         onPressed: () {
-                          String email = emailController.value.text;
-                          GoRouter.of(context).goNamed('pincode',
-                              pathParameters: {'email': email});
+                          if (_formKey.currentState!.validate()) {
+                            _signupPresenter?.signup(_emailController.text);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorPalette.primaryColor,
@@ -126,5 +138,52 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }),
     );
+  }
+
+  @override
+  void onSignUpFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Cannot Sign up! Please try again later!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onSignUpSucceeded() {
+    String email = _emailController.value.text.trim();
+    GoRouter.of(context).goNamed('pincode', pathParameters: {'email': email});
+  }
+
+  @override
+  void onEmailAlreadyInUse() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Email Already In Use! Try a different email!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context).pop();
   }
 }

@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:rental_room_app/Contract/pincode_contract.dart';
+import 'package:rental_room_app/Presenter/pincode_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
@@ -17,14 +20,24 @@ class PincodeScreen extends StatefulWidget {
   State<PincodeScreen> createState() => _PincodeScreenState();
 }
 
-class _PincodeScreenState extends State<PincodeScreen> {
-  final formKey = GlobalKey<FormState>();
+class _PincodeScreenState extends State<PincodeScreen>
+    implements PincodeViewContract {
+  final _formKey = GlobalKey<FormState>();
   bool hasError = false;
   String currentText = "";
   String pinCode = '';
   StreamController<ErrorAnimationType> errorController =
       StreamController<ErrorAnimationType>();
   TextEditingController textEditingController = TextEditingController();
+
+  PincodePresenter? _pincodePresenter;
+
+  @override
+  void initState() {
+    _pincodePresenter = PincodePresenter(this, widget.email);
+    _pincodePresenter?.initSendPincode();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,67 +101,68 @@ class _PincodeScreenState extends State<PincodeScreen> {
                       ],
                     ),
                     Form(
-                      key: formKey,
+                      key: _formKey,
                       child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 30),
-                          child: PinCodeTextField(
-                            appContext: context,
-                            pastedTextStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            length: 6,
-                            obscureText: false,
-                            animationType: AnimationType.fade,
-                            validator: (v) {
-                              if (v!.length < 6) {
-                                return ""; // nothing to show
-                              } else {
-                                return null;
-                              }
-                            },
-                            pinTheme: PinTheme(
-                              shape: PinCodeFieldShape.box,
-                              borderRadius: BorderRadius.circular(20),
-                              fieldHeight: 50,
-                              fieldWidth: 50,
-                              activeColor: ColorPalette.primaryColor,
-                              activeFillColor: ColorPalette.primaryColor,
-                              selectedColor: ColorPalette.primaryColor,
-                              selectedFillColor: ColorPalette.primaryColor,
-                              inactiveColor:
-                                  ColorPalette.primaryColor.withOpacity(0.44),
-                              inactiveFillColor:
-                                  ColorPalette.primaryColor.withOpacity(0.44),
-                            ),
-                            cursorColor: Colors.black,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            textStyle:
-                                const TextStyle(fontSize: 20, height: 1.6),
-                            backgroundColor: Colors.transparent,
-                            enableActiveFill: true,
-                            errorAnimationController: errorController,
-                            controller: textEditingController,
-                            keyboardType: TextInputType.number,
-                            onCompleted: (value) {
-                              setState(() {
-                                currentText = value;
-                              });
-                              //TODO: handel otp verify
-                            },
-                            beforeTextPaste: (text) {
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 30),
+                        child: PinCodeTextField(
+                          appContext: context,
+                          pastedTextStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          length: 6,
+                          obscureText: false,
+                          animationType: AnimationType.fade,
+                          validator: (v) {
+                            if (v!.length < 6) {
+                              return ""; // nothing to show
+                            } else {
+                              return null;
+                            }
+                          },
+                          pinTheme: PinTheme(
+                            shape: PinCodeFieldShape.box,
+                            borderRadius: BorderRadius.circular(20),
+                            fieldHeight: 50,
+                            fieldWidth: 50,
+                            activeColor: ColorPalette.primaryColor,
+                            activeFillColor: ColorPalette.primaryColor,
+                            selectedColor: ColorPalette.primaryColor,
+                            selectedFillColor: ColorPalette.primaryColor,
+                            inactiveColor:
+                                ColorPalette.primaryColor.withOpacity(0.44),
+                            inactiveFillColor:
+                                ColorPalette.primaryColor.withOpacity(0.44),
+                          ),
+                          cursorColor: Colors.black,
+                          animationDuration: const Duration(milliseconds: 300),
+                          textStyle: const TextStyle(fontSize: 20, height: 1.6),
+                          backgroundColor: Colors.transparent,
+                          enableActiveFill: true,
+                          errorAnimationController: errorController,
+                          controller: textEditingController,
+                          keyboardType: TextInputType.number,
+                          onCompleted: (value) {
+                            setState(() {
+                              currentText = value;
+                            });
+                            _pincodePresenter?.pincodeVerify(value);
+                          },
+                          beforeTextPaste: (text) {
+                            if (kDebugMode) {
                               print("Allowing to paste $text");
-                              //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                              //but you can show anything you want here, like your pop up saying wrong paste format or etc
-                              return true;
-                            },
-                          )),
+                            }
+                            //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                            //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                            return true;
+                          },
+                        ),
+                      ),
                     ),
                     const Gap(50),
                     ResendCountdown(onResendClick: () {
-                      //TODO: Resend handel
+                      _pincodePresenter?.resendConfirmationCode();
                     })
                   ],
                 ),
@@ -157,6 +171,46 @@ class _PincodeScreenState extends State<PincodeScreen> {
           ),
         );
       }),
+    );
+  }
+
+  @override
+  void onWrongPincodeError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Wrong PINCODE! Please try again!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onVerifySucceeded() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Verify Succeeded!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+    // TODO: implement onVerifySucceeded
+  }
+
+  @override
+  void onResendPincode() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Pincode resent! Check your email!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
     );
   }
 }
