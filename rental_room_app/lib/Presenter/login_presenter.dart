@@ -1,11 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:rental_room_app/Contract/login_contract.dart';
 import 'package:string_validator/string_validator.dart';
-
-abstract class LoginViewContract {
-  void onLoginFailed();
-  void onLoginSucceeded();
-}
 
 class LoginPresenter {
   final LoginViewContract? _view;
@@ -30,7 +25,7 @@ class LoginPresenter {
     if (email == null || email.isEmpty) {
       return "Please enter your email!";
     } else if (!isEmail(email)) {
-      return "Email not in the correct format!";
+      return "Email is not in the correct format!";
     }
     return null;
   }
