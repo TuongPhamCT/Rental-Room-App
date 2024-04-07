@@ -211,9 +211,10 @@ class _LoginScreenState extends State<LoginScreen>
   void onLoginFailed() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: ColorPalette.greenText,
         content: Text(
           'Wrong Email or Password. Please try again!',
-          style: TextStyle(color: ColorPalette.redColor),
+          style: TextStyle(color: ColorPalette.errorColor),
         ),
       ),
     );
@@ -223,9 +224,10 @@ class _LoginScreenState extends State<LoginScreen>
   void onLoginSucceeded() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: ColorPalette.greenText,
         content: Text(
           'Login Succeeded',
-          style: TextStyle(color: ColorPalette.redColor),
+          style: TextStyle(color: ColorPalette.errorColor),
         ),
       ),
     );

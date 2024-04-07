@@ -144,9 +144,10 @@ class _SignupScreenState extends State<SignupScreen>
   void onSignUpFailed() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: ColorPalette.greenText,
         content: Text(
           'Cannot Sign up! Please try again later!',
-          style: TextStyle(color: ColorPalette.redColor),
+          style: TextStyle(color: ColorPalette.errorColor),
         ),
       ),
     );
@@ -162,9 +163,10 @@ class _SignupScreenState extends State<SignupScreen>
   void onEmailAlreadyInUse() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        backgroundColor: ColorPalette.greenText,
         content: Text(
           'Email Already In Use! Try a different email!',
-          style: TextStyle(color: ColorPalette.redColor),
+          style: TextStyle(color: ColorPalette.errorColor),
         ),
       ),
     );

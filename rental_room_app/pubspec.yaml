@@ -43,6 +43,7 @@ dependencies:
   iconly: ^1.0.1
   pin_code_fields: ^8.0.1
   string_validator: ^1.0.2
+  mailer: ^6.1.0
 
 dev_dependencies:
   flutter_test:
