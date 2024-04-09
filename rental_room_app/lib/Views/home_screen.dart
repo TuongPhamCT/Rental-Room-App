@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rental_room_app/Views/all_room_screen.dart';
-import 'package:rental_room_app/Views/bottom_bar.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
-import 'package:rental_room_app/config/image_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static final String routeName = "home_screen";
+  static const String routeName = "home_screen";
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,15 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
         color: ColorPalette.backgroundColor,
         child: Column(
           children: [
-            Gap(30),
-            Container(
+            const Gap(30),
+            SizedBox(
               width: size.width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: const [
+                    children: [
                       Text('WELCOME',
                           style: TextStyle(
                               fontSize: 10, color: ColorPalette.grayText)),
@@ -50,11 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  Gap(15),
+                  const Gap(15),
                   Container(
                     height: 35,
                     width: 35,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage(AssetHelper.avatar),
@@ -65,14 +61,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Gap(20),
+            const Gap(20),
             GestureDetector(
               onTap: () {
                 setState(() {
                   isVisiable = !isVisiable;
                 });
               },
-              child: Row(
+              child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(
@@ -89,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Gap(10),
+            const Gap(10),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
@@ -99,12 +95,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     FilterContainerWidget(
                       name: 'Area',
-                      icon1: Icon(
+                      icon1: const Icon(
                         FontAwesomeIcons.arrowUp,
                         color: ColorPalette.primaryColor,
                         size: 10,
                       ),
-                      icon2: Icon(
+                      icon2: const Icon(
                         FontAwesomeIcons.arrowDown,
                         color: ColorPalette.primaryColor,
                         size: 10,
@@ -114,12 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     FilterContainerWidget(
                       name: 'Distance',
-                      icon1: Icon(
+                      icon1: const Icon(
                         FontAwesomeIcons.arrowUp,
                         color: ColorPalette.primaryColor,
                         size: 10,
                       ),
-                      icon2: Icon(
+                      icon2: const Icon(
                         FontAwesomeIcons.arrowDown,
                         color: ColorPalette.primaryColor,
                         size: 10,
@@ -128,12 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     FilterContainerWidget(
                       name: 'Price',
-                      icon1: Icon(
+                      icon1: const Icon(
                         FontAwesomeIcons.arrowUp,
                         color: ColorPalette.primaryColor,
                         size: 10,
                       ),
-                      icon2: Icon(
+                      icon2: const Icon(
                         FontAwesomeIcons.arrowDown,
                         color: ColorPalette.primaryColor,
                         size: 10,
@@ -142,12 +138,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     FilterContainerWidget(
                       name: 'Rate',
-                      icon1: Icon(
+                      icon1: const Icon(
                         FontAwesomeIcons.arrowUp,
                         color: ColorPalette.primaryColor,
                         size: 10,
                       ),
-                      icon2: Icon(
+                      icon2: const Icon(
                         FontAwesomeIcons.arrowDown,
                         color: ColorPalette.primaryColor,
                         size: 10,
@@ -156,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     FilterContainerWidget(
                       name: 'Kind',
-                      icon1: Icon(
+                      icon1: const Icon(
                         FontAwesomeIcons.angleDown,
                         color: ColorPalette.primaryColor,
                         size: 10,
@@ -167,16 +163,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            Gap(20),
+            const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
+                visible: isTenant,
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Suggestion For You',
                           style: TextStyles.titleHeading,
                         ),
@@ -184,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             GoRouter.of(context).go('/all_room');
                           },
-                          child: Row(
+                          child: const Row(
                             children: [
                               Text(
                                 'See All',
@@ -201,14 +198,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                       ],
                     ),
-                    Gap(10),
+                    const Gap(10),
                     Container(),
                   ],
                 ),
-                visible: isTenant,
               ),
             ),
-            Gap(20),
+            const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
@@ -216,13 +212,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Room Available',
                         style: TextStyles.titleHeading,
                       ),
                       GestureDetector(
                         onTap: () {},
-                        child: Row(
+                        child: const Row(
                           children: [
                             Text(
                               'See All',
@@ -239,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
-                  Gap(10),
+                  const Gap(10),
                   Container(),
                 ],
               ),

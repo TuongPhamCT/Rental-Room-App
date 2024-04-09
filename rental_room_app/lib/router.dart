@@ -5,6 +5,7 @@ import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/bottom_bar.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
+import 'package:rental_room_app/Views/register_form_screen.dart';
 import 'package:rental_room_app/Views/signup_screen.dart';
 
 final GoRouter router = GoRouter(
@@ -12,7 +13,7 @@ final GoRouter router = GoRouter(
     GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const BottomBar(key: Key('home')),
+        builder: (context, state) => const RegisterFormScreen(key: Key('home')),
         routes: [
           GoRoute(
             path: 'all_room',
