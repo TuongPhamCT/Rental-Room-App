@@ -217,6 +217,24 @@ class TextStyles {
     fontSize: 16,
     color: ColorPalette.primaryColor,
   );
+  static const TextStyle titleHeading = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    color: ColorPalette.primaryColor,
+  );
+  static const TextStyle seeAll = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w300,
+    fontSize: 12,
+    color: ColorPalette.grayText,
+  );
+  static const TextStyle bottomBar = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    color: ColorPalette.primaryColor,
+  );
 }
 
 // How to use?
