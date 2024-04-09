@@ -19,6 +19,7 @@ class ColorPalette {
   static const Color detailBorder = Color(0xff9B9B9B);
   static const Color lateDay = Color(0xffF4E2BB);
   static const Color absentDay = Color(0xffE45826);
+  static const Color errorColor = Color(0xffE74C3C);
 }
 
 // Color(0xff+x) | Mã hex bỏ # ví dụ #123410 => Color(0xFF123410)
