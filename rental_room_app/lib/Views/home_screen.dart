@@ -77,14 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Icon(
                     FontAwesomeIcons.filter,
-                    color: ColorPalette.primaryColor,
+                    color: ColorPalette.greenText,
                     size: 15,
                   ),
                   Gap(10),
                   Text(
                     'Filter',
-                    style: TextStyle(
-                        fontSize: 12, color: ColorPalette.primaryColor),
+                    style: TextStyles.titleHeading.copyWith(fontSize: 12),
                   ),
                 ],
               ),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
+import 'package:rental_room_app/Views/login_screen.dart';
+import 'package:rental_room_app/Views/pincode_screen.dart';
+import 'package:rental_room_app/Views/signup_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
