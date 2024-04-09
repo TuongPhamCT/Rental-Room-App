@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           padding:
               EdgeInsets.only(bottom: size.height * 1 / 2 - size.width * 2 / 7),
           child: Text(
-            'Paradise',
+            'Like House',
             style: TextStyles.slo.copyWith(shadows: [
               const BoxShadow(
                   color: Colors.black26, offset: Offset(0, 4), blurRadius: 6),
