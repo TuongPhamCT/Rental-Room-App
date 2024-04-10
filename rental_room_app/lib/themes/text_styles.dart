@@ -139,6 +139,7 @@ class TextStyles {
       fontFamily: AppFonts.poppins);
   static const TextStyle h8 = TextStyle(
       fontSize: 24,
+      letterSpacing: 1.305,
       color: ColorPalette.backgroundColor,
       fontWeight: FontWeight.w600,
       fontFamily: AppFonts.poppins);
@@ -234,6 +235,18 @@ class TextStyles {
     fontWeight: FontWeight.w500,
     fontSize: 12,
     color: ColorPalette.primaryColor,
+  );
+  static const TextStyle buttonName = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    color: ColorPalette.backgroundColor,
+  );
+  static const TextStyle detailTitle = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w700,
+    fontSize: 18,
+    color: ColorPalette.darkBlueText,
   );
 }
 
