@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gap/gap.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
@@ -47,7 +46,7 @@ class _FilterContainerWidgetState extends State<FilterContainerWidget> {
               widget.onTapIconUp!();
             },
             child: widget.icon2 ??
-                SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
           ),

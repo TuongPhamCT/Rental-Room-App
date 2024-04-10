@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+
 import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
+
 import 'package:rental_room_app/Views/home_screen.dart';
-import 'package:rental_room_app/Views/login_screen.dart';
-import 'package:rental_room_app/Views/pincode_screen.dart';
-import 'package:rental_room_app/Views/signup_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
-  static final String routeName = "bottom_bar";
+  static const String routeName = "bottom_bar";
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -20,7 +19,7 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   int _selectedIndex = 0;
-  String _userType = 'tenant';
+  final String _userType = 'tenant';
   @override
   void initState() {
     WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +31,7 @@ class _BottomBarState extends State<BottomBar> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: [
+        children: const [
           HomeScreen(),
           DetailRoomScreen(),
         ],
@@ -47,54 +46,54 @@ class _BottomBarState extends State<BottomBar> {
           },
           items: [
             SalomonBottomBarItem(
-                icon: Icon(
+                icon: const Icon(
                   FontAwesomeIcons.house,
                   color: ColorPalette.primaryColor,
                   size: 20,
                 ),
-                title: Text(
+                title: const Text(
                   'Home',
                   style: TextStyles.bottomBar,
                 )),
             if (_userType == 'tenant')
               SalomonBottomBarItem(
-                  icon: Icon(
+                  icon: const Icon(
                     FontAwesomeIcons.doorOpen,
                     color: ColorPalette.primaryColor,
                     size: 20,
                   ),
-                  title: Text(
+                  title: const Text(
                     'Your Room',
                     style: TextStyles.bottomBar,
                   )),
             if (_userType == 'owner')
               SalomonBottomBarItem(
-                  icon: Icon(
+                  icon: const Icon(
                     FontAwesomeIcons.chartLine,
                     color: ColorPalette.primaryColor,
                     size: 20,
                   ),
-                  title: Text(
+                  title: const Text(
                     'Statistic',
                     style: TextStyles.bottomBar,
                   )),
             SalomonBottomBarItem(
-                icon: Icon(
+                icon: const Icon(
                   FontAwesomeIcons.bell,
                   color: ColorPalette.primaryColor,
                   size: 20,
                 ),
-                title: Text(
+                title: const Text(
                   'Notification',
                   style: TextStyles.bottomBar,
                 )),
             SalomonBottomBarItem(
-                icon: Icon(
+                icon: const Icon(
                   FontAwesomeIcons.gear,
                   color: ColorPalette.primaryColor,
                   size: 20,
                 ),
-                title: Text(
+                title: const Text(
                   'Setting',
                   style: TextStyles.bottomBar,
                 )),
