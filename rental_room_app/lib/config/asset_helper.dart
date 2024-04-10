@@ -8,5 +8,11 @@ class AssetHelper {
   static const String logo1 = '${imgAssets}logo.png';
 
   //home
-  static const String avatar = 'assets/images/avatar.jpg';
+  static const String avatar = imgAssets + 'avatar.jpg';
+
+  //room detail
+  static const String priImage = imgAssets + 'primaryimage.jpeg';
+  static const String subOne = imgAssets + 'sub_one.jpeg';
+  static const String subTwo = imgAssets + 'sub_two.jpeg';
+  static const String subThree = imgAssets + 'sub_three.jpeg';
 }
