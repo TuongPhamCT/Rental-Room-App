@@ -68,15 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   isVisiable = !isVisiable;
                 });
               },
-              child: const Row(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     FontAwesomeIcons.filter,
                     color: ColorPalette.greenText,
                     size: 15,
                   ),
-                  Gap(10),
+                  const Gap(10),
                   Text(
                     'Filter',
                     style: TextStyles.titleHeading.copyWith(fontSize: 12),

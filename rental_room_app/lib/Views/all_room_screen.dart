@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
-import 'package:rental_room_app/Views/bottom_bar.dart';
-import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
@@ -34,7 +32,10 @@ class _AllRoomState extends State<AllRoom> {
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: const Icon(FontAwesomeIcons.arrowLeft),
+            child: const Icon(
+              FontAwesomeIcons.arrowLeft,
+              color: ColorPalette.backgroundColor,
+            ),
           ),
         ),
         title: Text('ROOMS',
@@ -51,64 +52,62 @@ class _AllRoomState extends State<AllRoom> {
         toolbarHeight: kToolbarHeight * 1.5,
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         color: ColorPalette.backgroundColor,
         child: Column(
           children: [
-            Gap(36),
-            Container(
-              child: SizedBox(
-                height: 42,
-                width: double.infinity,
-                child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        searchValue = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ColorPalette.primaryColor, width: 1),
-                        borderRadius: BorderRadius.circular(10),
+            const Gap(36),
+            SizedBox(
+              height: 42,
+              width: double.infinity,
+              child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchValue = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: ColorPalette.primaryColor, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: ColorPalette.primaryColor, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.only(top: 4),
+                    prefixIcon: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {},
+                      child: const Icon(
+                        FontAwesomeIcons.magnifyingGlass,
+                        size: 16,
+                        color: ColorPalette.greenText,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ColorPalette.primaryColor, width: 1),
-                        borderRadius: BorderRadius.circular(10),
+                    ),
+                    suffixIcon: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {
+                        setState(() {
+                          isVisibleFilter = !isVisibleFilter;
+                        });
+                      },
+                      child: const Icon(
+                        FontAwesomeIcons.barsProgress,
+                        size: 16,
+                        color: ColorPalette.primaryColor,
                       ),
-                      contentPadding: const EdgeInsets.only(top: 4),
-                      prefixIcon: InkWell(
-                        customBorder: CircleBorder(),
-                        onTap: () {},
-                        child: Icon(
-                          FontAwesomeIcons.magnifyingGlass,
-                          size: 16,
-                          color: ColorPalette.greenText,
-                        ),
-                      ),
-                      suffixIcon: InkWell(
-                        customBorder: CircleBorder(),
-                        onTap: () {
-                          setState(() {
-                            isVisibleFilter = !isVisibleFilter;
-                          });
-                        },
-                        child: Icon(
-                          FontAwesomeIcons.barsProgress,
-                          size: 16,
-                          color: ColorPalette.primaryColor,
-                        ),
-                      ),
-                      hintText: 'Search',
-                      hintStyle: TextStyle(
-                        fontSize: 14,
-                        color: ColorPalette.grayText,
-                      ),
-                    )),
-              ),
+                    ),
+                    hintText: 'Search',
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
+                      color: ColorPalette.grayText,
+                    ),
+                  )),
             ),
-            Gap(20),
+            const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
@@ -118,30 +117,30 @@ class _AllRoomState extends State<AllRoom> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           FontAwesomeIcons.filter,
                           color: ColorPalette.greenText,
                           size: 15,
                         ),
-                        Gap(10),
+                        const Gap(10),
                         Text(
                           'Filter',
                           style: TextStyles.titleHeading.copyWith(fontSize: 12),
                         ),
                       ],
                     ),
-                    Gap(10),
+                    const Gap(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FilterContainerWidget(
                           name: 'Area',
-                          icon1: Icon(
+                          icon1: const Icon(
                             FontAwesomeIcons.arrowUp,
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          icon2: Icon(
+                          icon2: const Icon(
                             FontAwesomeIcons.arrowDown,
                             color: ColorPalette.primaryColor,
                             size: 10,
@@ -151,12 +150,12 @@ class _AllRoomState extends State<AllRoom> {
                         ),
                         FilterContainerWidget(
                           name: 'Distance',
-                          icon1: Icon(
+                          icon1: const Icon(
                             FontAwesomeIcons.arrowUp,
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          icon2: Icon(
+                          icon2: const Icon(
                             FontAwesomeIcons.arrowDown,
                             color: ColorPalette.primaryColor,
                             size: 10,
@@ -165,12 +164,12 @@ class _AllRoomState extends State<AllRoom> {
                         ),
                         FilterContainerWidget(
                           name: 'Price',
-                          icon1: Icon(
+                          icon1: const Icon(
                             FontAwesomeIcons.arrowUp,
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          icon2: Icon(
+                          icon2: const Icon(
                             FontAwesomeIcons.arrowDown,
                             color: ColorPalette.primaryColor,
                             size: 10,
@@ -179,12 +178,12 @@ class _AllRoomState extends State<AllRoom> {
                         ),
                         FilterContainerWidget(
                           name: 'Rate',
-                          icon1: Icon(
+                          icon1: const Icon(
                             FontAwesomeIcons.arrowUp,
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          icon2: Icon(
+                          icon2: const Icon(
                             FontAwesomeIcons.arrowDown,
                             color: ColorPalette.primaryColor,
                             size: 10,
@@ -193,7 +192,7 @@ class _AllRoomState extends State<AllRoom> {
                         ),
                         FilterContainerWidget(
                           name: 'Kind',
-                          icon1: Icon(
+                          icon1: const Icon(
                             FontAwesomeIcons.angleDown,
                             color: ColorPalette.primaryColor,
                             size: 10,
