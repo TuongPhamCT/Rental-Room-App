@@ -30,35 +30,40 @@ class _HomeScreenState extends State<HomeScreen> {
             const Gap(30),
             SizedBox(
               width: size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('WELCOME',
+              child: GestureDetector(
+                onTap: () {
+                  GoRouter.of(context).go('/home/edit_profile');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('WELCOME',
+                            style: TextStyle(
+                                fontSize: 10, color: ColorPalette.grayText)),
+                        Text(
+                          'Nguyễn Văn A',
                           style: TextStyle(
-                              fontSize: 10, color: ColorPalette.grayText)),
-                      Text(
-                        'Nguyễn Văn A',
-                        style: TextStyle(
-                            fontSize: 16, color: ColorPalette.primaryColor),
-                      ),
-                    ],
-                  ),
-                  const Gap(15),
-                  Container(
-                    height: 35,
-                    width: 35,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(AssetHelper.avatar),
-                        fit: BoxFit.cover,
-                      ),
+                              fontSize: 16, color: ColorPalette.primaryColor),
+                        ),
+                      ],
                     ),
-                  )
-                ],
+                    const Gap(15),
+                    Container(
+                      height: 35,
+                      width: 35,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(AssetHelper.avatar),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             const Gap(20),

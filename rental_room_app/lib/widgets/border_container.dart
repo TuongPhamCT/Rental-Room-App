@@ -16,7 +16,7 @@ class BoderContainer extends StatelessWidget {
           width: 1,
           color: ColorPalette.detailBorder.withOpacity(0.1),
         ),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: child,
     );
