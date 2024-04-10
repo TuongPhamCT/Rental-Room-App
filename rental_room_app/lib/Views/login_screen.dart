@@ -231,5 +231,6 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       ),
     );
+    GoRouter.of(context).go('/home');
   }
 }

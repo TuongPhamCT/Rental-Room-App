@@ -21,24 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Like House',
       debugShowCheckedModeBanner: false,
-      routeInformationProvider: router.routeInformationProvider,
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
+      routerConfig: router,
     );
   }
 }
-  
-
-// class _MyAppState extends State<MyApp> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Like House',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: const SplashScreen(),
-//       debugShowCheckedModeBanner: false,
-//     );
-//   }
-// }
