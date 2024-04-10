@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -11,18 +12,17 @@ import 'package:rental_room_app/Views/signup_screen.dart';
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const RegisterFormScreen(key: Key('home')),
-        routes: [
-          GoRoute(
-            path: 'all_room',
-            name: 'all_room',
-            builder: (context, state) => const AllRoom(key: Key('all_room')),
-          )
-        ]),
+      path: '/',
+      redirect: (BuildContext context, GoRouterState state) {
+        if (FirebaseAuth.instance.currentUser != null) {
+          return '/home';
+        } else {
+          return '/log_in';
+        }
+      },
+    ),
     GoRoute(
-        path: '/',
+        path: '/log_in',
         name: 'log_in',
         builder: (context, state) => const LoginScreen(key: Key('log_in')),
         routes: [
@@ -37,8 +37,28 @@ final GoRouter router = GoRouter(
                     name: 'pincode',
                     builder: (context, state) => PincodeScreen(
                         key: const Key('pincode'),
-                        email: state.pathParameters['email']))
-              ])
+                        email: state.pathParameters['email']),
+                    routes: [
+                      GoRoute(
+                        path: 'register_form',
+                        name: 'register_form',
+                        builder: (context, state) => RegisterFormScreen(
+                            key: const Key('register_form'),
+                            email: state.pathParameters['email']),
+                      )
+                    ])
+              ]),
+        ]),
+    GoRoute(
+        path: '/home',
+        name: 'home',
+        builder: (context, state) => const BottomBar(key: Key('home')),
+        routes: [
+          GoRoute(
+            path: 'all_room',
+            name: 'all_room',
+            builder: (context, state) => const AllRoom(key: Key('all_room')),
+          )
         ]),
   ],
 );

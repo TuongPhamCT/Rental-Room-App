@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rental_room_app/Contract/pincode_contract.dart';
@@ -188,16 +189,17 @@ class _PincodeScreenState extends State<PincodeScreen>
 
   @override
   void onVerifySucceeded() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: ColorPalette.greenText,
-        content: Text(
-          'Verify Succeeded!',
-          style: TextStyle(color: ColorPalette.errorColor),
-        ),
-      ),
-    );
-    // TODO: implement onVerifySucceeded
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     backgroundColor: ColorPalette.greenText,
+    //     content: Text(
+    //       'Verify Succeeded!',
+    //       style: TextStyle(color: ColorPalette.errorColor),
+    //     ),
+    //   ),
+    // );
+    GoRouter.of(context)
+        .goNamed('register_form', pathParameters: {'email': widget.email!});
   }
 
   @override

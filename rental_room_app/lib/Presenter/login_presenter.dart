@@ -10,7 +10,7 @@ class LoginPresenter {
     email = email.trim();
     password = password.trim();
     try {
-      final credential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       _view?.onLoginFailed();

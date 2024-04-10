@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            GoRouter.of(context).go('/all_room');
+                            GoRouter.of(context).go('/home/all_room');
                           },
                           child: const Row(
                             children: [

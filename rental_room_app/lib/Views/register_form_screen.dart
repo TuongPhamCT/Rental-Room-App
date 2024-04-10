@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:date_field/date_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +11,10 @@ import 'package:rental_room_app/Presenter/register_form_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
+// ignore: must_be_immutable
 class RegisterFormScreen extends StatefulWidget {
-  const RegisterFormScreen({super.key});
-
+  RegisterFormScreen({super.key, this.email});
+  String? email;
   @override
   State<RegisterFormScreen> createState() => _RegisterFormScreenState();
 }
@@ -19,15 +23,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
     implements RegisterFormContract {
   RegisterFormPresenter? _registerFormPresenter;
   final _formKey = GlobalKey<FormState>();
+  Uint8List? _imageFile;
 
+  //Param Controllers
   final _phoneNumTextController = TextEditingController();
   final _fullnameTextController = TextEditingController();
-  bool _isMale = true;
+  String _gender = "";
   DateTime? birthday;
   bool? _passwordVisible;
   final _accountPasswordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
   bool _isOwner = false;
+  //
 
   @override
   void initState() {
@@ -44,20 +51,21 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
-            reverse: true,
+            reverse: false,
             child: Center(
               child: Container(
                 color: ColorPalette.backgroundColor,
-                // height: MediaQuery.of(context).size.height -
-                //     MediaQuery.of(context).padding.top,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(50),
+                    const Gap(20),
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () => {context.pop()},
+                          onPressed: () {
+                            int count = 0;
+                            Navigator.popUntil(context, (_) => count++ >= 2);
+                          },
                           icon: const Icon(
                             Icons.arrow_back,
                             size: 30,
@@ -79,29 +87,34 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                     Stack(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            // TODO: Select avatar handle
-                          },
+                          onTap: _registerFormPresenter?.selectImageFromGallery,
                           child: Container(
                             width: 80.0,
                             height: 80.0,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/default_profile_picture.png'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            decoration: _imageFile == null
+                                ? const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/default_profile_picture.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: MemoryImage(_imageFile!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                           ),
                         ),
                         Positioned(
                           bottom: -12.0,
                           right: -12.0,
                           child: IconButton(
-                            onPressed: () {
-                              // TODO: Select avatar handle
-                            },
+                            onPressed:
+                                _registerFormPresenter?.selectImageFromGallery,
                             icon: const Icon(Icons.camera_alt),
                             color: ColorPalette.calendarGround,
                           ),
@@ -117,8 +130,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
                               enabled: false,
-                              initialValue: "hungttalop3@gmail.com",
-                              //TODO: inital email,
+                              initialValue: widget.email,
                               style: TextStyles.h5,
                               decoration: InputDecoration(
                                 filled: true,
@@ -140,6 +152,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
                               controller: _phoneNumTextController,
+                              validator:
+                                  _registerFormPresenter?.validatePhoneNum,
                               keyboardType: TextInputType.phone,
                               style: TextStyles.h5,
                               decoration: InputDecoration(
@@ -163,10 +177,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               obscureText: false,
                             ),
                           ),
+                          const Gap(5),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
                               controller: _fullnameTextController,
+                              validator:
+                                  _registerFormPresenter?.validateFullName,
                               keyboardType: TextInputType.name,
                               style: TextStyles.h5,
                               decoration: InputDecoration(
@@ -190,68 +207,92 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               obscureText: false,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: InputDecorator(
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                filled: true,
-                                fillColor: ColorPalette.bgTextFieldColor,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        width: 10,
-                                        color: ColorPalette.bgTextFieldColor),
-                                    borderRadius: BorderRadius.circular(16)),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        width: 10,
-                                        color: ColorPalette.bgTextFieldColor),
-                                    borderRadius: BorderRadius.circular(16)),
-                                labelText: "Gender",
-                                labelStyle: TextStyles.h4
-                                    .copyWith(color: ColorPalette.rankText),
-                                helperText: " ",
-                              ),
-                              child: Row(
-                                children: [
-                                  const Gap(35),
-                                  const Text(
-                                    'Male',
-                                    style: TextStyles.h5,
+                          const Gap(5),
+                          FormField(
+                            validator: _registerFormPresenter?.validateGender,
+                            builder: (FormFieldState<String?> state) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: InputDecorator(
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    filled: true,
+                                    fillColor: ColorPalette.bgTextFieldColor,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            width: 10,
+                                            color:
+                                                ColorPalette.bgTextFieldColor),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            width: 10,
+                                            color:
+                                                ColorPalette.bgTextFieldColor),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            width: 10,
+                                            color:
+                                                ColorPalette.bgTextFieldColor),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    labelText: "Gender",
+                                    labelStyle: TextStyles.h4
+                                        .copyWith(color: ColorPalette.rankText),
+                                    helperText: " ",
+                                    errorText: state.errorText,
                                   ),
-                                  Checkbox(
-                                    value: _isMale,
-                                    onChanged: (value) =>
-                                        setState(() => _isMale = value!),
-                                    checkColor: ColorPalette.backgroundColor,
-                                    side: const BorderSide(
-                                        width: 2,
-                                        color: ColorPalette.blackText),
-                                    activeColor: ColorPalette.primaryColor,
+                                  child: Row(
+                                    children: <Widget>[
+                                      const Gap(10),
+                                      Radio<String>(
+                                        activeColor: ColorPalette.primaryColor,
+                                        value: "Male",
+                                        groupValue: _gender,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _gender = value!;
+                                          });
+                                          state.didChange(_gender);
+                                        },
+                                      ),
+                                      const Text(
+                                        "Male",
+                                        style: TextStyles.h5,
+                                      ),
+                                      const Gap(35),
+                                      Radio<String>(
+                                        activeColor: ColorPalette.primaryColor,
+                                        value: "Female",
+                                        groupValue: _gender,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _gender = value!;
+                                          });
+                                          state.didChange(_gender);
+                                        },
+                                      ),
+                                      const Text(
+                                        "Female",
+                                        style: TextStyles.h5,
+                                      ),
+                                    ],
                                   ),
-                                  const Gap(35),
-                                  const Text(
-                                    'Female',
-                                    style: TextStyles.h5,
-                                  ),
-                                  Checkbox(
-                                    value: !_isMale,
-                                    onChanged: (value) =>
-                                        setState(() => _isMale = !value!),
-                                    checkColor: ColorPalette.backgroundColor,
-                                    side: const BorderSide(
-                                        width: 2,
-                                        color: ColorPalette.blackText),
-                                    activeColor: ColorPalette.primaryColor,
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
                           ),
+                          const Gap(5),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: DateTimeFormField(
+                              validator:
+                                  _registerFormPresenter?.validateBirthday,
                               onChanged: (DateTime? value) {
                                 setState(() {
                                   birthday = value;
@@ -279,10 +320,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               ),
                             ),
                           ),
+                          const Gap(5),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
                               controller: _accountPasswordTextController,
+                              validator: _registerFormPresenter
+                                  ?.validateAccountPassword,
                               keyboardType: TextInputType.visiblePassword,
                               style: TextStyles.h5,
                               decoration: InputDecoration(
@@ -319,10 +363,13 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               obscuringCharacter: '*',
                             ),
                           ),
+                          const Gap(5),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
                               controller: _confirmPasswordTextController,
+                              validator: _registerFormPresenter
+                                  ?.validateConfirmPassword,
                               keyboardType: TextInputType.visiblePassword,
                               style: TextStyles.h5,
                               decoration: InputDecoration(
@@ -388,7 +435,12 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 38),
                       child: ElevatedButton(
                         onPressed: () {
-                          //TODO: onDone handle
+                          if (_formKey.currentState!.validate()) {
+                            _registerFormPresenter?.doneButtonPressed(
+                                widget.email,
+                                _accountPasswordTextController.text,
+                                _fullnameTextController.text);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorPalette.primaryColor,
@@ -417,5 +469,54 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
         );
       }),
     );
+  }
+
+  @override
+  void onRegisterFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Cannot Sign up! Please try again later!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onRegisterSucceeded() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Sign up succeeded! You can now log in!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+    GoRouter.of(context).go('/log_in');
+  }
+
+  @override
+  void onChangeProfilePicture(Uint8List pickedImage) {
+    setState(() {
+      _imageFile = pickedImage;
+    });
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context).pop();
   }
 }
