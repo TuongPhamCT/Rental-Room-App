@@ -248,6 +248,19 @@ class TextStyles {
     fontSize: 18,
     color: ColorPalette.darkBlueText,
   );
+  static const TextStyle ratingNumb = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w700,
+    fontSize: 64,
+    color: ColorPalette.blackText,
+  );
+
+  static const TextStyle ratingText = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w300,
+    fontSize: 12,
+    color: ColorPalette.blackText,
+  );
 }
 
 // How to use?

@@ -31,7 +31,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   ];
 
   final int numberstar = 5;
-  double rating = 4.8;
+  double rating = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -519,23 +519,276 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   color: ColorPalette.primaryColor.withOpacity(0.75),
                   width: 150,
                 ),
-                RatingBar.builder(
-                  initialRating: 4.5,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemSize: 45,
-                  unratedColor: Color(0xffDADADA),
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
+                Gap(10),
+                BoderContainer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Rating',
+                        style: TextStyles.detailTitle,
+                      ),
+                      Gap(5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: 130,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '4,8',
+                                  style: TextStyles.ratingNumb,
+                                ),
+                                RatingBar.builder(
+                                  initialRating: 4.8,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemSize: 18,
+                                  unratedColor: Color(0xffDADADA),
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (Null) {},
+                                  ignoreGestures: true,
+                                ),
+                                Text(
+                                  '123.456',
+                                  style: TextStyles.ratingText,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Gap(15),
+                          Container(
+                            height: 100,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  width: size.width - 180,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '5',
+                                        style: TextStyles.ratingText,
+                                      ),
+                                      Container(
+                                        width: size.width - 190,
+                                        child: LinearProgressIndicator(
+                                          value: 0.8,
+                                          backgroundColor: Color(0xffDADADA),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  ColorPalette.primaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          minHeight: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: size.width - 180,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '4',
+                                        style: TextStyles.ratingText,
+                                      ),
+                                      Container(
+                                        width: size.width - 190,
+                                        child: LinearProgressIndicator(
+                                          value: 0.2,
+                                          backgroundColor: Color(0xffDADADA),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  ColorPalette.primaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          minHeight: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: size.width - 180,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '3',
+                                        style: TextStyles.ratingText,
+                                      ),
+                                      Container(
+                                        width: size.width - 190,
+                                        child: LinearProgressIndicator(
+                                          value: 0.1,
+                                          backgroundColor: Color(0xffDADADA),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  ColorPalette.primaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          minHeight: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: size.width - 180,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '2',
+                                        style: TextStyles.ratingText,
+                                      ),
+                                      Container(
+                                        width: size.width - 190,
+                                        child: LinearProgressIndicator(
+                                          value: 0.05,
+                                          backgroundColor: Color(0xffDADADA),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  ColorPalette.primaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          minHeight: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: size.width - 180,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '1',
+                                        style: TextStyles.ratingText,
+                                      ),
+                                      Container(
+                                        width: size.width - 190,
+                                        child: LinearProgressIndicator(
+                                          value: 0,
+                                          backgroundColor: Color(0xffDADADA),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  ColorPalette.primaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          minHeight: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  onRatingUpdate: (Null) {
-                    // Hàm trống, không làm gì cả
-                  },
-                  ignoreGestures: true,
                 ),
+                BoderContainer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Rating for this room',
+                        style: TextStyles.detailTitle,
+                      ),
+                      Gap(5),
+                      Container(
+                        alignment: Alignment.center,
+                        child: RatingBar.builder(
+                          initialRating: rating,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemSize: 60,
+                          unratedColor: ColorPalette.primaryColor,
+                          itemBuilder: (context, index) {
+                            if (index < rating) {
+                              return Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              );
+                            } else {
+                              return Icon(
+                                Icons.star_border_outlined,
+                              );
+                            }
+                          },
+                          onRatingUpdate: (double newRating) {
+                            setState(() {
+                              rating = newRating;
+                            });
+                          },
+                        ),
+                      ),
+                      Gap(5),
+                      Text(
+                        'Write your review:',
+                        style: TextStyles.detailTitle,
+                      ),
+                      TextField(
+                        maxLines: null,
+                        onTapOutside: (event) {
+                          FocusScope.of(context).unfocus();
+                        },
+                        textAlign: TextAlign.justify,
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ColorPalette.primaryColor,
+                            ),
+                          ),
+                          hintText: 'Write your review',
+                          hintStyle: TextStyles.descriptionRoom.copyWith(
+                              color: ColorPalette.rankText.withOpacity(0.5)),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ColorPalette.rankText.withOpacity(0.1),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Gap(10),
+                      ModelButton(
+                        onTap: () {},
+                        name: 'POST',
+                        color: ColorPalette.primaryColor.withOpacity(0.75),
+                        width: 150,
+                      ),
+                    ],
+                  ),
+                ),
+                Gap(15),
               ],
             ),
           ),
