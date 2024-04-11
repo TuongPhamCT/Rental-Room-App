@@ -76,9 +76,9 @@ class TextStyles {
       color: ColorPalette.backgroundColor,
       fontWeight: FontWeight.w600,
       fontFamily: AppFonts.poppins);
-  static const TextStyle h9 = TextStyle(
+  static const TextStyle title = TextStyle(
       fontSize: 24,
-      color: ColorPalette.blackText,
+      color: ColorPalette.primaryColor,
       fontWeight: FontWeight.w600,
       fontFamily: AppFonts.inter);
   static const TextStyle staffInforDetail = TextStyle(
