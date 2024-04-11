@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 
-class BoderContainer extends StatelessWidget {
+class BorderContainer extends StatelessWidget {
   final Widget? child;
-  const BoderContainer({super.key, this.child});
+  const BorderContainer({super.key, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class BoderContainer extends StatelessWidget {
           width: 1,
           color: ColorPalette.detailBorder.withOpacity(0.1),
         ),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: child,
     );

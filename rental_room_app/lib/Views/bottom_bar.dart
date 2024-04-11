@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 
-import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
 
 import 'package:rental_room_app/Views/home_screen.dart';

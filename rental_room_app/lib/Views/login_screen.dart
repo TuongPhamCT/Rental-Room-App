@@ -22,12 +22,9 @@ class _LoginScreenState extends State<LoginScreen>
   final _formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
-  FocusNode emailFocus = FocusNode();
-  bool firstEnterEmailTF = false;
 
   final passwordController = TextEditingController();
-  FocusNode passwordFocus = FocusNode();
-  bool firstEnterPasswordTF = false;
+  bool _passwordVisible = true;
 
   bool _isChecked = false;
 
@@ -79,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: TextFormField(
                               controller: emailController,
-                              focusNode: emailFocus,
                               validator: _loginPresenter?.validateEmail,
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyles.h6,
@@ -100,18 +96,30 @@ class _LoginScreenState extends State<LoginScreen>
                             padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: TextFormField(
                               controller: passwordController,
-                              focusNode: passwordFocus,
                               validator: _loginPresenter?.validatePassword,
                               style: TextStyles.h6,
                               decoration: InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: TextStyles.h5.copyWith(
-                                      fontFamily: GoogleFonts.ntr().fontFamily,
-                                      color: ColorPalette.detailBorder),
-                                  prefixIcon: const Icon(IconlyLight.lock),
-                                  prefixIconColor: ColorPalette.detailBorder,
-                                  helperText: ""),
-                              obscureText: true,
+                                hintText: "Password",
+                                hintStyle: TextStyles.h5.copyWith(
+                                    fontFamily: GoogleFonts.ntr().fontFamily,
+                                    color: ColorPalette.detailBorder),
+                                prefixIcon: const Icon(IconlyLight.lock),
+                                prefixIconColor: ColorPalette.detailBorder,
+                                helperText: "",
+                                suffixIcon: IconButton(
+                                  icon: Icon(_passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        _passwordVisible = !_passwordVisible;
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                              obscureText: _passwordVisible,
                               obscuringCharacter: '*',
                             ),
                           ),

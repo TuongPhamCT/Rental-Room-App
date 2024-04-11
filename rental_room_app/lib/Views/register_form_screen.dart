@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rental_room_app/Contract/register_form_contract.dart';
 import 'package:rental_room_app/Presenter/register_form_presenter.dart';
+import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 
@@ -95,8 +96,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                                 ? const BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/default_profile_picture.png"),
+                                      image:
+                                          AssetImage(AssetHelper.defaultAvatar),
                                       fit: BoxFit.cover,
                                     ),
                                   )

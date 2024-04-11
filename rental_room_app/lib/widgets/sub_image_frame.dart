@@ -7,11 +7,11 @@ class SubFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       width: (size.width - 100) / 3,
       height: 75,
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(9)),
+        borderRadius: const BorderRadius.all(Radius.circular(9)),
         child: child,
       ),
     );
