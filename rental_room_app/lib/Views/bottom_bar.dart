@@ -5,6 +5,7 @@ import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
 
 import 'package:rental_room_app/Views/home_screen.dart';
+import 'package:rental_room_app/Views/your_room_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -34,6 +35,7 @@ class _BottomBarState extends State<BottomBar> {
         children: const [
           HomeScreen(),
           DetailRoomScreen(),
+          YourRoomScreen(),
         ],
       ),
       bottomNavigationBar: SalomonBottomBar(
