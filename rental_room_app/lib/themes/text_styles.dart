@@ -2,74 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 
 extension ExtendedTextStyle on TextStyle {
-  TextStyle get light {
-    return copyWith(fontWeight: FontWeight.w300, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get regular {
-    return copyWith(fontWeight: FontWeight.w400, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get italic {
-    return copyWith(
-        fontWeight: FontWeight.normal,
-        fontStyle: FontStyle.italic,
-        fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get medium {
-    return copyWith(fontWeight: FontWeight.w500, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get fontHeader {
-    return copyWith(fontSize: 22, height: 22 / 20, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get fontCaption {
-    return copyWith(fontSize: 12, height: 12 / 10, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get semibold {
-    return copyWith(fontWeight: FontWeight.w600, fontFamily: AppFonts.rubik);
-  }
-
   TextStyle get bold {
     return copyWith(fontWeight: FontWeight.w700, fontFamily: AppFonts.rubik);
   }
 
-  TextStyle get blackText {
-    return copyWith(color: ColorPalette.blackText, fontFamily: AppFonts.rubik);
-  }
-
   TextStyle get grayText {
     return copyWith(color: ColorPalette.grayText, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get primaryTextColor {
-    return copyWith(
-        color: ColorPalette.primaryColor, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get darkPrimaryTextColor {
-    return copyWith(
-        color: ColorPalette.darkBlueText, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get whiteTextColor {
-    return copyWith(color: Colors.white, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle get subTitleTextColor {
-    return copyWith(color: ColorPalette.blackText, fontFamily: AppFonts.rubik);
-  }
-
-  // convenience functions
-  TextStyle setColor(Color color) {
-    return copyWith(color: color, fontFamily: AppFonts.rubik);
-  }
-
-  TextStyle setTextSize(double size) {
-    return copyWith(fontSize: size, fontFamily: AppFonts.rubik);
   }
 }
 
@@ -84,12 +22,7 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       height: 16 / 14,
       fontFamily: AppFonts.rubik);
-  static const TextStyle subTextStyle = TextStyle(
-      fontSize: 12,
-      color: ColorPalette.blackText,
-      fontWeight: FontWeight.w400,
-      height: 16 / 14,
-      fontFamily: AppFonts.rubik);
+
   static const TextStyle h1 = TextStyle(
       fontSize: 30,
       color: ColorPalette.blackText,
@@ -260,6 +193,12 @@ class TextStyles {
     fontWeight: FontWeight.w300,
     fontSize: 12,
     color: ColorPalette.blackText,
+  );
+  static const TextStyle total = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w700,
+    fontSize: 14,
+    color: ColorPalette.primaryColor,
   );
 }
 
