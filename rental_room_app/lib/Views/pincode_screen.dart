@@ -189,16 +189,17 @@ class _PincodeScreenState extends State<PincodeScreen>
 
   @override
   void onVerifySucceeded() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: ColorPalette.greenText,
-        content: Text(
-          'Verify Succeeded!',
-          style: TextStyle(color: ColorPalette.errorColor),
-        ),
-      ),
-    );
-    // TODO: implement onVerifySucceeded
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     backgroundColor: ColorPalette.greenText,
+    //     content: Text(
+    //       'Verify Succeeded!',
+    //       style: TextStyle(color: ColorPalette.errorColor),
+    //     ),
+    //   ),
+    // );
+    GoRouter.of(context)
+        .goNamed('register_form', pathParameters: {'email': widget.email!});
   }
 
   @override

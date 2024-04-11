@@ -5,7 +5,7 @@ class AssetHelper {
   static const String imgAssets = 'assets/images/';
 
   //splash
-  static const String logo1 = imgAssets + 'logo.png';
+  static const String logo1 = '${imgAssets}logo.png';
 
   //home
   static const String avatar = imgAssets + 'avatar.jpg';

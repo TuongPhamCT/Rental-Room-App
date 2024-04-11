@@ -50,7 +50,7 @@ extension ExtendedTextStyle on TextStyle {
         color: ColorPalette.primaryColor, fontFamily: AppFonts.rubik);
   }
 
-  TextStyle get DarkPrimaryTextColor {
+  TextStyle get darkPrimaryTextColor {
     return copyWith(
         color: ColorPalette.darkBlueText, fontFamily: AppFonts.rubik);
   }
