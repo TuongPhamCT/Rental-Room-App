@@ -708,8 +708,15 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
                 Gap(10),
                 ModelButton(
                   onTap: () {},
-                  name: 'Rental',
+                  name: 'EDIT FORM',
                   color: ColorPalette.primaryColor.withOpacity(0.75),
+                  width: 150,
+                ),
+                Gap(5),
+                ModelButton(
+                  onTap: () {},
+                  name: 'CHECK OUT',
+                  color: ColorPalette.redColor,
                   width: 150,
                 ),
                 Gap(10),

@@ -35,6 +35,10 @@ class _AllRoomState extends State<AllRoom> {
             child: const Icon(
               FontAwesomeIcons.arrowLeft,
               color: ColorPalette.backgroundColor,
+              shadows: [
+                Shadow(
+                    color: Colors.black12, offset: Offset(3, 6), blurRadius: 6)
+              ],
             ),
           ),
         ),
@@ -208,7 +212,6 @@ class _AllRoomState extends State<AllRoom> {
           ],
         ),
       ),
-      //bottomNavigationBar: BottomBar(),
     );
   }
 }
