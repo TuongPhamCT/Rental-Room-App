@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
-import 'package:rental_room_app/widgets/filter_container_widget.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -59,7 +56,7 @@ class _SettingScreenState extends State<SettingScreen> {
             const Gap(10),
             Container(
               alignment: Alignment.center,
-              child: Text(
+              child: const Text(
                 'Nguyen Nguoi Thue',
                 style: TextStyles.title,
               ),
@@ -82,7 +79,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     width: 50,
                     alignment: Alignment.center,
-                    child: Icon(
+                    child: const Icon(
                       FontAwesomeIcons.user,
                       color: ColorPalette.primaryColor,
                       size: 20,
@@ -98,7 +95,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
-            Gap(20),
+            const Gap(20),
             GestureDetector(
               onTap: () {},
               child: Row(
@@ -106,7 +103,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     width: 50,
                     alignment: Alignment.center,
-                    child: Icon(
+                    child: const Icon(
                       FontAwesomeIcons.language,
                       color: ColorPalette.primaryColor,
                       size: 20,
@@ -122,7 +119,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
-            Gap(20),
+            const Gap(20),
             GestureDetector(
               onTap: () {},
               child: Row(
@@ -130,7 +127,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     width: 50,
                     alignment: Alignment.center,
-                    child: Icon(
+                    child: const Icon(
                       Icons.add_alert_rounded,
                       color: ColorPalette.primaryColor,
                       size: 25,
@@ -146,7 +143,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
-            Gap(20),
+            const Gap(20),
             GestureDetector(
               onTap: () {},
               child: Row(
@@ -154,7 +151,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   Container(
                     width: 50,
                     alignment: Alignment.center,
-                    child: Icon(
+                    child: const Icon(
                       FontAwesomeIcons.solidCircleQuestion,
                       color: ColorPalette.primaryColor,
                       size: 20,
@@ -170,7 +167,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
-            Gap(20),
+            const Gap(20),
           ],
         ),
       ),
