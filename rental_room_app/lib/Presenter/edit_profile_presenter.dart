@@ -7,4 +7,12 @@ class EditProfilePresenter {
   String? validateFullName(String? value) {
     return null;
   }
+
+  String? validateGender(String? value) {
+    return null;
+  }
+
+  String? validateBirthday(DateTime? value) {
+    return null;
+  }
 }

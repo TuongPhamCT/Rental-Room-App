@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -8,6 +9,8 @@ import 'package:rental_room_app/Presenter/edit_profile_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
+import 'package:rental_room_app/widgets/custom_text_field.dart';
+import 'package:rental_room_app/widgets/model_button.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -23,6 +26,10 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
   final _fullnameTextController = TextEditingController();
 
+  String? _gender;
+
+  // ignore: unused_field
+  DateTime? _birthday;
   @override
   void initState() {
     _editProfilePresenter = EditProfilePresenter(this);
@@ -107,28 +114,178 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     const Gap(5),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextFormField(
-                        controller: _fullnameTextController,
-                        validator: _editProfilePresenter?.validateFullName,
+                      child: CustomFormField.textFormField(
+                        stringValidator:
+                            _editProfilePresenter!.validateFullName,
+                        editingController: _fullnameTextController,
                         keyboardType: TextInputType.name,
-                        style: TextStyles.h6.italic,
                         textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 2, color: ColorPalette.detailBorder),
-                              borderRadius: BorderRadius.circular(20)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 3, color: ColorPalette.detailBorder),
-                              borderRadius: BorderRadius.circular(20)),
-                          helperText: " ",
-                        ),
-                        obscureText: false,
+                        style: TextStyles.h6.italic,
                       ),
                     ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Gender",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.genderFormField(
+                        stringValidator: _editProfilePresenter!.validateGender,
+                        gender: _gender,
+                        onChangedString: (value) {
+                          setState(() {
+                            _gender = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Phone Number",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator:
+                            _editProfilePresenter!.validateFullName,
+                        editingController: _fullnameTextController,
+                        keyboardType: TextInputType.phone,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Identification Number",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator:
+                            _editProfilePresenter!.validateFullName,
+                        editingController: _fullnameTextController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Birthday",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.dateFormField(
+                        dateTimeValidator:
+                            _editProfilePresenter!.validateBirthday,
+                        style: TextStyles.h6.italic,
+                        onChangedDateTime: (value) {
+                          setState(() {
+                            _birthday = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Facebook",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator:
+                            _editProfilePresenter!.validateFullName,
+                        editingController: _fullnameTextController,
+                        keyboardType: TextInputType.url,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
+                      ),
+                    ),
+                    const Gap(20),
+                    ModelButton(
+                        onTap: () {
+                          //TODO: save ontap handle
+                        },
+                        name: "Save",
+                        color: ColorPalette.primaryColor.withOpacity(0.75),
+                        width: 150),
+                    const Gap(10),
+                    ModelButton(
+                        onTap: () {
+                          //TODO: cancel ontap handle
+                        },
+                        name: "Cancel",
+                        color: ColorPalette.redColor.withOpacity(0.75),
+                        width: 150),
+                    const Gap(30),
+                    RichText(
+                      text: TextSpan(style: TextStyles.h6, children: <TextSpan>[
+                        TextSpan(
+                            text: "Do you want to change password? ",
+                            style: TextStyles.h6.copyWith(
+                                fontFamily: GoogleFonts.ntr().fontFamily)),
+                        TextSpan(
+                            text: "Change Password!",
+                            style: TextStyles.h6.copyWith(
+                                fontFamily: GoogleFonts.ntr().fontFamily,
+                                color: ColorPalette.greenText),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                GoRouter.of(context).go('/home');
+                              })
+                      ]),
+                    ),
+                    const Gap(20),
                   ],
                 ),
               ),

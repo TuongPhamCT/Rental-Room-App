@@ -239,7 +239,7 @@ class TextStyles {
   static const TextStyle buttonName = TextStyle(
     fontFamily: AppFonts.poppins,
     fontWeight: FontWeight.w500,
-    fontSize: 12,
+    fontSize: 16,
     color: ColorPalette.backgroundColor,
   );
   static const TextStyle detailTitle = TextStyle(

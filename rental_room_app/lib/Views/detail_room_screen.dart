@@ -149,7 +149,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BoderContainer(
+                    BorderContainer(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -181,7 +181,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                     ),
                     const Gap(10),
-                    BoderContainer(
+                    BorderContainer(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -217,7 +217,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                     ),
                     const Gap(10),
-                    const BoderContainer(
+                    const BorderContainer(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -236,7 +236,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ],
                 ),
                 const Gap(10),
-                const BoderContainer(
+                const BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -253,7 +253,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                const BoderContainer(
+                const BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -280,7 +280,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                BoderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -405,7 +405,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                BoderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -518,7 +518,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   width: 150,
                 ),
                 const Gap(10),
-                BoderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -530,14 +530,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
+                          SizedBox(
                             height: 130,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   '4,8',
                                   style: TextStyles.ratingNumb,
                                 ),
@@ -548,46 +548,48 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   allowHalfRating: true,
                                   itemCount: 5,
                                   itemSize: 18,
-                                  unratedColor: Color(0xffDADADA),
-                                  itemBuilder: (context, _) => Icon(
+                                  unratedColor: const Color(0xffDADADA),
+                                  itemBuilder: (context, _) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
-                                  onRatingUpdate: (Null) {},
+                                  onRatingUpdate: (value) {},
                                   ignoreGestures: true,
                                 ),
-                                Text(
+                                const Text(
                                   '123.456',
                                   style: TextStyles.ratingText,
                                 ),
                               ],
                             ),
                           ),
-                          Gap(15),
-                          Container(
+                          const Gap(15),
+                          SizedBox(
                             height: 100,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Container(
+                                SizedBox(
                                   width: size.width - 180,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '5',
                                         style: TextStyles.ratingText,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: size.width - 190,
                                         child: LinearProgressIndicator(
                                           value: 0.8,
-                                          backgroundColor: Color(0xffDADADA),
+                                          backgroundColor:
+                                              const Color(0xffDADADA),
                                           valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                              const AlwaysStoppedAnimation<
+                                                      Color>(
                                                   ColorPalette.primaryColor),
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -597,23 +599,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: size.width - 180,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '4',
                                         style: TextStyles.ratingText,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: size.width - 190,
                                         child: LinearProgressIndicator(
                                           value: 0.2,
-                                          backgroundColor: Color(0xffDADADA),
+                                          backgroundColor:
+                                              const Color(0xffDADADA),
                                           valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                              const AlwaysStoppedAnimation<
+                                                      Color>(
                                                   ColorPalette.primaryColor),
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -623,23 +627,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: size.width - 180,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '3',
                                         style: TextStyles.ratingText,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: size.width - 190,
                                         child: LinearProgressIndicator(
                                           value: 0.1,
-                                          backgroundColor: Color(0xffDADADA),
+                                          backgroundColor:
+                                              const Color(0xffDADADA),
                                           valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                              const AlwaysStoppedAnimation<
+                                                      Color>(
                                                   ColorPalette.primaryColor),
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -649,23 +655,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: size.width - 180,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '2',
                                         style: TextStyles.ratingText,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: size.width - 190,
                                         child: LinearProgressIndicator(
                                           value: 0.05,
-                                          backgroundColor: Color(0xffDADADA),
+                                          backgroundColor:
+                                              const Color(0xffDADADA),
                                           valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                              const AlwaysStoppedAnimation<
+                                                      Color>(
                                                   ColorPalette.primaryColor),
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -675,23 +683,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: size.width - 180,
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '1',
                                         style: TextStyles.ratingText,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: size.width - 190,
                                         child: LinearProgressIndicator(
                                           value: 0,
-                                          backgroundColor: Color(0xffDADADA),
+                                          backgroundColor:
+                                              const Color(0xffDADADA),
                                           valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                              const AlwaysStoppedAnimation<
+                                                      Color>(
                                                   ColorPalette.primaryColor),
                                           borderRadius:
                                               BorderRadius.circular(5),
@@ -709,15 +719,15 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     ],
                   ),
                 ),
-                BoderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Rating for this room',
                         style: TextStyles.detailTitle,
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         alignment: Alignment.center,
                         child: RatingBar.builder(
@@ -730,12 +740,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           unratedColor: ColorPalette.primaryColor,
                           itemBuilder: (context, index) {
                             if (index < rating) {
-                              return Icon(
+                              return const Icon(
                                 Icons.star,
                                 color: Colors.amber,
                               );
                             } else {
-                              return Icon(
+                              return const Icon(
                                 Icons.star_border_outlined,
                               );
                             }
@@ -747,8 +757,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           },
                         ),
                       ),
-                      Gap(5),
-                      Text(
+                      const Gap(5),
+                      const Text(
                         'Write your review:',
                         style: TextStyles.detailTitle,
                       ),
@@ -761,7 +771,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: ColorPalette.primaryColor,
                             ),
                           ),
@@ -776,7 +786,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           ),
                         ),
                       ),
-                      Gap(10),
+                      const Gap(10),
                       ModelButton(
                         onTap: () {},
                         name: 'POST',
@@ -786,7 +796,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     ],
                   ),
                 ),
-                Gap(15),
+                const Gap(15),
               ],
             ),
           ),

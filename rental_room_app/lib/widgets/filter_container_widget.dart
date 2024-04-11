@@ -26,6 +26,7 @@ class _FilterContainerWidgetState extends State<FilterContainerWidget> {
   @override
   Widget build(BuildContext context) {
     List<String> list = <String>['Standard', 'Loft', 'House'];
+    // ignore: unused_local_variable
     String dropDownValue = list.first;
     return Container(
       decoration: BoxDecoration(
