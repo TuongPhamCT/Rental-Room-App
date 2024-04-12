@@ -262,6 +262,18 @@ class TextStyles {
     fontSize: 14,
     color: ColorPalette.primaryColor,
   );
+  static const TextStyle roomProps = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    color: ColorPalette.primaryColor,
+  );
+  static const TextStyle roomPropsContent = TextStyle(
+    fontFamily: AppFonts.inter,
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: Colors.black,
+  );
 }
 
 // How to use?

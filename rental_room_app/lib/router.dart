@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/bottom_bar.dart';
 import 'package:rental_room_app/Views/edit_profile_screen.dart';
+import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
 import 'package:rental_room_app/Views/register_form_screen.dart';
@@ -52,26 +53,32 @@ final GoRouter router = GoRouter(
               ]),
         ]),
     GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const BottomBar(key: Key('home')),
-        routes: [
-          GoRoute(
-            path: 'all_room',
-            name: 'all_room',
-            builder: (context, state) => const AllRoom(key: Key('all_room')),
-          ),
-          GoRoute(
-            path: 'report',
-            name: 'report',
-            builder: (context, state) => const ReportScreen(key: Key('report')),
-          ),
-          GoRoute(
-            path: 'edit_profile',
-            name: 'edit_profile',
-            builder: (context, state) =>
-                const EditProfileScreen(key: Key('edit_profile')),
-          ),
-        ]),
+      path: '/home',
+      name: 'home',
+      builder: (context, state) => const BottomBar(key: Key('home')),
+      routes: [
+        GoRoute(
+          path: 'all_room',
+          name: 'all_room',
+          builder: (context, state) => const AllRoom(key: Key('all_room')),
+        ),
+        GoRoute(
+          path: 'report',
+          name: 'report',
+          builder: (context, state) => const ReportScreen(key: Key('report')),
+        ),
+        GoRoute(
+          path: 'edit_profile',
+          name: 'edit_profile',
+          builder: (context, state) =>
+              const EditProfileScreen(key: Key('edit_profile')),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/edit_room',
+      name: 'edit_room',
+      builder: (context, state) => const EditRoomScreen(key: Key('edit_room')),
+    ),
   ],
 );
