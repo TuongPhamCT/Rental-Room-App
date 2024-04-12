@@ -188,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   color: ColorPalette.greenText),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  GoRouter.of(context).go('/sign_up');
+                                  GoRouter.of(context).go('/log_in/sign_up');
                                 })
                         ]),
                       ),
