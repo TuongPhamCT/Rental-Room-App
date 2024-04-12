@@ -221,7 +221,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyles.titleHeading,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          GoRouter.of(context).go('/home/report');
+                        },
                         child: const Row(
                           children: [
                             Text(
