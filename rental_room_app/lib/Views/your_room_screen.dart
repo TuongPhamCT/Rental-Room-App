@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -715,6 +716,15 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
                   onTap: () {},
                   name: 'CHECK OUT',
                   color: ColorPalette.redColor,
+                  width: 150,
+                ),
+                const Gap(5),
+                ModelButton(
+                  onTap: () {
+                    GoRouter.of(context).go('/edit_room');
+                  },
+                  name: 'EDIT ROOM',
+                  color: ColorPalette.primaryColor.withOpacity(0.75),
                   width: 150,
                 ),
                 const Gap(10),
