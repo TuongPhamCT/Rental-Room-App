@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Views/all_room_screen.dart';
 import 'package:rental_room_app/Views/bottom_bar.dart';
+import 'package:rental_room_app/Views/edit_profile_screen.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
 import 'package:rental_room_app/Views/register_form_screen.dart';
@@ -64,6 +65,12 @@ final GoRouter router = GoRouter(
             path: 'report',
             name: 'report',
             builder: (context, state) => const ReportScreen(key: Key('report')),
+          ),
+          GoRoute(
+            path: 'edit_profile',
+            name: 'edit_profile',
+            builder: (context, state) =>
+                const EditProfileScreen(key: Key('edit_profile')),
           ),
         ]),
   ],

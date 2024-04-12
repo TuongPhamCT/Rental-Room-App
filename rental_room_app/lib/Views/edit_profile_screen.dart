@@ -54,6 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
               child: const Icon(
                 FontAwesomeIcons.arrowLeft,
                 color: ColorPalette.backgroundColor,
+                shadows: [Shadow(color: Colors.black12, offset: Offset(3, 6))],
               ),
             ),
           ),
