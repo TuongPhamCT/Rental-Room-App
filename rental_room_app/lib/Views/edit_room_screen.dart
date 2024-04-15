@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
-import 'package:rental_room_app/widgets/border_container.dart';
-import 'package:rental_room_app/widgets/filter_container_widget.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 
 class EditRoomScreen extends StatefulWidget {
@@ -64,39 +61,39 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Gap(10),
-              Text(
+              const Gap(10),
+              const Text(
                 'Room Information',
                 style: TextStyles.detailTitle,
               ),
-              Gap(10),
+              const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Room ID:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -115,34 +112,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Kind:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -161,34 +158,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Area:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -207,34 +204,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Location:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -254,11 +251,11 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Container(
                 alignment: Alignment.centerLeft,
                 height: 35,
-                child: Text(
+                child: const Text(
                   'Description:',
                   style: TextStyles.roomProps,
                 ),
@@ -266,19 +263,19 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
               TextField(
                 cursorColor: Colors.black,
                 style: TextStyles.roomPropsContent,
-                scrollPadding: EdgeInsets.all(0),
+                scrollPadding: const EdgeInsets.all(0),
                 maxLines: null,
                 onTapOutside: (event) {
                   FocusScope.of(context).unfocus();
                 },
                 textAlign: TextAlign.justify,
                 decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
+                  enabledBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: ColorPalette.detailBorder,
                     ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: ColorPalette.primaryColor,
                     ),
@@ -297,12 +294,12 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
               Container(
                 alignment: Alignment.centerLeft,
                 height: 35,
-                child: Text(
+                child: const Text(
                   'Pictures:',
                   style: TextStyles.roomProps,
                 ),
               ),
-              Column(
+              const Column(
                   //them anh do cho day
                   ),
               Container(
@@ -310,7 +307,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 child: Container(
                   alignment: Alignment.center,
                   width: 250,
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(
                       width: 1,
@@ -318,15 +315,15 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
-                  child: Text('Upload Here'),
+                  child: const Text('Upload Here'),
                 ),
               ),
-              Gap(30),
-              Text(
+              const Gap(30),
+              const Text(
                 'Price',
                 style: TextStyles.detailTitle,
               ),
-              Gap(10),
+              const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,37 +335,37 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'Room:',
                           style: TextStyles.roomProps,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'Water:',
                           style: TextStyles.roomProps,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'Electric:',
                           style: TextStyles.roomProps,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'Other:',
                           style: TextStyles.roomProps,
                         ),
@@ -379,19 +376,19 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: size.width - 200,
                         height: 35,
                         child: TextField(
                           cursorColor: Colors.black,
                           style: TextStyles.roomPropsContent,
-                          scrollPadding: EdgeInsets.all(0),
+                          scrollPadding: const EdgeInsets.all(0),
                           maxLines: null,
                           onTapOutside: (event) {
                             FocusScope.of(context).unfocus();
                           },
                           textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: ColorPalette.detailBorder,
@@ -402,7 +399,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                                 color: ColorPalette.primaryColor,
                               ),
                             ),
-                            contentPadding: const EdgeInsets.only(
+                            contentPadding: EdgeInsets.only(
                               left: 5,
                               right: 5,
                               top: 0,
@@ -411,20 +408,20 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           ),
                         ),
                       ),
-                      Gap(5),
-                      Container(
+                      const Gap(5),
+                      SizedBox(
                         width: size.width - 200,
                         height: 35,
                         child: TextField(
                           cursorColor: Colors.black,
                           style: TextStyles.roomPropsContent,
-                          scrollPadding: EdgeInsets.all(0),
+                          scrollPadding: const EdgeInsets.all(0),
                           maxLines: null,
                           onTapOutside: (event) {
                             FocusScope.of(context).unfocus();
                           },
                           textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: ColorPalette.detailBorder,
@@ -435,7 +432,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                                 color: ColorPalette.primaryColor,
                               ),
                             ),
-                            contentPadding: const EdgeInsets.only(
+                            contentPadding: EdgeInsets.only(
                               left: 5,
                               right: 5,
                               top: 0,
@@ -444,20 +441,20 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           ),
                         ),
                       ),
-                      Gap(5),
-                      Container(
+                      const Gap(5),
+                      SizedBox(
                         width: size.width - 200,
                         height: 35,
                         child: TextField(
                           cursorColor: Colors.black,
                           style: TextStyles.roomPropsContent,
-                          scrollPadding: EdgeInsets.all(0),
+                          scrollPadding: const EdgeInsets.all(0),
                           maxLines: null,
                           onTapOutside: (event) {
                             FocusScope.of(context).unfocus();
                           },
                           textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: ColorPalette.detailBorder,
@@ -468,7 +465,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                                 color: ColorPalette.primaryColor,
                               ),
                             ),
-                            contentPadding: const EdgeInsets.only(
+                            contentPadding: EdgeInsets.only(
                               left: 5,
                               right: 5,
                               top: 0,
@@ -477,20 +474,20 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           ),
                         ),
                       ),
-                      Gap(5),
-                      Container(
+                      const Gap(5),
+                      SizedBox(
                         width: size.width - 200,
                         height: 35,
                         child: TextField(
                           cursorColor: Colors.black,
                           style: TextStyles.roomPropsContent,
-                          scrollPadding: EdgeInsets.all(0),
+                          scrollPadding: const EdgeInsets.all(0),
                           maxLines: null,
                           onTapOutside: (event) {
                             FocusScope.of(context).unfocus();
                           },
                           textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: ColorPalette.detailBorder,
@@ -501,7 +498,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                                 color: ColorPalette.primaryColor,
                               ),
                             ),
-                            contentPadding: const EdgeInsets.only(
+                            contentPadding: EdgeInsets.only(
                               left: 5,
                               right: 5,
                               top: 0,
@@ -519,37 +516,37 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'VND/Month',
                           style: TextStyles.roomPropsContent,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'VND/m3',
                           style: TextStyles.roomPropsContent,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'VND/kWh',
                           style: TextStyles.roomPropsContent,
                         ),
                       ),
-                      Gap(5),
+                      const Gap(5),
                       Container(
                         height: 35,
                         width: null,
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: const Text(
                           'VND/Month',
                           style: TextStyles.roomPropsContent,
                         ),
@@ -558,39 +555,39 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(30),
-              Text(
+              const Gap(30),
+              const Text(
                 'Owner Information',
                 style: TextStyles.detailTitle,
               ),
-              Gap(10),
+              const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Name:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -609,34 +606,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Phone:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -655,34 +652,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Email:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -701,34 +698,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Facebook:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -748,34 +745,34 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Address:',
                     style: TextStyles.roomProps,
                   ),
-                  Container(
+                  SizedBox(
                     width: size.width - 140,
                     height: 35,
                     child: TextField(
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: EdgeInsets.all(0),
+                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
+                        enabledBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.detailBorder,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
@@ -795,7 +792,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                 ],
               ),
-              Gap(45),
+              const Gap(45),
               ModelButton(
                 name: 'Save',
                 onTap: () {
@@ -804,7 +801,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 width: 150,
                 color: ColorPalette.primaryColor.withOpacity(0.75),
               ),
-              Gap(10),
+              const Gap(10),
               ModelButton(
                 name: 'DELETE',
                 onTap: () {
@@ -813,7 +810,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 width: 150,
                 color: ColorPalette.redColor,
               ),
-              Gap(50),
+              const Gap(50),
             ],
           ),
         ),
