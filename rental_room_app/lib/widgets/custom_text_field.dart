@@ -25,6 +25,7 @@ class CustomFormField extends StatefulWidget {
   //DateTimeFormField
   final String? Function(DateTime?)? dateTimeValidator;
   final Function(DateTime?)? onChangedDateTime;
+  final DateTimeFieldPickerMode? dateTimeFieldPickerMode;
   const CustomFormField._(
       // ignore: unused_element
       {super.key,
@@ -40,7 +41,8 @@ class CustomFormField extends StatefulWidget {
       this.onChangedString,
       this.state,
       this.dateTimeValidator,
-      this.onChangedDateTime});
+      this.onChangedDateTime,
+      this.dateTimeFieldPickerMode});
   factory CustomFormField.textFormField({
     required TextEditingController editingController,
     String? Function(String?)? stringValidator,
@@ -81,12 +83,14 @@ class CustomFormField extends StatefulWidget {
     required String? Function(DateTime?) dateTimeValidator,
     required Function(DateTime?) onChangedDateTime,
     TextStyle? style,
+    DateTimeFieldPickerMode? dateTimePickerMode,
   }) {
     return CustomFormField._(
       type: CustomFormFieldType.dateFormField,
       dateTimeValidator: dateTimeValidator,
       onChangedDateTime: onChangedDateTime,
       style: style,
+      dateTimeFieldPickerMode: dateTimePickerMode,
     );
   }
 
@@ -149,7 +153,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       return DateTimeFormField(
         validator: widget.dateTimeValidator,
         onChanged: widget.onChangedDateTime,
-        mode: DateTimeFieldPickerMode.date,
+        mode: widget.dateTimeFieldPickerMode ?? DateTimeFieldPickerMode.date,
         style: widget.style ?? TextStyles.h5,
         decoration: InputDecoration(
           contentPadding:
