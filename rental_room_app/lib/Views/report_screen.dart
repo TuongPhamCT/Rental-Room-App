@@ -85,272 +85,266 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
           ),
-          title: Container(
-            child: Text(
-              'REPORT',
-              style: TextStyles.h8.bold.copyWith(
-                shadows: [
-                  const Shadow(
-                    color: Colors.black12,
-                    offset: Offset(3, 6),
-                    blurRadius: 6,
-                  )
-                ],
-                letterSpacing: 1.175,
-              ),
+          title: Text(
+            'REPORT',
+            style: TextStyles.h8.bold.copyWith(
+              shadows: [
+                const Shadow(
+                  color: Colors.black12,
+                  offset: Offset(3, 6),
+                  blurRadius: 6,
+                )
+              ],
+              letterSpacing: 1.175,
             ),
           ),
           centerTitle: true,
           toolbarHeight: kToolbarHeight * 1.5,
         ),
         body: SingleChildScrollView(
-          child: Container(
-            //margin: const EdgeInsets.symmetric(horizontal: kMediumPadding),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 28,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: 42,
-                      width: 170,
-                      margin: const EdgeInsets.only(right: 10, left: 20),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: ColorPalette.grayText),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          alignment: Alignment.center,
-                          value: dropdownMonthReportValue,
-                          hint: Text(
-                            "MONTHLY",
-                            style: TextStyles.defaultStyle.copyWith(
-                                fontSize: 16,
-                                color: ColorPalette.calendarGround,
-                                fontWeight: FontWeight.bold),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 28,
+              ),
+              Row(
+                children: [
+                  Container(
+                    height: 42,
+                    width: 170,
+                    margin: const EdgeInsets.only(right: 10, left: 20),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: ColorPalette.grayText),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        alignment: Alignment.center,
+                        value: dropdownMonthReportValue,
+                        hint: Text(
+                          "MONTHLY",
+                          style: TextStyles.defaultStyle.copyWith(
+                              fontSize: 16,
+                              color: ColorPalette.calendarGround,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        iconStyleData: const IconStyleData(
+                            iconEnabledColor: ColorPalette.grayText,
+                            iconSize: 36),
+                        onChanged: (value) {
+                          setState(() {
+                            dropdownMonthReportValue = value;
+                          });
+                        },
+                        buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.only(left: 20),
+                            height: 42,
+                            width: 200),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 24,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          iconStyleData: const IconStyleData(
-                              iconEnabledColor: ColorPalette.grayText,
-                              iconSize: 36),
-                          onChanged: (value) {
-                            setState(() {
-                              dropdownMonthReportValue = value;
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                              padding: EdgeInsets.only(left: 20),
-                              height: 42,
-                              width: 200),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 24,
-                          ),
-                          dropdownStyleData: DropdownStyleData(
+                        ),
+                        items: monthItems
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                onTap: () {
+                                  setState(() {
+                                    monthSelected = e;
+                                  });
+                                },
+                                child: Text(
+                                  e,
+                                  style: TextStyles.defaultStyle.copyWith(
+                                      color: ColorPalette.calendarGround,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    height: 42,
+                    width: 160,
+                    margin: const EdgeInsets.only(right: 20),
+                    alignment: Alignment.topRight,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: ColorPalette.grayText),
+                        borderRadius: BorderRadius.circular(24)),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        alignment: Alignment.center,
+                        value: yearOfMonthReportSelected,
+                        hint: Text(
+                          "YEARLY",
+                          style: TextStyles.defaultStyle.copyWith(
+                              fontSize: 16,
+                              color: ColorPalette.calendarGround,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        iconStyleData: const IconStyleData(
+                            iconEnabledColor: ColorPalette.grayText,
+                            iconSize: 36),
+                        onChanged: (value) {
+                          setState(() {
+                            yearOfMonthReportSelected = value!;
+                          });
+                        },
+                        buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.only(left: 36),
+                            height: 42,
+                            width: 200),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 24,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          items: monthItems
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  onTap: () {
-                                    setState(() {
-                                      monthSelected = e;
-                                    });
-                                  },
+                                borderRadius: BorderRadius.circular(5))),
+                        items: yearItems
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                onTap: () {
+                                  setState(() {
+                                    yearOfMonthReportSelected = e;
+                                  });
+                                },
+                                child: Center(
                                   child: Text(
                                     e,
+                                    textAlign: TextAlign.center,
                                     style: TextStyles.defaultStyle.copyWith(
                                         color: ColorPalette.calendarGround,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                              )
-                              .toList(),
-                        ),
+                                )))
+                            .toList(),
                       ),
                     ),
-                    const Spacer(),
-                    Container(
-                      height: 42,
-                      width: 160,
-                      margin: const EdgeInsets.only(right: 20),
-                      alignment: Alignment.topRight,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: ColorPalette.grayText),
-                          borderRadius: BorderRadius.circular(24)),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          alignment: Alignment.center,
-                          value: yearOfMonthReportSelected,
-                          hint: Text(
-                            "YEARLY",
-                            style: TextStyles.defaultStyle.copyWith(
-                                fontSize: 16,
-                                color: ColorPalette.calendarGround,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          iconStyleData: const IconStyleData(
-                              iconEnabledColor: ColorPalette.grayText,
-                              iconSize: 36),
-                          onChanged: (value) {
-                            setState(() {
-                              yearOfMonthReportSelected = value!;
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                              padding: EdgeInsets.only(left: 36),
-                              height: 42,
-                              width: 200),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 24,
-                          ),
-                          dropdownStyleData: DropdownStyleData(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5))),
-                          items: yearItems
-                              .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  onTap: () {
-                                    setState(() {
-                                      yearOfMonthReportSelected = e;
-                                    });
-                                  },
-                                  child: Center(
-                                    child: Text(
-                                      e,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyles.defaultStyle.copyWith(
-                                          color: ColorPalette.calendarGround,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )))
-                              .toList(),
-                        ),
-                      ),
-                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 22),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('TOTAL',
+                        style: TextStyles.defaultStyle.bold.copyWith(
+                          color: ColorPalette.greenText,
+                        )),
+                    Text(' VND',
+                        style: TextStyles.defaultStyle.bold.copyWith(
+                          color: ColorPalette.greenText,
+                        )),
                   ],
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                const SizedBox(height: 24),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 22),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('TOTAL',
-                          style: TextStyles.defaultStyle.bold.copyWith(
-                            color: ColorPalette.greenText,
-                          )),
-                      Text(' VND',
-                          style: TextStyles.defaultStyle.bold.copyWith(
-                            color: ColorPalette.greenText,
-                          )),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Material(
-                  color: ColorPalette.primaryColor,
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Material(
+                color: ColorPalette.primaryColor,
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
                   borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    splashColor: Colors.black38,
-                    onTap: () {},
-                    child: Container(
-                      width: size.width / 2,
-                      height: 40,
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Print',
-                        style: TextStyles.h8.copyWith(
-                          color: ColorPalette.backgroundColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
+                  splashColor: Colors.black38,
+                  onTap: () {},
+                  child: Container(
+                    width: size.width / 2,
+                    height: 40,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Print',
+                      style: TextStyles.h8.copyWith(
+                        color: ColorPalette.backgroundColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Container(
-                  height: 42,
-                  width: 220,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: ColorPalette.grayText),
-                      borderRadius: BorderRadius.circular(24)),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      alignment: Alignment.center,
-                      value: dropdownYearReportValue,
-                      hint: Text(
-                        "YEARLY REPORT",
-                        style: TextStyles.defaultStyle.copyWith(
-                            fontSize: 16,
-                            color: ColorPalette.calendarGround,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      iconStyleData: const IconStyleData(
-                          iconEnabledColor: ColorPalette.grayText,
-                          iconSize: 36),
-                      onChanged: (value) {
-                        setState(() {
-                          dropdownYearReportValue = value;
-                        });
-                      },
-                      buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.only(left: 36),
-                          height: 42,
-                          width: 200),
-                      menuItemStyleData: const MenuItemStyleData(
-                        height: 24,
-                      ),
-                      dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5))),
-                      items: yearItems
-                          .map((e) => DropdownMenuItem(
-                              value: e,
-                              onTap: () {
-                                setState(() {
-                                  yearSelected = e;
-                                });
-                              },
-                              child: Text(
-                                e,
-                                textAlign: TextAlign.center,
-                                style: TextStyles.defaultStyle.copyWith(
-                                    color: ColorPalette.calendarGround,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              )))
-                          .toList(),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Container(
+                height: 42,
+                width: 220,
+                decoration: BoxDecoration(
+                    border: Border.all(color: ColorPalette.grayText),
+                    borderRadius: BorderRadius.circular(24)),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    alignment: Alignment.center,
+                    value: dropdownYearReportValue,
+                    hint: Text(
+                      "YEARLY REPORT",
+                      style: TextStyles.defaultStyle.copyWith(
+                          fontSize: 16,
+                          color: ColorPalette.calendarGround,
+                          fontWeight: FontWeight.bold),
                     ),
+                    iconStyleData: const IconStyleData(
+                        iconEnabledColor: ColorPalette.grayText, iconSize: 36),
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownYearReportValue = value;
+                      });
+                    },
+                    buttonStyleData: const ButtonStyleData(
+                        padding: EdgeInsets.only(left: 36),
+                        height: 42,
+                        width: 200),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5))),
+                    items: yearItems
+                        .map((e) => DropdownMenuItem(
+                            value: e,
+                            onTap: () {
+                              setState(() {
+                                yearSelected = e;
+                              });
+                            },
+                            child: Text(
+                              e,
+                              textAlign: TextAlign.center,
+                              style: TextStyles.defaultStyle.copyWith(
+                                  color: ColorPalette.calendarGround,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            )))
+                        .toList(),
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Container(),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Container(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  double Rate(int revenue, int totalPrice) {
+  double rate(int revenue, int totalPrice) {
     try {
       if (totalPrice == 0) return 0;
       return revenue / totalPrice;
