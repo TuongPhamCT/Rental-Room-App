@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
@@ -81,7 +82,14 @@ class RegisterFormPresenter {
   //*
 
   Future<UserCredential?> _registerWithEmailAndPassword(
-      String email, String password, String displayName) async {
+    String email,
+    String password,
+    String displayName,
+    String phone,
+    String gender,
+    DateTime birthday,
+    bool isOwner,
+  ) async {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -90,7 +98,17 @@ class RegisterFormPresenter {
       );
 
       await userCredential.user!.updateDisplayName(displayName);
-
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'email': email,
+        'Name': displayName,
+        'phone': phone,
+        'birthday': birthday,
+        'gender': gender,
+        'isOwner': isOwner
+      });
       return userCredential;
     } catch (e) {
       if (kDebugMode) {
@@ -110,13 +128,19 @@ class RegisterFormPresenter {
   }
 
   Future<void> doneButtonPressed(
-      String? email, String password, String displayName) async {
+      String? email,
+      String password,
+      String displayName,
+      String phone,
+      String gender,
+      DateTime birthday,
+      bool isOwner) async {
     email = email?.trim();
     password = password.trim();
     displayName = displayName.trim();
     _view?.onWaitingProgressBar();
-    UserCredential? result =
-        await _registerWithEmailAndPassword(email!, password, displayName);
+    UserCredential? result = await _registerWithEmailAndPassword(
+        email!, password, displayName, phone, gender, birthday, isOwner);
     _view?.onPopContext();
     if (result == null) {
       _view?.onRegisterFailed();

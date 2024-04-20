@@ -30,7 +30,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
   final _phoneNumTextController = TextEditingController();
   final _fullnameTextController = TextEditingController();
   String _gender = "";
-  DateTime? birthday;
+  DateTime birthday = DateTime.now();
   bool? _passwordVisible;
   final _accountPasswordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
@@ -296,7 +296,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                                   _registerFormPresenter?.validateBirthday,
                               onChanged: (DateTime? value) {
                                 setState(() {
-                                  birthday = value;
+                                  birthday = value ?? DateTime.now();
                                 });
                               },
                               mode: DateTimeFieldPickerMode.date,
@@ -438,9 +438,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _registerFormPresenter?.doneButtonPressed(
-                                widget.email,
-                                _accountPasswordTextController.text,
-                                _fullnameTextController.text);
+                              widget.email,
+                              _accountPasswordTextController.text,
+                              _fullnameTextController.text,
+                              _phoneNumTextController.text,
+                              _gender,
+                              birthday,
+                              _isOwner,
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
