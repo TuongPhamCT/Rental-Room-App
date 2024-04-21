@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rental_room_app/Contract/register_form_contract.dart';
@@ -81,7 +85,15 @@ class RegisterFormPresenter {
   //*
 
   Future<UserCredential?> _registerWithEmailAndPassword(
-      String email, String password, String displayName) async {
+    String email,
+    String password,
+    String displayName,
+    String phone,
+    String gender,
+    DateTime birthday,
+    bool isOwner,
+    String? avatar,
+  ) async {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -89,8 +101,36 @@ class RegisterFormPresenter {
         password: password,
       );
 
+      if (avatar != null && avatar.isNotEmpty) {
+        // Upload File to Firebase Storage
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('avatars')
+            .child('${userCredential.user!.uid}.jpg');
+        Uint8List imageData = await File(avatar).readAsBytes();
+        await ref.putData(
+            imageData, SettableMetadata(contentType: 'image/jpeg'));
+
+        String url = await ref.getDownloadURL();
+        await userCredential.user!.updatePhotoURL(url);
+      } else {
+        await userCredential.user!.updatePhotoURL(
+            'https://firebasestorage.googleapis.com/v0/b/rental-room-c34cb.appspot.com/o/avatar.jpg?alt=media&token=e9a9f6f6-9200-405a-98b4-5ae1130cd4bf');
+      }
+
       await userCredential.user!.updateDisplayName(displayName);
 
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'email': email,
+        'Name': displayName,
+        'phone': phone,
+        'birthday': birthday,
+        'gender': gender,
+        'isOwner': isOwner
+      });
       return userCredential;
     } catch (e) {
       if (kDebugMode) {
@@ -105,18 +145,29 @@ class RegisterFormPresenter {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      _view?.onChangeProfilePicture(await pickedImage.readAsBytes());
+      _view?.onChangeProfilePicture(pickedImage.path);
+      print(pickedImage.path);
     }
   }
 
   Future<void> doneButtonPressed(
-      String? email, String password, String displayName) async {
+    String? email,
+    String password,
+    String displayName,
+    String phone,
+    String gender,
+    DateTime birthday,
+    bool isOwner,
+    String? avatar,
+  ) async {
     email = email?.trim();
     password = password.trim();
     displayName = displayName.trim();
     _view?.onWaitingProgressBar();
-    UserCredential? result =
-        await _registerWithEmailAndPassword(email!, password, displayName);
+
+    UserCredential? result = await _registerWithEmailAndPassword(email!,
+        password, displayName, phone, gender, birthday, isOwner, avatar);
+
     _view?.onPopContext();
     if (result == null) {
       _view?.onRegisterFailed();
