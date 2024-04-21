@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:date_field/date_field.dart';
@@ -24,7 +25,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
     implements RegisterFormContract {
   RegisterFormPresenter? _registerFormPresenter;
   final _formKey = GlobalKey<FormState>();
-  Uint8List? _imageFile;
+  String _imageFile = "";
 
   //Param Controllers
   final _phoneNumTextController = TextEditingController();
@@ -92,7 +93,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                           child: Container(
                             width: 80.0,
                             height: 80.0,
-                            decoration: _imageFile == null
+                            decoration: _imageFile.isEmpty
                                 ? const BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
@@ -104,7 +105,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                                 : BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
-                                      image: MemoryImage(_imageFile!),
+                                      image: FileImage(File(_imageFile)),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -445,6 +446,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               _gender,
                               birthday,
                               _isOwner,
+                              _imageFile,
                             );
                           }
                         },
@@ -505,7 +507,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
   }
 
   @override
-  void onChangeProfilePicture(Uint8List pickedImage) {
+  void onChangeProfilePicture(String pickedImage) {
     setState(() {
       _imageFile = pickedImage;
     });
