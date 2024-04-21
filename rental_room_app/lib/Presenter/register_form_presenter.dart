@@ -29,12 +29,12 @@ class RegisterFormPresenter {
   String? validateFullName(String? name) {
     name = name?.trim();
     List<String>? nameParts = name?.split(" ");
-    RegExp regex = RegExp(r'[^a-zA-Z\s]');
+    // RegExp regex = RegExp(r'[^a-zA-Z\s]');
 
     if (name == null || name.isEmpty) {
       return "Please enter your full name!";
-    } else if (regex.hasMatch(name)) {
-      return "Name must not contain numbers or symbols!";
+      // } else if (regex.hasMatch(name)) {
+      //   return "Name must not contain numbers or symbols!";
     } else if (name.length < 2) {
       return "Full name must contain at least 2 characters!";
     } else if (nameParts!.length < 2) {
