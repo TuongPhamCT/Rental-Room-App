@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -16,8 +17,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late String _userName;
+  late String _userAvatarUrl;
+
   bool isVisiable = false;
   bool isTenant = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Gọi hàm để lấy thông tin người dùng và cập nhật giao diện
+    _getUserInfo();
+  }
+
+  // Hàm để lấy thông tin người dùng từ Firebase Authentication
+  void _getUserInfo() {
+    // Lấy thông tin người dùng đã đăng nhập từ Firebase Authentication
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Lấy tên người dùng
+      _userName = user.displayName ?? 'User';
+      // Lấy URL ảnh đại diện của người dùng
+      _userAvatarUrl =
+          user.photoURL ?? ''; // Nếu không có ảnh đại diện thì để chuỗi trống
+    } else {
+      // Không có người dùng đăng nhập
+      _userName = 'User';
+      _userAvatarUrl = ''; // Chuỗi trống nếu không có ảnh đại diện
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -37,14 +66,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text('WELCOME',
                             style: TextStyle(
                                 fontSize: 10, color: ColorPalette.grayText)),
                         Text(
-                          'Nguyễn Văn A',
+                          _userName,
                           style: TextStyle(
                               fontSize: 16, color: ColorPalette.primaryColor),
                         ),
@@ -54,12 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       height: 35,
                       width: 35,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(AssetHelper.avatar),
-                          fit: BoxFit.cover,
-                        ),
+                        image: _userAvatarUrl.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(_userAvatarUrl),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: AssetImage(AssetHelper.avatar),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     )
                   ],

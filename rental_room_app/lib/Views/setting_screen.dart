@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Presenter/auth_service.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -15,6 +17,7 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   String? searchValue;
   bool isVisibleFilter = false;
+  final AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,6 +162,71 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   Text(
                     'Help Center',
+                    style: TextStyles.descriptionRoom.copyWith(
+                      color: ColorPalette.primaryColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Gap(20),
+            GestureDetector(
+              onTap: () async {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm'),
+                      content: const Text('Are you sure you want to sign out?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Cancel',
+                            style: TextStyles.descriptionRoom.copyWith(
+                              color: ColorPalette.grayText,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            try {
+                              await _authService.signOut();
+                              GoRouter.of(context).go('/log_in');
+                            } catch (e) {
+                              print("Đăng xuất thất bại: $e");
+                            }
+                          },
+                          child: Text(
+                            'Confirm',
+                            style: TextStyles.descriptionRoom.copyWith(
+                              color: ColorPalette.primaryColor,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      FontAwesomeIcons.signOut,
+                      color: ColorPalette.primaryColor,
+                      size: 20,
+                    ),
+                  ),
+                  Text(
+                    'Sign Out',
                     style: TextStyles.descriptionRoom.copyWith(
                       color: ColorPalette.primaryColor,
                       fontSize: 16,

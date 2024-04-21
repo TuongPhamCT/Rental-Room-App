@@ -29,6 +29,13 @@
             {
               "client_id": "632187575819-v77au6fk4243skps86oacj6d7bvbl1bm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "632187575819-4jqegta0k1ran740ilvjmbv9r0tekb2h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rentalRoomApp"
+              }
             }
           ]
         }
