@@ -7,9 +7,11 @@ import 'package:rental_room_app/Views/bottom_bar.dart';
 import 'package:rental_room_app/Views/edit_profile_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
+import 'package:rental_room_app/Views/notification_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
 import 'package:rental_room_app/Views/register_form_screen.dart';
 import 'package:rental_room_app/Views/report_screen.dart';
+import 'package:rental_room_app/Views/setting_screen.dart';
 import 'package:rental_room_app/Views/signup_screen.dart';
 
 final GoRouter router = GoRouter(
@@ -79,6 +81,25 @@ final GoRouter router = GoRouter(
       path: '/edit_room',
       name: 'edit_room',
       builder: (context, state) => const EditRoomScreen(key: Key('edit_room')),
+    ),
+    GoRoute(
+      path: '/setting',
+      name: 'setting',
+      builder: (context, state) => const SettingScreen(key: Key('setting')),
+      routes: [
+        GoRoute(
+          path: 'edit_profile',
+          name: 'edit_profile',
+          builder: (context, state) =>
+              const EditProfileScreen(key: Key('edit_profile')),
+        ),
+        GoRoute(
+          path: 'notification',
+          name: 'notification',
+          builder: (context, state) =>
+              const NotificationScreen(key: Key('notification')),
+        ),
+      ],
     ),
   ],
 );

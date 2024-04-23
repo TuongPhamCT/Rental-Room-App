@@ -6,6 +6,8 @@ import 'package:rental_room_app/Presenter/auth_service.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -15,9 +17,60 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  String? searchValue;
-  bool isVisibleFilter = false;
   final AuthService _authService = AuthService();
+
+  late String _userName;
+  late String _email;
+  String _userAvatarUrl = '';
+  bool isVisiable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfoFromSharedPreferences();
+  }
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('name') ?? 'Nguyen Van A';
+      _userAvatarUrl = prefs.getString('avatar') ?? '';
+      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
+    });
+  }
+
+  Future<void> launchEmailApp() async {
+    final Uri _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'personalschedulemanager@gmail.com',
+      queryParameters: {
+        'subject': 'Góp_Ý_Của_Người_Dùng',
+      },
+    );
+
+    try {
+      await launchUrl(_emailLaunchUri);
+    } catch (e) {
+      print('Không thể mở ứng dụng email: $e');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Lỗi'),
+              content: Text('Thiết bị của bạn không có ứng dụng email!'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OKE'),
+                )
+              ],
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,20 +100,25 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Container(
                 height: 132,
                 width: 132,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(AssetHelper.avatar),
-                    fit: BoxFit.cover,
-                  ),
+                  image: _userAvatarUrl.isNotEmpty
+                      ? DecorationImage(
+                          image: NetworkImage(_userAvatarUrl),
+                          fit: BoxFit.cover,
+                        )
+                      : DecorationImage(
+                          image: AssetImage(AssetHelper.avatar),
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ),
             const Gap(10),
             Container(
               alignment: Alignment.center,
-              child: const Text(
-                'Nguyen Nguoi Thue',
+              child: Text(
+                _userName,
                 style: TextStyles.title,
               ),
             ),
@@ -68,7 +126,7 @@ class _SettingScreenState extends State<SettingScreen> {
             Container(
               alignment: Alignment.center,
               child: Text(
-                'nguoithue@gmail.com',
+                _email,
                 style: TextStyles.descriptionRoom.copyWith(
                   fontSize: 16,
                 ),
@@ -76,7 +134,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             const Gap(50),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                GoRouter.of(context).go('/home/edit_profile');
+              },
               child: Row(
                 children: [
                   Container(
@@ -124,7 +184,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             const Gap(20),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                launchEmailApp();
+              },
               child: Row(
                 children: [
                   Container(
