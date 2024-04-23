@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class users {
+class Users {
   String userID;
   String userName;
   String email;
@@ -9,7 +9,7 @@ class users {
   DateTime birthday;
   bool isOwner;
 
-  users({
+  Users({
     required this.userID,
     required this.userName,
     required this.email,
@@ -32,9 +32,9 @@ class users {
     };
   }
 
-  factory users.fromFirestore(DocumentSnapshot doc) {
+  factory Users.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
-    return users(
+    return Users(
       userID: data['userID'],
       userName: data['userName'],
       email: data['email'],
