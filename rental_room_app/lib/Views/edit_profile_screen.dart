@@ -5,13 +5,14 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rental_room_app/Contract/edit_profile_contract.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Presenter/edit_profile_presenter.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -21,7 +22,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen>
-    implements EditProfileContract {
+    implements EditProfileContract, SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
   EditProfilePresenter? _editProfilePresenter;
   final _formKey = GlobalKey<FormState>();
 
@@ -29,26 +31,18 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
   String? _gender;
 
-  late String _userName;
-  late String _email;
+  String _userName = "nguyen van a";
+  String _email = "nguyenvana@gmail.com";
   String _userAvatarUrl = '';
 
   // ignore: unused_field
   DateTime? _birthday;
   @override
   void initState() {
-    _editProfilePresenter = EditProfilePresenter(this);
-    _getUserInfoFromSharedPreferences();
     super.initState();
-  }
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('name') ?? 'Nguyen Van A';
-      _userAvatarUrl = prefs.getString('avatar') ?? '';
-      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
-    });
+    _editProfilePresenter = EditProfilePresenter(this);
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
   @override
@@ -323,6 +317,16 @@ class _EditProfileScreenState extends State<EditProfileScreen>
           ),
         ),
       );
+    });
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _userName = userName ?? _userName;
+      _userAvatarUrl = userAvatarUrl ?? _userAvatarUrl;
+      _email = email ?? _email;
     });
   }
 }

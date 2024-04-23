@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -10,7 +12,6 @@ import 'package:rental_room_app/widgets/border_container.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/sub_image_frame.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class YourRoomScreen extends StatefulWidget {
   const YourRoomScreen({super.key});
@@ -20,7 +21,9 @@ class YourRoomScreen extends StatefulWidget {
   State<YourRoomScreen> createState() => _YourRoomScreenState();
 }
 
-class _YourRoomScreenState extends State<YourRoomScreen> {
+class _YourRoomScreenState extends State<YourRoomScreen>
+    implements SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
   bool isPressed = false;
   final PageController _pageController = PageController();
   int _currenImage = 0;
@@ -35,19 +38,13 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
   double rating = 0;
 
   int _selectedIndex = 1;
-  late bool _isOwner;
+  bool _isOwner = true;
 
   @override
   void initState() {
     super.initState();
-    _getUserInfoFromSharedPreferences();
-  }
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isOwner = prefs.getBool('isOwner') ?? false;
-    });
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
   @override
@@ -1129,5 +1126,13 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
         color: isActive ? const Color(0xffE5E5E5) : ColorPalette.detailBorder,
       ),
     );
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _isOwner = isOwner ?? true;
+    });
   }
 }

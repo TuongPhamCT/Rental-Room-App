@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,26 +18,21 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    implements SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
+
   int _selectedIndex = 0;
-  late String _userName;
-  late bool _isOwner;
+  String _userName = "nguyen van a";
+  bool _isOwner = true;
   String _userAvatarUrl = '';
   bool isVisiable = false;
 
   @override
   void initState() {
     super.initState();
-    _getUserInfoFromSharedPreferences();
-  }
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('name') ?? 'Nguyen Van A';
-      _isOwner = prefs.getBool('isOwner') ?? false;
-      _userAvatarUrl = prefs.getString('avatar') ?? '';
-    });
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
   @override
@@ -309,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Home',
                   style: TextStyles.bottomBar,
                 )),
-            if (!_isOwner)
+            if (_isOwner)
               SalomonBottomBarItem(
                   icon: const Icon(
                     FontAwesomeIcons.doorOpen,
@@ -353,5 +349,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 )),
           ]),
     );
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _userName = userName ?? "null";
+      _isOwner = isOwner ?? true;
+      _userAvatarUrl = userAvatarUrl ?? "";
+    });
   }
 }

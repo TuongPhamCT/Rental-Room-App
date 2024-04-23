@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rental_room_app/Presenter/auth_service.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Models/User/auth_services.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -17,32 +18,25 @@ class SettingScreen extends StatefulWidget {
   State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _SettingScreenState extends State<SettingScreen>
+    implements SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
   final AuthService _authService = AuthService();
   int _selectedIndex = 3;
-  late String _userName;
-  late String _email;
-  late bool _isOwner;
-  String _userAvatarUrl = '';
+  String _userName = "nguyen van a";
+  String _email = "nguyenvana@gmail.com";
+  bool _isOwner = true;
+  String _userAvatarUrl = "";
 
   @override
   void initState() {
     super.initState();
-    _getUserInfoFromSharedPreferences();
-  }
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('name') ?? 'Nguyen Van A';
-      _userAvatarUrl = prefs.getString('avatar') ?? '';
-      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
-      _isOwner = prefs.getBool('isOwner') ?? false;
-    });
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
   Future<void> launchEmailApp() async {
-    final Uri _emailLaunchUri = Uri(
+    final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'personalschedulemanager@gmail.com',
       queryParameters: {
@@ -51,7 +45,7 @@ class _SettingScreenState extends State<SettingScreen> {
     );
 
     try {
-      await launchUrl(_emailLaunchUri);
+      await launchUrl(emailLaunchUri);
     } catch (e) {
       showDialog(
           context: context,
@@ -377,5 +371,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 )),
           ]),
     );
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _userName = userName ?? "nguyen van a";
+      _email = email ?? "nguyenvana@gmail.com ";
+      _isOwner = isOwner ?? true;
+      _userAvatarUrl = userAvatarUrl ?? "";
+    });
   }
 }

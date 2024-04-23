@@ -38,9 +38,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
 
   @override
   void initState() {
+    super.initState();
     _registerFormPresenter = RegisterFormPresenter(this);
     _passwordVisible = true;
-    super.initState();
   }
 
   @override

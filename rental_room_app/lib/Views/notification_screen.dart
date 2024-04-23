@@ -4,14 +4,15 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/notification_contract.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Presenter/notification_presenter.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -21,7 +22,8 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen>
-    implements NotificationContract {
+    implements NotificationContract, SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
   NotificationPresenter? _notificationPresenter;
   final _formKey = GlobalKey<FormState>();
   final _minutesBeforeNoti = TextEditingController();
@@ -29,24 +31,16 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   @override
   void initState() {
-    _notificationPresenter = NotificationPresenter(this);
-    _getUserInfoFromSharedPreferences();
     super.initState();
+    _notificationPresenter = NotificationPresenter(this);
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
-  late String _userName;
-  late String _email;
+  String _userName = "nguyen van a";
+  String _email = "nguyenvana@gmail.com";
   String _userAvatarUrl = '';
   bool isVisiable = false;
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('name') ?? 'Nguyen Van A';
-      _userAvatarUrl = prefs.getString('avatar') ?? '';
-      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +233,16 @@ class _NotificationScreenState extends State<NotificationScreen>
           ),
         ),
       );
+    });
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _userName = userName ?? "Nguyen van a";
+      _userAvatarUrl = userAvatarUrl ?? "";
+      _email = email ?? "nguyenvana@gmail.com";
     });
   }
 }

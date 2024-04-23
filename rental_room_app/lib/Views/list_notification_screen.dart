@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ListNotificationScreen extends StatefulWidget {
   const ListNotificationScreen({super.key});
@@ -13,21 +14,17 @@ class ListNotificationScreen extends StatefulWidget {
   State<ListNotificationScreen> createState() => _ListNotificationScreenState();
 }
 
-class _ListNotificationScreenState extends State<ListNotificationScreen> {
+class _ListNotificationScreenState extends State<ListNotificationScreen>
+    implements SharedPreferencesContract {
+  SharedPreferencesPresenter? _preferencesPresenter;
   int _selectedIndex = 2;
-  late bool _isOwner;
+  bool _isOwner = true;
 
   @override
   void initState() {
     super.initState();
-    _getUserInfoFromSharedPreferences();
-  }
-
-  Future<void> _getUserInfoFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isOwner = prefs.getBool('isOwner') ?? false;
-    });
+    _preferencesPresenter = SharedPreferencesPresenter(this);
+    _preferencesPresenter?.getUserInfoFromSharedPreferences();
   }
 
   @override
@@ -132,5 +129,13 @@ class _ListNotificationScreenState extends State<ListNotificationScreen> {
                 )),
           ]),
     );
+  }
+
+  @override
+  void updateView(
+      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
+    setState(() {
+      _isOwner = isOwner ?? true;
+    });
   }
 }
