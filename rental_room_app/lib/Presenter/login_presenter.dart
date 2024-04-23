@@ -42,7 +42,6 @@ class LoginPresenter {
     }
     _view?.onPopContext();
     _view?.onLoginSucceeded();
-    //TODO: Push to HomeScreen handle
   }
 
   String? validateEmail(String? email) {

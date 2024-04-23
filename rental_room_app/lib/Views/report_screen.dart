@@ -54,7 +54,6 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
     // listRoomKind = RoomKindModel.AllRoomKinds;
     //listRoom = RoomModel.AllRooms;
