@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -6,6 +7,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +18,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late String _userName;
+  late bool _isOwner;
+  String _userAvatarUrl = '';
   bool isVisiable = false;
-  bool isTenant = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfoFromSharedPreferences();
+  }
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('name') ?? 'Nguyen Van A';
+      _isOwner = prefs.getBool('isOwner') ?? false;
+      _userAvatarUrl = prefs.getString('avatar') ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -37,14 +57,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text('WELCOME',
                             style: TextStyle(
                                 fontSize: 10, color: ColorPalette.grayText)),
                         Text(
-                          'Nguyễn Văn A',
+                          _userName,
                           style: TextStyle(
                               fontSize: 16, color: ColorPalette.primaryColor),
                         ),
@@ -54,12 +74,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       height: 35,
                       width: 35,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage(AssetHelper.avatar),
-                          fit: BoxFit.cover,
-                        ),
+                        image: _userAvatarUrl.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(_userAvatarUrl),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: AssetImage(AssetHelper.avatar),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     )
                   ],
@@ -171,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: isTenant,
+                visible: !_isOwner,
                 child: Column(
                   children: [
                     Row(
@@ -242,7 +267,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const Gap(10),
-                  Container(),
+                  Container(
+                    child: Text('Pham Thanh Tuong'),
+                  ),
                 ],
               ),
             )

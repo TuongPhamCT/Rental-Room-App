@@ -97,8 +97,8 @@ class RegisterFormPresenter {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       );
 
       if (avatar != null && avatar.isNotEmpty) {
@@ -124,10 +124,11 @@ class RegisterFormPresenter {
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
+        'userID': userCredential.user!.uid,
         'email': email,
-        'Name': displayName,
+        'name': displayName,
         'phone': phone,
-        'birthday': birthday,
+        'birthDay': birthday,
         'gender': gender,
         'isOwner': isOwner
       });

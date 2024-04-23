@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rental_room_app/Contract/login_contract.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart';
 
 class LoginPresenter {
@@ -7,15 +9,38 @@ class LoginPresenter {
   LoginPresenter(this._view);
 
   Future<void> login(String email, String password) async {
-    email = email.trim();
-    password = password.trim();
+    _view?.onWaitingProgressBar();
     try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: email.trim(), password: password.trim());
+
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+      if (doc.exists) {
+        Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('userID', userCredential.user!.uid);
+        prefs.setString('email', userData['email'] as String);
+        prefs.setString('name', userData['name'] as String);
+        prefs.setString('phone', userData['phone'] as String);
+        prefs.setString('birthDay',
+            (userData['birthDay'] as Timestamp).toDate().toString());
+        prefs.setString('gender', userData['gender'] as String);
+        prefs.setBool('isOwner', userData['isOwner'] as bool);
+
+        String? avatar = userCredential.user!.photoURL;
+        prefs.setString('avatar', avatar ?? '');
+      }
     } catch (e) {
+      _view?.onPopContext();
       _view?.onLoginFailed();
       return;
     }
+    _view?.onPopContext();
     _view?.onLoginSucceeded();
     //TODO: Push to HomeScreen handle
   }
@@ -36,5 +61,17 @@ class LoginPresenter {
       return "Please enter your password!";
     }
     return null;
+  }
+
+  Future<void> resetPassword(String email) async {
+    _view?.onWaitingProgressBar();
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      _view?.onForgotPasswordSent();
+      _view?.onPopContext();
+    } catch (e) {
+      _view?.onForgotPasswordError(e.toString());
+      _view?.onPopContext();
+    }
   }
 }

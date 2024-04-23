@@ -8,6 +8,7 @@ import 'package:rental_room_app/Contract/login_contract.dart';
 import 'package:rental_room_app/Presenter/login_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
+import 'package:rental_room_app/widgets/forgot_password_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -75,6 +76,9 @@ class _LoginScreenState extends State<LoginScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: TextFormField(
+                              onTapOutside: (event) {
+                                FocusScope.of(context).unfocus();
+                              },
                               controller: emailController,
                               validator: _loginPresenter?.validateEmail,
                               keyboardType: TextInputType.emailAddress,
@@ -95,6 +99,9 @@ class _LoginScreenState extends State<LoginScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: TextFormField(
+                              onTapOutside: (event) {
+                                FocusScope.of(context).unfocus();
+                              },
                               controller: passwordController,
                               validator: _loginPresenter?.validatePassword,
                               style: TextStyles.h6,
@@ -201,8 +208,11 @@ class _LoginScreenState extends State<LoginScreen>
                                   color: ColorPalette.greenText),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  //TODO: Handle forgot password screen
-                                  // GoRouter.of(context).go('/signup');
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => ForgotPasswordDialog(
+                                        presenter: _loginPresenter),
+                                  );
                                 })),
                     ],
                   ),
@@ -240,5 +250,46 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
     GoRouter.of(context).go('/home');
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context).pop();
+  }
+
+  @override
+  void onForgotPasswordSent() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Reset password email sent. Please check your email!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onForgotPasswordError(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          errorMessage,
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
   }
 }

@@ -20,7 +20,7 @@ class users {
   });
 
   // Phương thức để chuyển đổi dữ liệu thành một Map để lưu trữ trên Firestore
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'userID': userID,
       'userName': userName,
@@ -32,7 +32,6 @@ class users {
     };
   }
 
-  // Phương thức tạo một đối tượng User từ một tài liệu Firestore
   factory users.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return users(
@@ -49,7 +48,7 @@ class users {
 
 void addUserToFirestore(users user) async {
   try {
-    Map<String, dynamic> userData = user.toMap();
+    Map<String, dynamic> userData = user.toJson();
     DocumentReference docRef =
         await FirebaseFirestore.instance.collection('users').add(userData);
     print('User added to Firestore with ID: ${docRef.id}');
