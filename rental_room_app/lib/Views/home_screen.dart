@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: size.width,
               child: GestureDetector(
                 onTap: () {
-                  GoRouter.of(context).go('/home/edit_profile');
+                  GoRouter.of(context).go('/setting/edit_profile');
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
