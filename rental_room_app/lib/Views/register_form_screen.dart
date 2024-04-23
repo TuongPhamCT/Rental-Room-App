@@ -151,6 +151,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
+                              onTapOutside: (event) {
+                                FocusScope.of(context).unfocus();
+                              },
                               controller: _phoneNumTextController,
                               validator:
                                   _registerFormPresenter?.validatePhoneNum,
@@ -181,6 +184,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
+                              onTapOutside: (event) {
+                                FocusScope.of(context).unfocus();
+                              },
                               controller: _fullnameTextController,
                               validator:
                                   _registerFormPresenter?.validateFullName,
@@ -324,6 +330,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
+                              onTapOutside: (event) =>
+                                  FocusScope.of(context).unfocus(),
                               controller: _accountPasswordTextController,
                               validator: _registerFormPresenter
                                   ?.validateAccountPassword,
@@ -367,6 +375,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: TextFormField(
+                              onTapOutside: (event) =>
+                                  FocusScope.of(context).unfocus(),
                               controller: _confirmPasswordTextController,
                               validator: _registerFormPresenter
                                   ?.validateConfirmPassword,
