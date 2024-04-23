@@ -69,12 +69,6 @@ final GoRouter router = GoRouter(
           name: 'report',
           builder: (context, state) => const ReportScreen(key: Key('report')),
         ),
-        GoRoute(
-          path: 'edit_profile',
-          name: 'edit_profile',
-          builder: (context, state) =>
-              const EditProfileScreen(key: Key('edit_profile')),
-        ),
       ],
     ),
     GoRoute(
