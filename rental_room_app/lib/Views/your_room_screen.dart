@@ -9,6 +9,8 @@ import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/border_container.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/sub_image_frame.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class YourRoomScreen extends StatefulWidget {
   const YourRoomScreen({super.key});
@@ -31,6 +33,22 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
 
   final int numberstar = 5;
   double rating = 0;
+
+  int _selectedIndex = 1;
+  late bool _isOwner;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfoFromSharedPreferences();
+  }
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isOwner = prefs.getBool('isOwner') ?? false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +103,19 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
                                   : ColorPalette.backgroundColor,
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                               child: Center(
                                   child: Text(
                             'P002',
-                            style: TextStyles.h8,
+                            style: TextStyles.h8.copyWith(
+                              shadows: [
+                                const Shadow(
+                                  color: Colors.black12,
+                                  offset: Offset(3, 6),
+                                  blurRadius: 6,
+                                )
+                              ],
+                            ),
                           ))),
                         ],
                       ),
@@ -1012,6 +1038,84 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
           ),
         ],
       )),
+      bottomNavigationBar: SalomonBottomBar(
+          backgroundColor: ColorPalette.backgroundColor,
+          currentIndex: _selectedIndex,
+          onTap: (id) {
+            setState(() {
+              _selectedIndex = id;
+            });
+            switch (id) {
+              case 0:
+                GoRouter.of(context).go('/home');
+                break;
+              case 1:
+                GoRouter.of(context).go('/your_room');
+                break;
+              case 2:
+                GoRouter.of(context).go('/notification_list');
+                break;
+              case 3:
+                GoRouter.of(context).go('/setting');
+                break;
+              default:
+                break;
+            }
+          },
+          items: [
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.house,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Home',
+                  style: TextStyles.bottomBar,
+                )),
+            if (!_isOwner)
+              SalomonBottomBarItem(
+                  icon: const Icon(
+                    FontAwesomeIcons.doorOpen,
+                    color: ColorPalette.primaryColor,
+                    size: 20,
+                  ),
+                  title: const Text(
+                    'Your Room',
+                    style: TextStyles.bottomBar,
+                  )),
+            if (_isOwner)
+              SalomonBottomBarItem(
+                  icon: const Icon(
+                    FontAwesomeIcons.chartLine,
+                    color: ColorPalette.primaryColor,
+                    size: 20,
+                  ),
+                  title: const Text(
+                    'Statistic',
+                    style: TextStyles.bottomBar,
+                  )),
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.bell,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Notification',
+                  style: TextStyles.bottomBar,
+                )),
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.gear,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Setting',
+                  style: TextStyles.bottomBar,
+                )),
+          ]),
     );
   }
 

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 abstract class RegisterFormContract {
   void onRegisterSucceeded();
   void onRegisterFailed();

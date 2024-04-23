@@ -1,42 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
-
-import 'package:rental_room_app/Views/home_screen.dart';
-import 'package:rental_room_app/Views/receipt_detail_screen.dart';
-import 'package:rental_room_app/Views/setting_screen.dart';
-import 'package:rental_room_app/Views/your_room_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class BottomBar extends StatefulWidget {
-  const BottomBar({super.key});
-  static const String routeName = "bottom_bar";
+class ListNotificationScreen extends StatefulWidget {
+  const ListNotificationScreen({super.key});
 
   @override
-  State<BottomBar> createState() => _BottomBarState();
+  State<ListNotificationScreen> createState() => _ListNotificationScreenState();
 }
 
-class _BottomBarState extends State<BottomBar> {
-  int _selectedIndex = 0;
-  final String _userType = 'tenant';
+class _ListNotificationScreenState extends State<ListNotificationScreen> {
+  int _selectedIndex = 2;
+  late bool _isOwner;
+
   @override
   void initState() {
-    WidgetsFlutterBinding.ensureInitialized();
     super.initState();
+    _getUserInfoFromSharedPreferences();
+  }
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isOwner = prefs.getBool('isOwner') ?? false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: const [
-          HomeScreen(),
-          YourRoomScreen(),
-          ReceiptDetailScreen(),
-          SettingScreen(),
-        ],
+      appBar: AppBar(
+        title: Center(
+          child: Text(
+            'Notification',
+            style: TextStyles.title.copyWith(
+              fontSize: 32,
+              shadows: [
+                const Shadow(
+                  color: Colors.black12,
+                  offset: Offset(3, 6),
+                  blurRadius: 6,
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: const Center(
+        child: Text('Notification Screen'),
       ),
       bottomNavigationBar: SalomonBottomBar(
           backgroundColor: ColorPalette.backgroundColor,
@@ -45,6 +60,22 @@ class _BottomBarState extends State<BottomBar> {
             setState(() {
               _selectedIndex = id;
             });
+            switch (id) {
+              case 0:
+                GoRouter.of(context).go('/home');
+                break;
+              case 1:
+                GoRouter.of(context).go('/your_room');
+                break;
+              case 2:
+                GoRouter.of(context).go('/notification');
+                break;
+              case 3:
+                GoRouter.of(context).go('/setting');
+                break;
+              default:
+                break;
+            }
           },
           items: [
             SalomonBottomBarItem(
@@ -57,7 +88,7 @@ class _BottomBarState extends State<BottomBar> {
                   'Home',
                   style: TextStyles.bottomBar,
                 )),
-            if (_userType == 'tenant')
+            if (!_isOwner)
               SalomonBottomBarItem(
                   icon: const Icon(
                     FontAwesomeIcons.doorOpen,
@@ -68,7 +99,7 @@ class _BottomBarState extends State<BottomBar> {
                     'Your Room',
                     style: TextStyles.bottomBar,
                   )),
-            if (_userType == 'owner')
+            if (_isOwner)
               SalomonBottomBarItem(
                   icon: const Icon(
                     FontAwesomeIcons.chartLine,

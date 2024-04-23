@@ -17,6 +17,8 @@ import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -35,7 +37,22 @@ class _NotificationScreenState extends State<NotificationScreen>
   @override
   void initState() {
     _notificationPresenter = NotificationPresenter(this);
+    _getUserInfoFromSharedPreferences();
     super.initState();
+  }
+
+  late String _userName;
+  late String _email;
+  String _userAvatarUrl = '';
+  bool isVisiable = false;
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('name') ?? 'Nguyen Van A';
+      _userAvatarUrl = prefs.getString('avatar') ?? '';
+      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
+    });
   }
 
   @override
@@ -76,7 +93,6 @@ class _NotificationScreenState extends State<NotificationScreen>
         resizeToAvoidBottomInset: true,
         backgroundColor: ColorPalette.backgroundColor,
         body: SingleChildScrollView(
-          reverse: true,
           child: Center(
             child: Container(
               color: ColorPalette.backgroundColor,
@@ -85,22 +101,38 @@ class _NotificationScreenState extends State<NotificationScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(40),
-                    const CircleAvatar(
-                      radius: 60,
-                      backgroundImage: AssetImage(AssetHelper.defaultAvatar),
+                    const Gap(45),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 132,
+                        width: 132,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: _userAvatarUrl.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage(_userAvatarUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : DecorationImage(
+                                  image: AssetImage(AssetHelper.avatar),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
                     ),
-                    const Gap(20),
+                    const Gap(10),
                     Text(
-                      "Nguyen Nguoi Thue",
-                      style: TextStyles.h4.semibold.copyWith(
-                          fontFamily: GoogleFonts.inter().fontFamily,
-                          color: ColorPalette.primaryColor),
+                      _userName,
+                      style: TextStyles.title,
                     ),
-                    Text("aduvjppr0@gmail.com",
-                        style: TextStyles.labelStaffDetail.regular.copyWith(
-                            fontFamily: GoogleFonts.montserrat().fontFamily,
-                            color: ColorPalette.detailBorder.withOpacity(0.7))),
+                    const Gap(5),
+                    Text(
+                      _email,
+                      style: TextStyles.descriptionRoom.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
                     const Gap(50),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -172,11 +204,11 @@ class _NotificationScreenState extends State<NotificationScreen>
                                 horizontal: 15, vertical: 10),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    width: 2, color: ColorPalette.detailBorder),
+                                    width: 1, color: ColorPalette.detailBorder),
                                 borderRadius: BorderRadius.circular(20)),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    width: 3, color: ColorPalette.detailBorder),
+                                    width: 1, color: ColorPalette.primaryColor),
                                 borderRadius: BorderRadius.circular(20)),
                           ),
                           initialSelection: "adu",
@@ -190,7 +222,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                                 value: "nay hai vai", label: "Nay Hai Vai")
                           ]),
                     ),
-                    const Gap(20),
+                    const Gap(50),
                     ModelButton(
                         onTap: () {
                           //TODO: save ontap handle
@@ -206,7 +238,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                         name: "Cancel",
                         color: ColorPalette.redColor.withOpacity(0.75),
                         width: 150),
-                    const Gap(30),
+                    const Gap(60),
                   ],
                 ),
               ),

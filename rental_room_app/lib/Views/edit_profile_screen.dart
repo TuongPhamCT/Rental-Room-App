@@ -11,6 +11,7 @@ import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -28,12 +29,26 @@ class _EditProfileScreenState extends State<EditProfileScreen>
 
   String? _gender;
 
+  late String _userName;
+  late String _email;
+  String _userAvatarUrl = '';
+
   // ignore: unused_field
   DateTime? _birthday;
   @override
   void initState() {
     _editProfilePresenter = EditProfilePresenter(this);
+    _getUserInfoFromSharedPreferences();
     super.initState();
+  }
+
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('name') ?? 'Nguyen Van A';
+      _userAvatarUrl = prefs.getString('avatar') ?? '';
+      _email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
+    });
   }
 
   @override
@@ -74,7 +89,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         resizeToAvoidBottomInset: true,
         backgroundColor: ColorPalette.backgroundColor,
         body: SingleChildScrollView(
-          reverse: true,
           child: Center(
             child: Container(
               color: ColorPalette.backgroundColor,
@@ -83,22 +97,37 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(40),
-                    const CircleAvatar(
-                      radius: 60,
-                      backgroundImage: AssetImage(AssetHelper.defaultAvatar),
+                    const Gap(45),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 132,
+                        width: 132,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: _userAvatarUrl.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage(_userAvatarUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : DecorationImage(
+                                  image: AssetImage(AssetHelper.avatar),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
                     ),
-                    const Gap(20),
+                    const Gap(10),
                     Text(
-                      "Nguyen Nguoi Thue",
-                      style: TextStyles.h4.semibold.copyWith(
-                          fontFamily: GoogleFonts.inter().fontFamily,
-                          color: ColorPalette.primaryColor),
+                      _userName,
+                      style: TextStyles.title,
                     ),
-                    Text("aduvjppr0@gmail.com",
-                        style: TextStyles.labelStaffDetail.regular.copyWith(
-                            fontFamily: GoogleFonts.montserrat().fontFamily,
-                            color: ColorPalette.detailBorder.withOpacity(0.7))),
+                    Text(
+                      _email,
+                      style: TextStyles.descriptionRoom.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
                     const Gap(30),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -286,7 +315,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                               })
                       ]),
                     ),
-                    const Gap(20),
+                    const Gap(60),
                   ],
                 ),
               ),

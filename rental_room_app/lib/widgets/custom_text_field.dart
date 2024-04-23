@@ -160,17 +160,20 @@ class _CustomFormFieldState extends State<CustomFormField> {
               const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           enabledBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 2, color: ColorPalette.detailBorder),
+                  const BorderSide(width: 1, color: ColorPalette.detailBorder),
               borderRadius: BorderRadius.circular(20)),
           focusedBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 3, color: ColorPalette.detailBorder),
+                  const BorderSide(width: 1, color: ColorPalette.primaryColor),
               borderRadius: BorderRadius.circular(20)),
           helperText: " ",
         ),
       );
     }
     return TextFormField(
+      onTapOutside: (event) {
+        FocusScope.of(context).unfocus();
+      },
       controller: widget.editingController,
       validator: widget.stringValidator,
       keyboardType: widget.keyboardType,
@@ -181,11 +184,11 @@ class _CustomFormFieldState extends State<CustomFormField> {
             const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         enabledBorder: OutlineInputBorder(
             borderSide:
-                const BorderSide(width: 2, color: ColorPalette.detailBorder),
+                const BorderSide(width: 1, color: ColorPalette.detailBorder),
             borderRadius: BorderRadius.circular(20)),
         focusedBorder: OutlineInputBorder(
             borderSide:
-                const BorderSide(width: 3, color: ColorPalette.detailBorder),
+                const BorderSide(width: 1, color: ColorPalette.primaryColor),
             borderRadius: BorderRadius.circular(20)),
         helperText: " ",
         suffixIcon: widget.surfixIcon,
