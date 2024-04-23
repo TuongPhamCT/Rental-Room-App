@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Views/all_room_screen.dart';
-import 'package:rental_room_app/Views/bottom_bar.dart';
 import 'package:rental_room_app/Views/edit_profile_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
+import 'package:rental_room_app/Views/home_screen.dart';
+import 'package:rental_room_app/Views/list_notification_screen.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
 import 'package:rental_room_app/Views/notification_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
+import 'package:rental_room_app/Views/receipt_detail_screen.dart';
 import 'package:rental_room_app/Views/register_form_screen.dart';
 import 'package:rental_room_app/Views/report_screen.dart';
 import 'package:rental_room_app/Views/setting_screen.dart';
 import 'package:rental_room_app/Views/signup_screen.dart';
+import 'package:rental_room_app/Views/your_room_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -57,7 +60,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/home',
       name: 'home',
-      builder: (context, state) => const BottomBar(key: Key('home')),
+      builder: (context, state) => const HomeScreen(key: Key('home')),
       routes: [
         GoRoute(
           path: 'all_room',
@@ -75,6 +78,23 @@ final GoRouter router = GoRouter(
       path: '/edit_room',
       name: 'edit_room',
       builder: (context, state) => const EditRoomScreen(key: Key('edit_room')),
+    ),
+    GoRoute(
+      path: '/your_room',
+      name: 'your_room',
+      builder: (context, state) => const YourRoomScreen(key: Key('your_room')),
+    ),
+    GoRoute(
+      path: '/receipt_detail',
+      name: 'receipt_detail',
+      builder: (context, state) =>
+          const ReceiptDetailScreen(key: Key('receipt_detail')),
+    ),
+    GoRoute(
+      path: '/notification_list',
+      name: 'notification_list',
+      builder: (context, state) =>
+          const ListNotificationScreen(key: Key('notification_list')),
     ),
     GoRoute(
       path: '/setting',

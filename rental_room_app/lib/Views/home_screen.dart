@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +6,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
   late String _userName;
   late bool _isOwner;
   String _userAvatarUrl = '';
@@ -276,6 +277,84 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: SalomonBottomBar(
+          backgroundColor: ColorPalette.backgroundColor,
+          currentIndex: _selectedIndex,
+          onTap: (id) {
+            setState(() {
+              _selectedIndex = id;
+            });
+            switch (id) {
+              case 0:
+                GoRouter.of(context).go('/home');
+                break;
+              case 1:
+                GoRouter.of(context).go('/your_room');
+                break;
+              case 2:
+                GoRouter.of(context).go('/notification_list');
+                break;
+              case 3:
+                GoRouter.of(context).go('/setting');
+                break;
+              default:
+                break;
+            }
+          },
+          items: [
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.house,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Home',
+                  style: TextStyles.bottomBar,
+                )),
+            if (!_isOwner)
+              SalomonBottomBarItem(
+                  icon: const Icon(
+                    FontAwesomeIcons.doorOpen,
+                    color: ColorPalette.primaryColor,
+                    size: 20,
+                  ),
+                  title: const Text(
+                    'Your Room',
+                    style: TextStyles.bottomBar,
+                  )),
+            if (_isOwner)
+              SalomonBottomBarItem(
+                  icon: const Icon(
+                    FontAwesomeIcons.chartLine,
+                    color: ColorPalette.primaryColor,
+                    size: 20,
+                  ),
+                  title: const Text(
+                    'Statistic',
+                    style: TextStyles.bottomBar,
+                  )),
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.bell,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Notification',
+                  style: TextStyles.bottomBar,
+                )),
+            SalomonBottomBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.gear,
+                  color: ColorPalette.primaryColor,
+                  size: 20,
+                ),
+                title: const Text(
+                  'Setting',
+                  style: TextStyles.bottomBar,
+                )),
+          ]),
     );
   }
 }

@@ -1,10 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconly/iconly.dart';
 import 'package:rental_room_app/Contract/change_password_contract.dart';
 import 'package:rental_room_app/Presenter/change_password_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
