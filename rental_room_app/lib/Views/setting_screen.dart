@@ -135,7 +135,7 @@ class _SettingScreenState extends State<SettingScreen> {
             const Gap(50),
             GestureDetector(
               onTap: () {
-                GoRouter.of(context).go('/home/edit_profile');
+                GoRouter.of(context).go('/setting/edit_profile');
               },
               child: Row(
                 children: [
@@ -185,7 +185,7 @@ class _SettingScreenState extends State<SettingScreen> {
             const Gap(20),
             GestureDetector(
               onTap: () {
-                launchEmailApp();
+                GoRouter.of(context).go('/setting/notification');
               },
               child: Row(
                 children: [
@@ -210,7 +210,9 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             const Gap(20),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                launchEmailApp();
+              },
               child: Row(
                 children: [
                   Container(
