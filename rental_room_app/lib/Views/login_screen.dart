@@ -287,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen>
         backgroundColor: ColorPalette.greenText,
         content: Text(
           errorMessage,
-          style: TextStyle(color: ColorPalette.errorColor),
+          style: const TextStyle(color: ColorPalette.errorColor),
         ),
       ),
     );

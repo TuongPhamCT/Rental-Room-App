@@ -8,7 +8,6 @@ class AuthService {
     try {
       await _auth.signOut();
     } catch (e) {
-      print("Đăng xuất thất bại: $e");
       throw Exception("Đăng xuất thất bại: $e");
     }
   }

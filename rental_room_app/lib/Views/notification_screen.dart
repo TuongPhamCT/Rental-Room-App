@@ -1,15 +1,9 @@
-import 'dart:ffi';
-
 import 'package:date_field/date_field.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:rental_room_app/Contract/change_password_contract.dart';
 import 'package:rental_room_app/Contract/notification_contract.dart';
-import 'package:rental_room_app/Presenter/change_password_presenter.dart';
 import 'package:rental_room_app/Presenter/notification_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
@@ -17,7 +11,6 @@ import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -114,7 +107,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                                   image: NetworkImage(_userAvatarUrl),
                                   fit: BoxFit.cover,
                                 )
-                              : DecorationImage(
+                              : const DecorationImage(
                                   image: AssetImage(AssetHelper.avatar),
                                   fit: BoxFit.cover,
                                 ),

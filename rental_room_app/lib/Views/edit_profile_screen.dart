@@ -110,7 +110,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                                   image: NetworkImage(_userAvatarUrl),
                                   fit: BoxFit.cover,
                                 )
-                              : DecorationImage(
+                              : const DecorationImage(
                                   image: AssetImage(AssetHelper.avatar),
                                   fit: BoxFit.cover,
                                 ),

@@ -52,7 +52,7 @@ dependencies:
   file_picker: ^8.0.0+1
   syncfusion_flutter_pdf: ^25.1.39
   open_file_plus: ^3.4.1+1
-  #path: ^1.9.0
+  path: ^1.9.0
   keyboard_dismisser: ^3.0.0
   cloud_firestore: ^4.17.0
   firebase_storage: ^11.7.2

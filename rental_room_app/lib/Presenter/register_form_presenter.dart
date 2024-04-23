@@ -147,7 +147,6 @@ class RegisterFormPresenter {
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       _view?.onChangeProfilePicture(pickedImage.path);
-      print(pickedImage.path);
     }
   }
 
@@ -175,6 +174,5 @@ class RegisterFormPresenter {
     } else {
       _view?.onRegisterSucceeded();
     }
-    //TODO: upload user's data handle
   }
 }

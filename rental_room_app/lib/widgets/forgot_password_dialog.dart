@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rental_room_app/Presenter/login_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -20,13 +19,13 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Forgot Password'),
+      title: const Text('Forgot Password'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextFormField(
             controller: _emailController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Enter your email',
             ),
             keyboardType: TextInputType.emailAddress,
@@ -60,7 +59,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
               widget.presenter!.resetPassword(email);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Please enter your email'),
                 ),
               );

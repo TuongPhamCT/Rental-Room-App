@@ -45,14 +45,3 @@ class users {
     );
   }
 }
-
-void addUserToFirestore(users user) async {
-  try {
-    Map<String, dynamic> userData = user.toJson();
-    DocumentReference docRef =
-        await FirebaseFirestore.instance.collection('users').add(userData);
-    print('User added to Firestore with ID: ${docRef.id}');
-  } catch (e) {
-    print('Error adding user to Firestore: $e');
-  }
-}

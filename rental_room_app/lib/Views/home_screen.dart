@@ -61,12 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('WELCOME',
+                        const Text('WELCOME',
                             style: TextStyle(
                                 fontSize: 10, color: ColorPalette.grayText)),
                         Text(
                           _userName,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 16, color: ColorPalette.primaryColor),
                         ),
                       ],
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 image: NetworkImage(_userAvatarUrl),
                                 fit: BoxFit.cover,
                               )
-                            : DecorationImage(
+                            : const DecorationImage(
                                 image: AssetImage(AssetHelper.avatar),
                                 fit: BoxFit.cover,
                               ),
@@ -268,9 +268,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const Gap(10),
-                  Container(
-                    child: Text('Pham Thanh Tuong'),
-                  ),
                 ],
               ),
             )
