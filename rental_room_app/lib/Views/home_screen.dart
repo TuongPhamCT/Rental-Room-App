@@ -7,6 +7,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,33 +19,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late String _userName;
-  late String _userAvatarUrl;
-
+  late bool _isOwner;
+  String _userAvatarUrl = '';
   bool isVisiable = false;
-  bool isTenant = true;
 
   @override
   void initState() {
     super.initState();
-    // Gọi hàm để lấy thông tin người dùng và cập nhật giao diện
-    _getUserInfo();
+    _getUserInfoFromSharedPreferences();
   }
 
-  // Hàm để lấy thông tin người dùng từ Firebase Authentication
-  void _getUserInfo() {
-    // Lấy thông tin người dùng đã đăng nhập từ Firebase Authentication
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Lấy tên người dùng
-      _userName = user.displayName ?? 'User';
-      // Lấy URL ảnh đại diện của người dùng
-      _userAvatarUrl =
-          user.photoURL ?? ''; // Nếu không có ảnh đại diện thì để chuỗi trống
-    } else {
-      // Không có người dùng đăng nhập
-      _userName = 'User';
-      _userAvatarUrl = ''; // Chuỗi trống nếu không có ảnh đại diện
-    }
+  Future<void> _getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('name') ?? 'Nguyen Van A';
+      _isOwner = prefs.getBool('isOwner') ?? false;
+      _userAvatarUrl = prefs.getString('avatar') ?? '';
+    });
   }
 
   @override
@@ -205,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: isTenant,
+                visible: !_isOwner,
                 child: Column(
                   children: [
                     Row(
@@ -276,7 +267,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const Gap(10),
-                  Container(),
+                  Container(
+                    child: Text('Pham Thanh Tuong'),
+                  ),
                 ],
               ),
             )
