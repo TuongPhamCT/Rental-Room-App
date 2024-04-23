@@ -1,40 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rental_room_app/Contract/login_contract.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart';
 
 class LoginPresenter {
   final LoginViewContract? _view;
   LoginPresenter(this._view);
+  final UserRepository _userRepository = UserRepositoryIml();
 
   Future<void> login(String email, String password) async {
     _view?.onWaitingProgressBar();
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: email.trim(), password: password.trim());
+      UserCredential userCredential =
+          await _userRepository.signInWithEmailAndPassword(email, password);
 
-      DocumentSnapshot doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
-      if (doc.exists) {
-        Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
+      Map<String, dynamic> userData =
+          await _userRepository.getUserData(userCredential.user!.uid);
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('userID', userCredential.user!.uid);
-        prefs.setString('email', userData['email'] as String);
-        prefs.setString('name', userData['name'] as String);
-        prefs.setString('phone', userData['phone'] as String);
-        prefs.setString('birthDay',
-            (userData['birthDay'] as Timestamp).toDate().toString());
-        prefs.setString('gender', userData['gender'] as String);
-        prefs.setBool('isOwner', userData['isOwner'] as bool);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('userID', userCredential.user!.uid);
+      prefs.setString('email', userData['email'] as String);
+      prefs.setString('name', userData['name'] as String);
+      prefs.setString('phone', userData['phone'] as String);
+      prefs.setString(
+          'birthDay', (userData['birthDay'] as Timestamp).toDate().toString());
+      prefs.setString('gender', userData['gender'] as String);
+      prefs.setBool('isOwner', userData['isOwner'] as bool);
 
-        String? avatar = userCredential.user!.photoURL;
-        prefs.setString('avatar', avatar ?? '');
-      }
+      String? avatar = userCredential.user!.photoURL;
+      prefs.setString('avatar', avatar ?? '');
     } catch (e) {
       _view?.onPopContext();
       _view?.onLoginFailed();

@@ -3,7 +3,7 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
-import 'package:rental_room_app/Models/User/auth_services.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
@@ -21,7 +21,7 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen>
     implements SharedPreferencesContract {
   SharedPreferencesPresenter? _preferencesPresenter;
-  final AuthService _authService = AuthService();
+  final UserRepository _userRepository = UserRepositoryIml();
   int _selectedIndex = 3;
   String _userName = "nguyen van a";
   String _email = "nguyenvana@gmail.com";
@@ -248,7 +248,7 @@ class _SettingScreenState extends State<SettingScreen>
                         TextButton(
                           onPressed: () async {
                             try {
-                              await _authService.signOut();
+                              await _userRepository.signOut();
                               GoRouter.of(context).go('/log_in');
                             } catch (e) {
                               print("Đăng xuất thất bại: $e");
