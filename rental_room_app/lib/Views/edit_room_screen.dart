@@ -14,6 +14,20 @@ class EditRoomScreen extends StatefulWidget {
 
 class _EditRoomScreenState extends State<EditRoomScreen> {
   bool isVisibleFilter = false;
+  final _roomIDController = TextEditingController();
+  final _kindController = TextEditingController();
+  final _areaController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _priceRoomController = TextEditingController();
+  final _priceWaterController = TextEditingController();
+  final _priceElectricController = TextEditingController();
+  final _priceOtherController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _facebookController = TextEditingController();
+  final _addressController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -76,8 +90,8 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _roomIDController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
                       scrollPadding: const EdgeInsets.all(0),
@@ -96,12 +110,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText: 'Example: P001',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -122,8 +130,8 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _kindController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
                       scrollPadding: const EdgeInsets.all(0),
@@ -142,12 +150,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText: 'Example: Standard',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -168,8 +170,8 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _areaController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
                       scrollPadding: const EdgeInsets.all(0),
@@ -188,12 +190,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText: 'Example: 60',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -214,8 +210,8 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _locationController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
                       scrollPadding: const EdgeInsets.all(0),
@@ -234,12 +230,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText:
                             'Example: 43 Tan Lap, Dong Hoa, Di An, Binh Duong',
@@ -260,6 +250,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 ),
               ),
               TextField(
+                controller: _descriptionController,
                 cursorColor: Colors.black,
                 style: TextStyles.roomPropsContent,
                 scrollPadding: const EdgeInsets.all(0),
@@ -278,12 +269,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                     borderSide: BorderSide(
                       color: ColorPalette.primaryColor,
                     ),
-                  ),
-                  contentPadding: const EdgeInsets.only(
-                    left: 5,
-                    right: 5,
-                    top: 0,
-                    bottom: 13,
                   ),
                   hintText: 'Example: A beautiful room with full furniture',
                   hintStyle: TextStyles.descriptionRoom
@@ -325,256 +310,22 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
               const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'Room:',
-                          style: TextStyles.roomProps,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'Water:',
-                          style: TextStyles.roomProps,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'Electric:',
-                          style: TextStyles.roomProps,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'Other:',
-                          style: TextStyles.roomProps,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: size.width - 200,
-                        height: 35,
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          style: TextStyles.roomPropsContent,
-                          scrollPadding: const EdgeInsets.all(0),
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.detailBorder,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.primaryColor,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.only(
-                              left: 5,
-                              right: 5,
-                              top: 0,
-                              bottom: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Gap(5),
-                      SizedBox(
-                        width: size.width - 200,
-                        height: 35,
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          style: TextStyles.roomPropsContent,
-                          scrollPadding: const EdgeInsets.all(0),
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.detailBorder,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.primaryColor,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.only(
-                              left: 5,
-                              right: 5,
-                              top: 0,
-                              bottom: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Gap(5),
-                      SizedBox(
-                        width: size.width - 200,
-                        height: 35,
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          style: TextStyles.roomPropsContent,
-                          scrollPadding: const EdgeInsets.all(0),
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.detailBorder,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.primaryColor,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.only(
-                              left: 5,
-                              right: 5,
-                              top: 0,
-                              bottom: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Gap(5),
-                      SizedBox(
-                        width: size.width - 200,
-                        height: 35,
-                        child: TextField(
-                          cursorColor: Colors.black,
-                          style: TextStyles.roomPropsContent,
-                          scrollPadding: const EdgeInsets.all(0),
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: const InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.detailBorder,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: ColorPalette.primaryColor,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.only(
-                              left: 5,
-                              right: 5,
-                              top: 0,
-                              bottom: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'VND/Month',
-                          style: TextStyles.roomPropsContent,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'VND/m3',
-                          style: TextStyles.roomPropsContent,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'VND/kWh',
-                          style: TextStyles.roomPropsContent,
-                        ),
-                      ),
-                      const Gap(5),
-                      Container(
-                        height: 35,
-                        width: null,
-                        alignment: Alignment.centerLeft,
-                        child: const Text(
-                          'VND/Month',
-                          style: TextStyles.roomPropsContent,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const Gap(30),
-              const Text(
-                'Owner Information',
-                style: TextStyles.detailTitle,
-              ),
-              const Gap(10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Name:',
-                    style: TextStyles.roomProps,
+                  Container(
+                    width: 60,
+                    child: const Text(
+                      'Room:',
+                      style: TextStyles.roomProps,
+                    ),
                   ),
                   SizedBox(
-                    width: size.width - 140,
-                    height: 35,
+                    width: size.width - 200,
                     child: TextField(
+                      controller: _priceRoomController,
+                      keyboardType: TextInputType.number,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
@@ -591,11 +342,199 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                             color: ColorPalette.primaryColor,
                           ),
                         ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 80,
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      'VND/Month',
+                      style: TextStyles.roomPropsContent,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    child: const Text(
+                      'Water:',
+                      style: TextStyles.roomProps,
+                    ),
+                  ),
+                  SizedBox(
+                    width: size.width - 200,
+                    child: TextField(
+                      controller: _priceWaterController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Colors.black,
+                      style: TextStyles.roomPropsContent,
+                      maxLines: null,
+                      onTapOutside: (event) {
+                        FocusScope.of(context).unfocus();
+                      },
+                      textAlign: TextAlign.justify,
+                      decoration: InputDecoration(
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.detailBorder,
+                          ),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 80,
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      'VND/m3',
+                      style: TextStyles.roomPropsContent,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    child: const Text(
+                      'Electric:',
+                      style: TextStyles.roomProps,
+                    ),
+                  ),
+                  SizedBox(
+                    width: size.width - 200,
+                    child: TextField(
+                      controller: _priceElectricController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Colors.black,
+                      style: TextStyles.roomPropsContent,
+                      maxLines: null,
+                      onTapOutside: (event) {
+                        FocusScope.of(context).unfocus();
+                      },
+                      textAlign: TextAlign.justify,
+                      decoration: InputDecoration(
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.detailBorder,
+                          ),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 80,
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      'VND/kWh',
+                      style: TextStyles.roomPropsContent,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    child: const Text(
+                      'Other:',
+                      style: TextStyles.roomProps,
+                    ),
+                  ),
+                  SizedBox(
+                    width: size.width - 200,
+                    child: TextField(
+                      controller: _priceOtherController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Colors.black,
+                      style: TextStyles.roomPropsContent,
+                      maxLines: null,
+                      onTapOutside: (event) {
+                        FocusScope.of(context).unfocus();
+                      },
+                      textAlign: TextAlign.justify,
+                      decoration: InputDecoration(
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.detailBorder,
+                          ),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 80,
+                    alignment: Alignment.centerRight,
+                    child: const Text(
+                      'VND/Month',
+                      style: TextStyles.roomPropsContent,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(5),
+              const Gap(30),
+              const Text(
+                'Owner Information',
+                style: TextStyles.detailTitle,
+              ),
+              const Gap(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Name:',
+                    style: TextStyles.roomProps,
+                  ),
+                  SizedBox(
+                    width: size.width - 140,
+                    child: TextField(
+                      controller: _nameController,
+                      cursorColor: Colors.black,
+                      style: TextStyles.roomPropsContent,
+                      maxLines: null,
+                      onTapOutside: (event) {
+                        FocusScope.of(context).unfocus();
+                      },
+                      textAlign: TextAlign.justify,
+                      decoration: InputDecoration(
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.detailBorder,
+                          ),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: ColorPalette.primaryColor,
+                          ),
                         ),
                         hintText: 'Example: Nguyen Chu Tro',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -616,15 +555,15 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _phoneController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
                       },
+                      keyboardType: TextInputType.number,
                       textAlign: TextAlign.justify,
                       decoration: InputDecoration(
                         enabledBorder: const UnderlineInputBorder(
@@ -636,12 +575,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText: 'Example: 0123456789',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -662,11 +595,10 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _emailController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
@@ -682,12 +614,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText: 'Example: abcd@gmail.com',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -708,11 +634,10 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _facebookController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
@@ -728,12 +653,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                           borderSide: BorderSide(
                             color: ColorPalette.primaryColor,
                           ),
-                        ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
                         ),
                         hintText:
                             'Example: https://www.facebook.com/nguyenchutro',
@@ -755,11 +674,10 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                   ),
                   SizedBox(
                     width: size.width - 140,
-                    height: 35,
                     child: TextField(
+                      controller: _addressController,
                       cursorColor: Colors.black,
                       style: TextStyles.roomPropsContent,
-                      scrollPadding: const EdgeInsets.all(0),
                       maxLines: null,
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
@@ -776,12 +694,6 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                             color: ColorPalette.primaryColor,
                           ),
                         ),
-                        contentPadding: const EdgeInsets.only(
-                          left: 5,
-                          right: 5,
-                          top: 0,
-                          bottom: 13,
-                        ),
                         hintText:
                             'Example: 43 Tan Lap, Dong Hoa, Di An, Binh Duong',
                         hintStyle: TextStyles.descriptionRoom.copyWith(
@@ -792,22 +704,28 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 ],
               ),
               const Gap(45),
-              ModelButton(
-                name: 'Save',
-                onTap: () {
-                  //save room
-                },
-                width: 150,
-                color: ColorPalette.primaryColor.withOpacity(0.75),
+              Container(
+                alignment: Alignment.center,
+                child: ModelButton(
+                  name: 'Save',
+                  onTap: () {
+                    //save room
+                  },
+                  width: 150,
+                  color: ColorPalette.primaryColor.withOpacity(0.75),
+                ),
               ),
               const Gap(10),
-              ModelButton(
-                name: 'DELETE',
-                onTap: () {
-                  //save room
-                },
-                width: 150,
-                color: ColorPalette.redColor,
+              Container(
+                alignment: Alignment.center,
+                child: ModelButton(
+                  name: 'DELETE',
+                  onTap: () {
+                    //save room
+                  },
+                  width: 150,
+                  color: ColorPalette.redColor,
+                ),
               ),
               const Gap(50),
             ],
