@@ -12,6 +12,7 @@ class Room {
   String description;
   Price price;
   bool isAvailable;
+  
 
   Room(
       {required this.roomId,
