@@ -16,6 +16,8 @@ class CustomFormField extends StatefulWidget {
   final TextStyle? style;
   final bool? obscureText;
   final IconButton? surfixIcon;
+  final bool? enabled;
+  final String? initialValue;
 
   //GenderFormField
   final String? gender;
@@ -42,16 +44,19 @@ class CustomFormField extends StatefulWidget {
       this.state,
       this.dateTimeValidator,
       this.onChangedDateTime,
-      this.dateTimeFieldPickerMode});
-  factory CustomFormField.textFormField({
-    required TextEditingController editingController,
-    String? Function(String?)? stringValidator,
-    TextInputType? keyboardType,
-    TextAlign? textAlign,
-    TextStyle? style,
-    bool? obscureText,
-    IconButton? surfixIcon,
-  }) {
+      this.dateTimeFieldPickerMode,
+      this.enabled,
+      this.initialValue});
+  factory CustomFormField.textFormField(
+      {TextEditingController? editingController,
+      String? Function(String?)? stringValidator,
+      TextInputType? keyboardType,
+      TextAlign? textAlign,
+      TextStyle? style,
+      bool? obscureText,
+      IconButton? surfixIcon,
+      bool? enabled,
+      String? initialValue}) {
     return CustomFormField._(
       type: CustomFormFieldType.textFormField,
       editingController: editingController,
@@ -61,6 +66,8 @@ class CustomFormField extends StatefulWidget {
       style: style,
       obscureText: obscureText,
       surfixIcon: surfixIcon,
+      enabled: enabled,
+      initialValue: initialValue,
     );
   }
   factory CustomFormField.genderFormField({
@@ -176,6 +183,8 @@ class _CustomFormFieldState extends State<CustomFormField> {
       },
       controller: widget.editingController,
       validator: widget.stringValidator,
+      enabled: widget.enabled,
+      initialValue: widget.initialValue,
       keyboardType: widget.keyboardType,
       style: widget.style ?? TextStyles.h6,
       textAlign: widget.textAlign ?? TextAlign.left,
@@ -183,6 +192,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         enabledBorder: OutlineInputBorder(
+            borderSide:
+                const BorderSide(width: 1, color: ColorPalette.detailBorder),
+            borderRadius: BorderRadius.circular(20)),
+        disabledBorder: OutlineInputBorder(
             borderSide:
                 const BorderSide(width: 1, color: ColorPalette.detailBorder),
             borderRadius: BorderRadius.circular(20)),

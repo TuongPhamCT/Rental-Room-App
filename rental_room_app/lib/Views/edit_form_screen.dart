@@ -2,31 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Contract/edit_form_contract.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
+import 'package:rental_room_app/Presenter/edit_form_presenter.dart';
 import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
+import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
 
-class RentalFormScreen extends StatefulWidget {
-  const RentalFormScreen({super.key});
+class EditFormScreen extends StatefulWidget {
+  const EditFormScreen({super.key});
 
   @override
-  State<RentalFormScreen> createState() => _RentalFormScreenState();
+  State<EditFormScreen> createState() => _EditFormScreenState();
 }
 
-class _RentalFormScreenState extends State<RentalFormScreen>
-    implements RentalFormContract {
-  RentalFormPresenter? _rentalFormPresenter;
+class _EditFormScreenState extends State<EditFormScreen>
+    implements EditFormContract {
+  EditFormPresenter? _editFormPresenter;
   final _formKey = GlobalKey<FormState>();
 
   //
   //params controllers
   //
-
-  final TextEditingController _roomIdController = TextEditingController();
+  String roomId = "P001";
   final _guestNameController = TextEditingController();
   String _gender = "";
   final _phoneNumberController = TextEditingController();
@@ -35,14 +37,14 @@ class _RentalFormScreenState extends State<RentalFormScreen>
   DateTime? _birthday = DateTime.now();
   final _numberOfPeopleController = TextEditingController();
   DateTime? _startDate = DateTime.now();
+  String deposit = "500000";
   final _durationController = TextEditingController();
-  final _depositController = TextEditingController();
   final _facebookController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _rentalFormPresenter = RentalFormPresenter(this);
+    _editFormPresenter = EditFormPresenter(this);
   }
 
   @override
@@ -67,7 +69,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
               ),
             ),
           ),
-          title: Text('Rental Form',
+          title: Text('Edit Form',
               style: TextStyles.slo.bold.copyWith(
                 color: ColorPalette.primaryColor,
                 shadows: [
@@ -109,11 +111,11 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validateRoomId,
-                        editingController: _roomIdController,
-                        keyboardType: TextInputType.text,
                         textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
+                        style: TextStyles.h6.italic
+                            .copyWith(color: ColorPalette.grayText),
+                        enabled: false,
+                        initialValue: roomId,
                       ),
                     ),
                     const Gap(5),
@@ -134,7 +136,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
                         stringValidator:
-                            _rentalFormPresenter!.validateGuestName,
+                            _editFormPresenter!.validateGuestName,
                         editingController: _guestNameController,
                         keyboardType: TextInputType.name,
                         textAlign: TextAlign.center,
@@ -158,7 +160,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.genderFormField(
-                        stringValidator: _rentalFormPresenter!.validateGender,
+                        stringValidator: _editFormPresenter!.validateGender,
                         gender: _gender,
                         onChangedString: (value) {
                           setState(() {
@@ -184,7 +186,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validatePhoneNum,
+                        stringValidator: _editFormPresenter!.validatePhoneNum,
                         editingController: _phoneNumberController,
                         keyboardType: TextInputType.phone,
                         textAlign: TextAlign.center,
@@ -209,7 +211,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
                         stringValidator:
-                            _rentalFormPresenter!.validateIdentification,
+                            _editFormPresenter!.validateIdentification,
                         editingController: _citizenIdentificationController,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
@@ -233,7 +235,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validateEmail,
+                        stringValidator: _editFormPresenter!.validateEmail,
                         editingController: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textAlign: TextAlign.center,
@@ -258,7 +260,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.dateFormField(
                         dateTimeValidator:
-                            _rentalFormPresenter!.validateBirthday,
+                            _editFormPresenter!.validateBirthday,
                         style: TextStyles.h6.italic,
                         onChangedDateTime: (value) {
                           setState(() {
@@ -305,7 +307,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.dateFormField(
                         dateTimeValidator:
-                            _rentalFormPresenter!.validateStartDate,
+                            _editFormPresenter!.validateStartDate,
                         style: TextStyles.h6.italic,
                         onChangedDateTime: (value) {
                           setState(() {
@@ -351,11 +353,11 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validateDeposit,
-                        editingController: _depositController,
-                        keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
+                        style: TextStyles.h6.italic
+                            .copyWith(color: ColorPalette.grayText),
+                        enabled: false,
+                        initialValue: deposit,
                       ),
                     ),
                     const Gap(5),
@@ -375,7 +377,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validateFacebook,
+                        stringValidator: _editFormPresenter!.validateFacebook,
                         editingController: _facebookController,
                         keyboardType: TextInputType.url,
                         textAlign: TextAlign.center,
@@ -387,7 +389,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                         onTap: () {
                           //TODO: save ontap handle
                         },
-                        name: "Send",
+                        name: "Save",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
                         width: 150),
                     const Gap(10),
