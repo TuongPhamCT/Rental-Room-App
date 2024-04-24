@@ -5,14 +5,14 @@ import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 
-class EditRoomScreen extends StatefulWidget {
-  const EditRoomScreen({super.key});
+class CreateRoomScreen extends StatefulWidget {
+  const CreateRoomScreen({super.key});
 
   @override
-  State<EditRoomScreen> createState() => _EditRoomScreenState();
+  State<CreateRoomScreen> createState() => _CreateRoomScreenState();
 }
 
-class _EditRoomScreenState extends State<EditRoomScreen> {
+class _CreateRoomScreenState extends State<CreateRoomScreen> {
   bool isVisibleFilter = false;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
             ),
           ),
         ),
-        title: Text('EDIT ROOM',
+        title: Text('CREATE ROOM',
             style: TextStyles.slo.bold.copyWith(
               shadows: [
                 const Shadow(
@@ -792,22 +792,28 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 ],
               ),
               const Gap(45),
-              ModelButton(
-                name: 'Save',
-                onTap: () {
-                  //save room
-                },
-                width: 150,
-                color: ColorPalette.primaryColor.withOpacity(0.75),
+              Container(
+                alignment: Alignment.center,
+                child: ModelButton(
+                  name: 'CREATE',
+                  onTap: () {
+                    //save room
+                  },
+                  width: 150,
+                  color: ColorPalette.primaryColor.withOpacity(0.75),
+                ),
               ),
               const Gap(10),
-              ModelButton(
-                name: 'DELETE',
-                onTap: () {
-                  //save room
-                },
-                width: 150,
-                color: ColorPalette.redColor,
+              Container(
+                alignment: Alignment.center,
+                child: ModelButton(
+                  name: 'CANCEL',
+                  onTap: () {
+                    //save room
+                  },
+                  width: 150,
+                  color: ColorPalette.redColor,
+                ),
               ),
               const Gap(50),
             ],
