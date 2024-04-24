@@ -272,7 +272,7 @@ class TextStyles {
     fontFamily: AppFonts.inter,
     fontWeight: FontWeight.w400,
     fontSize: 14,
-    color: Colors.black,
+    color: ColorPalette.rankText,
   );
   static const TextStyle noInternetTitle = TextStyle(
     fontFamily: AppFonts.poppins,
