@@ -13,6 +13,7 @@ import 'package:rental_room_app/Views/notification_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
 import 'package:rental_room_app/Views/receipt_detail_screen.dart';
 import 'package:rental_room_app/Views/register_form_screen.dart';
+import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/Views/report_screen.dart';
 import 'package:rental_room_app/Views/setting_screen.dart';
 import 'package:rental_room_app/Views/signup_screen.dart';
@@ -72,6 +73,12 @@ final GoRouter router = GoRouter(
           path: 'report',
           name: 'report',
           builder: (context, state) => const ReportScreen(key: Key('report')),
+        ),
+        GoRoute(
+          path: 'rental_form',
+          name: 'rental_form',
+          builder: (context, state) =>
+              const RentalFormScreen(key: Key('rental_form')),
         ),
       ],
     ),
