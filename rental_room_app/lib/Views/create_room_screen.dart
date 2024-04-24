@@ -399,8 +399,11 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                             const Gap(10),
                             Center(
                               child: GestureDetector(
-                                onTap: () => _createRoomPresenter
-                                    ?.selectImageFromGallery(),
+                                onTap: () {
+                                  _createRoomPresenter
+                                      ?.selectImageFromGallery();
+                                  state.didChange(_images);
+                                },
                                 child: Container(
                                   alignment: Alignment.center,
                                   width: 250,
@@ -911,7 +914,24 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                     name: 'CREATE',
                     onTap: () {
                       //TODO: save room
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        _createRoomPresenter?.createButtonPressed(
+                            _roomIdController.text,
+                            _kindController.text,
+                            _areaController.text,
+                            _locationController.text,
+                            _descriptionController.text,
+                            _images,
+                            _roomPriceController.text,
+                            _waterPriceController.text,
+                            _electricPriceController.text,
+                            _otherControler.text,
+                            _nameController.text,
+                            _phoneController.text,
+                            _emailController.text,
+                            _facebookController.text,
+                            _addressController.text);
+                      }
                     },
                     width: 150,
                     color: ColorPalette.primaryColor.withOpacity(0.75),
@@ -943,5 +963,46 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
     setState(() {
       _images.add(pickedImage);
     });
+  }
+
+  @override
+  void onCreateFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Cannot create your room! Please try again later!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onCreateSucceeded() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Your room has been added!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 }

@@ -1,11 +1,24 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:rental_room_app/Contract/create_room_contract.dart';
+import 'package:rental_room_app/Models/Price/price_model.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Models/Room/room_repo.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:string_validator/string_validator.dart';
 
 class CreateRoomPresenter {
   // ignore: unused_field
   final CreateRoomContract? _view;
   CreateRoomPresenter(this._view);
+  final UserRepository _userRepository = UserRepositoryIml();
+  final RoomRepository _roomRepository = RoomRepositoryIml();
+
+  //
+  //validate logic
+  //
 
   String? validateRoomId(String? value) {
     value = value?.trim();
@@ -200,7 +213,7 @@ class CreateRoomPresenter {
     return null;
   }
 
-    String? validateImage(List<String>? value) {
+  String? validateImage(List<String>? value) {
     if (value == null || value.isEmpty) {
       return "Please add at least one image!";
     }
@@ -217,5 +230,65 @@ class CreateRoomPresenter {
     if (pickedImage != null) {
       _view?.onChangeProfilePicture(pickedImage.path);
     }
+  }
+
+  Future<void> createButtonPressed(
+      String roomId,
+      String kind,
+      String area,
+      String location,
+      String description,
+      List<String> images,
+      String roomPrice,
+      String waterPrice,
+      String electricPrice,
+      String otherPrice,
+      String ownerName,
+      String ownerPhone,
+      String ownerEmail,
+      String ownerFacebook,
+      String ownerAddress) async {
+    //create data model
+    Price price = Price(
+        room: double.parse(roomPrice),
+        water: double.parse(waterPrice),
+        electric: double.parse(electricPrice),
+        others: double.parse(otherPrice));
+
+    //Upload Image and retrieve URLs
+    List<Uint8List> imagesData = [];
+    for (String image in images) {
+      Uint8List imageData = await File(image).readAsBytes();
+      imagesData.add(imageData);
+    }
+    _view?.onWaitingProgressBar();
+    List<String> imageUrls = await _roomRepository.uploadImages(
+        imagesData, _userRepository.userId ?? "owner_id", roomId);
+
+    //Upload room Data
+    Room room = Room(
+        roomId: roomId,
+        kind: kind,
+        area: double.parse(area),
+        location: location,
+        description: description,
+        imageUrls: imageUrls,
+        price: price,
+        ownerId: _userRepository.userId ?? '',
+        ownerName: ownerName,
+        ownerPhone: ownerPhone,
+        ownerEmail: ownerEmail,
+        ownerFacebook: ownerFacebook,
+        ownerAddress: ownerAddress,
+        isAvailable: true);
+    try {
+      await _roomRepository.uploadRoom(room);
+    } catch (e) {
+      _view?.onCreateFailed();
+      _view?.onPopContext();
+      return;
+    }
+    _view?.onCreateSucceeded();
+    _view?.onPopContext();
   }
 }

@@ -7,6 +7,7 @@ abstract class UserRepository {
   Stream<User?> get authStateChanges;
   Future<UserCredential> signInWithEmailAndPassword(
       String email, String password);
+  String? get userId;
 }
 
 class UserRepositoryIml implements UserRepository {
@@ -44,4 +45,7 @@ class UserRepositoryIml implements UserRepository {
     return await _auth.signInWithEmailAndPassword(
         email: email.trim(), password: password.trim());
   }
+  
+  @override
+  String? get userId => FirebaseAuth.instance.currentUser?.uid;
 }
