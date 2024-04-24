@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -9,6 +10,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -25,11 +27,104 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _passwordVisible = false;
+  bool _oldPasswordVisible = true;
+  bool _newPasswordVisible = true;
+  bool _confirmPasswordVisible = true;
+
+  late String userName;
+  late String userAvatarUrl;
+  late String email;
+
+  String? oldPasswordError;
+  String? newPasswordError;
+  String? confirmPasswordError;
+  String? _errorMessage;
+  String? currentPassword;
+
   @override
   void initState() {
     _changePasswordPresenter = ChangePasswordPresenter(this);
+    getUserInfoFromSharedPreferences();
     super.initState();
+  }
+
+  Future<void> getUserInfoFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('name') ?? 'Nguyen Van A';
+      userAvatarUrl = prefs.getString('avatar') ?? '';
+      email = prefs.getString('email') ?? 'nguyenvana@gmail.com';
+      currentPassword = prefs.getString('password');
+    });
+  }
+
+  void _changePassword() async {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return const Center(child: CircularProgressIndicator());
+          });
+      try {
+        if (_oldPasswordController.text != currentPassword) {
+          setState(() {
+            oldPasswordError = "Old password is incorrect.";
+          });
+
+          Navigator.of(context).pop();
+          return;
+        } else {
+          setState(() {
+            oldPasswordError = null;
+          });
+        }
+
+        if (_newPasswordController.text.length < 6) {
+          setState(() {
+            newPasswordError =
+                "New password must be at least 6 characters long.";
+          });
+
+          Navigator.of(context).pop();
+          return;
+        } else {
+          setState(() {
+            newPasswordError = null;
+          });
+        }
+
+        if (_newPasswordController.text != _confirmPasswordController.text) {
+          setState(() {
+            confirmPasswordError = "Confirm password does not match.";
+          });
+
+          Navigator.of(context).pop();
+          return;
+        } else {
+          setState(() {
+            confirmPasswordError = null;
+          });
+        }
+
+        await FirebaseAuth.instance.currentUser!
+            .updatePassword(_newPasswordController.text);
+      } catch (e) {
+        try {
+          AuthCredential credential = EmailAuthProvider.credential(
+            email: email,
+            password: _oldPasswordController.text,
+          );
+          await FirebaseAuth.instance.currentUser!
+              .reauthenticateWithCredential(credential);
+          await FirebaseAuth.instance.currentUser!
+              .updatePassword(_newPasswordController.text);
+        } on Exception catch (e) {
+          _errorMessage = e.toString();
+        }
+      }
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -71,7 +166,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
         resizeToAvoidBottomInset: true,
         backgroundColor: ColorPalette.backgroundColor,
         body: SingleChildScrollView(
-          reverse: true,
           child: Center(
             child: Container(
               color: ColorPalette.backgroundColor,
@@ -80,19 +174,35 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(40),
-                    const CircleAvatar(
-                      radius: 60,
-                      backgroundImage: AssetImage(AssetHelper.defaultAvatar),
+                    const Gap(45),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 132,
+                        width: 132,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: userAvatarUrl.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage(userAvatarUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : const DecorationImage(
+                                  image: AssetImage(AssetHelper.avatar),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
                     ),
-                    const Gap(20),
+                    const Gap(10),
                     Text(
-                      "Nguyen Nguoi Thue",
+                      userName,
                       style: TextStyles.h4.semibold.copyWith(
                           fontFamily: GoogleFonts.inter().fontFamily,
                           color: ColorPalette.primaryColor),
                     ),
-                    Text("aduvjppr0@gmail.com",
+                    const Gap(5),
+                    Text(email,
                         style: TextStyles.labelStaffDetail.regular.copyWith(
                             fontFamily: GoogleFonts.montserrat().fontFamily,
                             color: ColorPalette.detailBorder.withOpacity(0.7))),
@@ -113,6 +223,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: TextFormField(
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         controller: _oldPasswordController,
                         validator: _changePasswordPresenter?.validatePassword,
                         style: TextStyles.h6,
@@ -120,28 +232,39 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 2, color: ColorPalette.detailBorder),
+                              borderSide: BorderSide(
+                                  width: 1, color: ColorPalette.detailBorder),
                               borderRadius: BorderRadius.circular(20)),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
-                                  width: 3, color: ColorPalette.detailBorder),
+                                  width: 1, color: ColorPalette.primaryColor),
                               borderRadius: BorderRadius.circular(20)),
                           helperText: " ",
+                          errorText: oldPasswordError,
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           suffixIcon: IconButton(
-                            icon: Icon(_passwordVisible
+                            icon: Icon(_oldPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                             onPressed: () {
                               setState(
                                 () {
-                                  _passwordVisible = !_passwordVisible;
+                                  _oldPasswordVisible = !_oldPasswordVisible;
                                 },
                               );
                             },
                           ),
                         ),
-                        obscureText: _passwordVisible,
+                        obscureText: _oldPasswordVisible,
                         obscuringCharacter: '*',
                       ),
                     ),
@@ -162,6 +285,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: TextFormField(
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         controller: _newPasswordController,
                         validator: _changePasswordPresenter?.validatePassword,
                         style: TextStyles.h6,
@@ -169,28 +294,39 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 2, color: ColorPalette.detailBorder),
+                              borderSide: BorderSide(
+                                  width: 1, color: ColorPalette.detailBorder),
                               borderRadius: BorderRadius.circular(20)),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
-                                  width: 3, color: ColorPalette.detailBorder),
+                                  width: 1, color: ColorPalette.primaryColor),
                               borderRadius: BorderRadius.circular(20)),
                           helperText: " ",
+                          errorText: newPasswordError,
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           suffixIcon: IconButton(
-                            icon: Icon(_passwordVisible
+                            icon: Icon(_newPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                             onPressed: () {
                               setState(
                                 () {
-                                  _passwordVisible = !_passwordVisible;
+                                  _newPasswordVisible = !_newPasswordVisible;
                                 },
                               );
                             },
                           ),
                         ),
-                        obscureText: _passwordVisible,
+                        obscureText: _newPasswordVisible,
                         obscuringCharacter: '*',
                       ),
                     ),
@@ -211,6 +347,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: TextFormField(
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         controller: _confirmPasswordController,
                         validator: _changePasswordPresenter?.validatePassword,
                         style: TextStyles.h6,
@@ -218,35 +356,47 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
                           enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 2, color: ColorPalette.detailBorder),
+                              borderSide: BorderSide(
+                                  width: 1, color: ColorPalette.detailBorder),
                               borderRadius: BorderRadius.circular(20)),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
-                                  width: 3, color: ColorPalette.detailBorder),
+                                  width: 1, color: ColorPalette.primaryColor),
                               borderRadius: BorderRadius.circular(20)),
                           helperText: " ",
+                          errorText: confirmPasswordError,
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 1, color: ColorPalette.redColor),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           suffixIcon: IconButton(
-                            icon: Icon(_passwordVisible
+                            icon: Icon(_confirmPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                             onPressed: () {
                               setState(
                                 () {
-                                  _passwordVisible = !_passwordVisible;
+                                  _confirmPasswordVisible =
+                                      !_confirmPasswordVisible;
                                 },
                               );
                             },
                           ),
                         ),
-                        obscureText: _passwordVisible,
+                        obscureText: _confirmPasswordVisible,
                         obscuringCharacter: '*',
                       ),
                     ),
                     const Gap(20),
                     ModelButton(
                         onTap: () {
-                          //TODO: save ontap handle
+                          _changePassword();
                         },
                         name: "Change",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
@@ -254,12 +404,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
                     const Gap(10),
                     ModelButton(
                         onTap: () {
-                          //TODO: cancel ontap handle
+                          context.pop();
                         },
                         name: "Cancel",
                         color: ColorPalette.redColor.withOpacity(0.75),
                         width: 150),
-                    const Gap(30),
+                    const Gap(60),
                   ],
                 ),
               ),

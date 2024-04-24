@@ -1,48 +1,48 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:rental_room_app/Contract/edit_profile_contract.dart';
-import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
-import 'package:rental_room_app/Presenter/edit_profile_presenter.dart';
-import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
-import 'package:rental_room_app/config/asset_helper.dart';
+import 'package:rental_room_app/Contract/rental_form_contract.dart';
+import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
+import 'package:rental_room_app/widgets/numeric_up_down.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+class RentalFormScreen extends StatefulWidget {
+  const RentalFormScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<RentalFormScreen> createState() => _RentalFormScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen>
-    implements EditProfileContract, SharedPreferencesContract {
-  SharedPreferencesPresenter? _preferencesPresenter;
-  EditProfilePresenter? _editProfilePresenter;
+class _RentalFormScreenState extends State<RentalFormScreen>
+    implements RentalFormContract {
+  RentalFormPresenter? _rentalFormPresenter;
   final _formKey = GlobalKey<FormState>();
 
-  final _fullnameTextController = TextEditingController();
+  //
+  //params controllers
+  //
 
-  String? _gender;
+  final TextEditingController _roomIdController = TextEditingController();
+  final _guestNameController = TextEditingController();
+  String _gender = "";
+  final _phoneNumberController = TextEditingController();
+  final _citizenIdentificationController = TextEditingController();
+  final _emailController = TextEditingController();
+  DateTime? _birthday = DateTime.now();
+  final _numberOfPeopleController = TextEditingController();
+  DateTime? _startDate = DateTime.now();
+  final _durationController = TextEditingController();
+  final _depositController = TextEditingController();
+  final _facebookController = TextEditingController();
 
-  String _userName = "nguyen van a";
-  String _email = "nguyenvana@gmail.com";
-  String _userAvatarUrl = '';
-
-  // ignore: unused_field
-  DateTime? _birthday;
   @override
   void initState() {
     super.initState();
-    _editProfilePresenter = EditProfilePresenter(this);
-    _preferencesPresenter = SharedPreferencesPresenter(this);
-    _preferencesPresenter?.getUserInfoFromSharedPreferences();
+    _rentalFormPresenter = RentalFormPresenter(this);
   }
 
   @override
@@ -51,28 +51,29 @@ class _EditProfileScreenState extends State<EditProfileScreen>
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: ColorPalette.primaryColor,
+          backgroundColor: ColorPalette.backgroundColor,
           // leadingWidth: kDefaultIconSize * 3,
           leading: SizedBox(
             width: double.infinity,
             child: InkWell(
               customBorder: const CircleBorder(),
               onHighlightChanged: (param) {},
-              splashColor: ColorPalette.primaryColor,
+              splashColor: ColorPalette.blackText,
               onTap: () => context.pop(),
               child: const Icon(
                 FontAwesomeIcons.arrowLeft,
-                color: ColorPalette.backgroundColor,
+                color: ColorPalette.primaryColor,
                 shadows: [Shadow(color: Colors.black12, offset: Offset(3, 6))],
               ),
             ),
           ),
-          title: Text('EDIT PROFILE',
+          title: Text('Rental Form',
               style: TextStyles.slo.bold.copyWith(
+                color: ColorPalette.primaryColor,
                 shadows: [
                   const Shadow(
                     color: Colors.black12,
-                    offset: Offset(3, 6),
+                    offset: Offset(3, 3),
                     blurRadius: 6,
                   )
                 ],
@@ -91,44 +92,37 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Gap(45),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: 132,
-                        width: 132,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: _userAvatarUrl.isNotEmpty
-                              ? DecorationImage(
-                                  image: NetworkImage(_userAvatarUrl),
-                                  fit: BoxFit.cover,
-                                )
-                              : const DecorationImage(
-                                  image: AssetImage(AssetHelper.avatar),
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                      ),
-                    ),
-                    const Gap(10),
-                    Text(
-                      _userName,
-                      style: TextStyles.title,
-                    ),
-                    Text(
-                      _email,
-                      style: TextStyles.descriptionRoom.copyWith(
-                        fontSize: 16,
-                      ),
-                    ),
                     const Gap(30),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: Row(
                         children: [
                           Text(
-                            "Full Name",
+                            "Room ID",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator: _rentalFormPresenter!.validateRoomId,
+                        editingController: _roomIdController,
+                        keyboardType: TextInputType.text,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Guest Name",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
                           )
@@ -140,8 +134,8 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
                         stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
+                            _rentalFormPresenter!.validateGuestName,
+                        editingController: _guestNameController,
                         keyboardType: TextInputType.name,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
@@ -164,7 +158,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.genderFormField(
-                        stringValidator: _editProfilePresenter!.validateGender,
+                        stringValidator: _rentalFormPresenter!.validateGender,
                         gender: _gender,
                         onChangedString: (value) {
                           setState(() {
@@ -190,9 +184,8 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
+                        stringValidator: _rentalFormPresenter!.validatePhoneNum,
+                        editingController: _phoneNumberController,
                         keyboardType: TextInputType.phone,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
@@ -216,9 +209,33 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
                         stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
+                            _rentalFormPresenter!.validateIdentification,
+                        editingController: _citizenIdentificationController,
                         keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Email Address",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator: _rentalFormPresenter!.validateEmail,
+                        editingController: _emailController,
+                        keyboardType: TextInputType.emailAddress,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
                       ),
@@ -241,13 +258,104 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.dateFormField(
                         dateTimeValidator:
-                            _editProfilePresenter!.validateBirthday,
+                            _rentalFormPresenter!.validateBirthday,
                         style: TextStyles.h6.italic,
                         onChangedDateTime: (value) {
                           setState(() {
                             _birthday = value;
                           });
                         },
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Number of People",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: NumericUpDown(
+                        controller: _numberOfPeopleController,
+                      ),
+                    ),
+                    const Gap(20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Start Date",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.dateFormField(
+                        dateTimeValidator:
+                            _rentalFormPresenter!.validateStartDate,
+                        style: TextStyles.h6.italic,
+                        onChangedDateTime: (value) {
+                          setState(() {
+                            _startDate = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Duration",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: NumericUpDown(
+                        controller: _durationController,
+                      ),
+                    ),
+                    const Gap(20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Deposit",
+                            style: TextStyles.timenotifi.medium
+                                .copyWith(color: ColorPalette.darkBlueText),
+                          )
+                        ],
+                      ),
+                    ),
+                    const Gap(5),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: CustomFormField.textFormField(
+                        stringValidator: _rentalFormPresenter!.validateDeposit,
+                        editingController: _depositController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: TextStyles.h6.italic,
                       ),
                     ),
                     const Gap(5),
@@ -267,9 +375,8 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
+                        stringValidator: _rentalFormPresenter!.validateFacebook,
+                        editingController: _facebookController,
                         keyboardType: TextInputType.url,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
@@ -280,7 +387,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         onTap: () {
                           //TODO: save ontap handle
                         },
-                        name: "Save",
+                        name: "Send",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
                         width: 150),
                     const Gap(10),
@@ -292,25 +399,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         color: ColorPalette.redColor.withOpacity(0.75),
                         width: 150),
                     const Gap(30),
-                    RichText(
-                      text: TextSpan(style: TextStyles.h6, children: <TextSpan>[
-                        TextSpan(
-                            text: "Do you want to change password? ",
-                            style: TextStyles.h6.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily)),
-                        TextSpan(
-                            text: "Change Password!",
-                            style: TextStyles.h6.copyWith(
-                                fontFamily: GoogleFonts.ntr().fontFamily,
-                                color: ColorPalette.greenText),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                GoRouter.of(context).go(
-                                    '/setting/edit_profile/change_password');
-                              })
-                      ]),
-                    ),
-                    const Gap(60),
                   ],
                 ),
               ),
@@ -318,16 +406,6 @@ class _EditProfileScreenState extends State<EditProfileScreen>
           ),
         ),
       );
-    });
-  }
-
-  @override
-  void updateView(
-      String? userName, bool? isOwner, String? userAvatarUrl, String? email) {
-    setState(() {
-      _userName = userName ?? _userName;
-      _userAvatarUrl = userAvatarUrl ?? _userAvatarUrl;
-      _email = email ?? _email;
     });
   }
 }
