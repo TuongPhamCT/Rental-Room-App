@@ -18,4 +18,7 @@ class AssetHelper {
   static const String subOne = '${imgAssets}sub_one.jpeg';
   static const String subTwo = '${imgAssets}sub_two.jpeg';
   static const String subThree = '${imgAssets}sub_three.jpeg';
+
+  //no internet
+  static const String noInternet = '${imgAssets}noInternet.png';
 }
