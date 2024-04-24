@@ -28,6 +28,7 @@ class LoginPresenter {
           'birthDay', (userData['birthDay'] as Timestamp).toDate().toString());
       prefs.setString('gender', userData['gender'] as String);
       prefs.setBool('isOwner', userData['isOwner'] as bool);
+      prefs.setString('password', password);
 
       String? avatar = userCredential.user!.photoURL;
       prefs.setString('avatar', avatar ?? '');

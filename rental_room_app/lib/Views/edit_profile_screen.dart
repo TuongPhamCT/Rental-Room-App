@@ -305,7 +305,8 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                                 color: ColorPalette.greenText),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                GoRouter.of(context).go('/home');
+                                GoRouter.of(context).go(
+                                    '/setting/edit_profile/change_password');
                               })
                       ]),
                     ),
