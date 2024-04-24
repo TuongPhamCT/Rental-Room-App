@@ -244,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       GestureDetector(
                         onTap: () {
-                          GoRouter.of(context).go('/create_room');
+                          GoRouter.of(context).go('/nointernet');
                         },
                         child: const Row(
                           children: [

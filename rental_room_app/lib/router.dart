@@ -10,6 +10,7 @@ import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/Views/list_notification_screen.dart';
 import 'package:rental_room_app/Views/login_screen.dart';
+import 'package:rental_room_app/Views/no_internet_page.dart';
 import 'package:rental_room_app/Views/notification_screen.dart';
 import 'package:rental_room_app/Views/pincode_screen.dart';
 import 'package:rental_room_app/Views/receipt_detail_screen.dart';
@@ -130,6 +131,11 @@ final GoRouter router = GoRouter(
               const NotificationScreen(key: Key('notification')),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/nointernet',
+      name: 'nointernet',
+      builder: (context, state) => const NoInternetPage(key: Key('nointernet')),
     ),
   ],
 );

@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rental_room_app/Views/no_internet_page.dart';
 import 'package:rental_room_app/config/firebase_options.dart';
+import 'package:rental_room_app/widgets/dependency_injection.dart';
 import 'router.dart';
 
 void main() async {
@@ -11,6 +14,7 @@ void main() async {
   );
 
   runApp(const MyApp());
+  DependencyInjection.init();
 }
 
 class MyApp extends StatelessWidget {
@@ -18,10 +22,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return GetMaterialApp(
       title: 'Like House',
       debugShowCheckedModeBanner: false,
-      routerConfig: router,
+      home: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+      ),
     );
   }
 }

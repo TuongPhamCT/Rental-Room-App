@@ -274,6 +274,18 @@ class TextStyles {
     fontSize: 14,
     color: Colors.black,
   );
+  static const TextStyle noInternetTitle = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.bold,
+    fontSize: 20,
+    color: Colors.black,
+  );
+  static const TextStyle noInternetDes = TextStyle(
+    fontFamily: AppFonts.lexend,
+    fontWeight: FontWeight.w300,
+    fontSize: 13,
+    color: Colors.black,
+  );
 }
 
 // How to use?
