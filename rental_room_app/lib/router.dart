@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Views/all_room_screen.dart';
+import 'package:rental_room_app/Views/change_password_screen.dart';
 import 'package:rental_room_app/Views/edit_profile_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
@@ -106,6 +107,14 @@ final GoRouter router = GoRouter(
           name: 'edit_profile',
           builder: (context, state) =>
               const EditProfileScreen(key: Key('edit_profile')),
+          routes: [
+            GoRoute(
+              path: 'change_password',
+              name: 'change_password',
+              builder: (context, state) =>
+                  const ChangePasswordScreen(key: Key('change_password')),
+            ),
+          ],
         ),
         GoRoute(
           path: 'notification',

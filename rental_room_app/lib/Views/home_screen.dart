@@ -305,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen>
                   'Home',
                   style: TextStyles.bottomBar,
                 )),
-            if (_isOwner)
+            if (!_isOwner)
               SalomonBottomBarItem(
                   icon: const Icon(
                     FontAwesomeIcons.doorOpen,
