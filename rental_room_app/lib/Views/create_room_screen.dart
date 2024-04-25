@@ -71,7 +71,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Room ID:',
+                    'Room Name:',
                     style: TextStyles.roomProps,
                   ),
                   SizedBox(
