@@ -173,6 +173,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
               borderSide:
                   const BorderSide(width: 1, color: ColorPalette.primaryColor),
               borderRadius: BorderRadius.circular(20)),
+          errorBorder: OutlineInputBorder(
+              borderSide:
+                  const BorderSide(width: 1, color: ColorPalette.errorColor),
+              borderRadius: BorderRadius.circular(20)),
           helperText: " ",
         ),
       );
@@ -202,6 +206,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
         focusedBorder: OutlineInputBorder(
             borderSide:
                 const BorderSide(width: 1, color: ColorPalette.primaryColor),
+            borderRadius: BorderRadius.circular(20)),
+        errorBorder: OutlineInputBorder(
+            borderSide:
+                const BorderSide(width: 1, color: ColorPalette.errorColor),
             borderRadius: BorderRadius.circular(20)),
         helperText: " ",
         suffixIcon: widget.surfixIcon,

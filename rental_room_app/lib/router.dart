@@ -89,6 +89,12 @@ final GoRouter router = GoRouter(
           builder: (context, state) =>
               const EditFormScreen(key: Key('edit_form')),
         ),
+        GoRoute(
+          path: 'create_room',
+          name: 'create_room',
+          builder: (context, state) =>
+              const CreateRoomScreen(key: Key('create_room')),
+        ),
       ],
     ),
     GoRoute(
@@ -112,12 +118,6 @@ final GoRouter router = GoRouter(
       name: 'notification_list',
       builder: (context, state) =>
           const ListNotificationScreen(key: Key('notification_list')),
-    ),
-    GoRoute(
-      path: '/create_room',
-      name: 'create_room',
-      builder: (context, state) =>
-          const CreateRoomScreen(key: Key('create_room')),
     ),
     GoRoute(
       path: '/setting',

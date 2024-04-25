@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rental_room_app/Views/no_internet_page.dart';
 import 'package:rental_room_app/config/firebase_options.dart';
 import 'package:rental_room_app/widgets/dependency_injection.dart';
 import 'router.dart';
