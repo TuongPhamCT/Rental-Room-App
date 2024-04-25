@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
               width: size.width,
               child: GestureDetector(
                 onTap: () {
-                  GoRouter.of(context).go('/setting/edit_profile');
+                  GoRouter.of(context).go('/home/rental_form');
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -294,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       GestureDetector(
                         onTap: () {
-                          GoRouter.of(context).go('/edit_room');
+                          GoRouter.of(context).go('/home/create_room');
                         },
                         child: const Row(
                           children: [
