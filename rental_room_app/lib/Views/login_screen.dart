@@ -29,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   bool _isChecked = false;
 
+  BuildContext? progressbarContext;
+
   @override
   void initState() {
     _loginPresenter = LoginPresenter(this);
@@ -258,13 +260,14 @@ class _LoginScreenState extends State<LoginScreen>
         context: context,
         barrierDismissible: false,
         builder: (context) {
+          progressbarContext = context;
           return const Center(child: CircularProgressIndicator());
         });
   }
 
   @override
   void onPopContext() {
-    Navigator.of(context).pop();
+    Navigator.of(progressbarContext??context).pop();
   }
 
   @override
