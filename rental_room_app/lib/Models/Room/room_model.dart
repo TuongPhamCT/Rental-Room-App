@@ -9,11 +9,13 @@ class Room {
   static const String documentId = 'Rooms';
 
   String roomId;
+  String roomName;
   String kind;
   double area;
   String location;
   String description;
-  List<String> imageUrls;
+  String primaryImgUrl;
+  List<String> secondaryImgUrls;
   Price price;
   String ownerId;
   String ownerName;
@@ -25,11 +27,13 @@ class Room {
 
   Room(
       {required this.roomId,
+      required this.roomName,
       required this.kind,
       required this.area,
       required this.location,
       required this.description,
-      required this.imageUrls,
+      required this.primaryImgUrl,
+      required this.secondaryImgUrls,
       required this.price,
       required this.ownerId,
       required this.ownerName,
@@ -43,11 +47,13 @@ class Room {
   Map<String, dynamic> toJson() {
     return {
       'roomId': roomId,
+      'roomName': roomName,
       'kind': kind,
       'area': area,
       'location': location,
       'description': description,
-      'imageUrls': imageUrls,
+      'primaryImgUrl': primaryImgUrl,
+      'secondaryImgUrls': secondaryImgUrls,
       'price': price.toJson(),
       'ownerId': ownerId,
       'ownerName': ownerName,
@@ -63,11 +69,13 @@ class Room {
     Map data = doc.data() as Map<String, dynamic>;
     return Room(
         roomId: data['roomId'],
+        roomName: data['roomName'],
         kind: data['kind'],
         area: data['area'],
         location: data['location'],
         description: data['description'],
-        imageUrls: data['imageUrls']?.cast<String>(),
+        primaryImgUrl: data['primaryImgUrls'],
+        secondaryImgUrls: data['secondaryImgUrls']?.cast<String>(),
         price: Price.fromFirestore(data['price']),
         ownerId: data['ownerId'],
         ownerName: data['ownerName'],
