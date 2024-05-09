@@ -21,4 +21,7 @@ class AssetHelper {
 
   //no internet
   static const String noInternet = '${imgAssets}noInternet.png';
+
+  //room item
+  static const String iconRoomKind = '${iconAssets}ico_typeroom.png';
 }

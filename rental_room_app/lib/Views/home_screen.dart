@@ -3,11 +3,14 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Models/Room/room_repo.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
+import 'package:rental_room_app/widgets/room_item.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +30,10 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isOwner = true;
   String _userAvatarUrl = '';
   bool isVisiable = false;
+  String? searchValue;
+  bool isVisibleFilter = false;
+
+  late List<Room> roomAvailable;
 
   @override
   void initState() {
@@ -89,101 +96,152 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             const Gap(20),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isVisiable = !isVisiable;
-                });
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    FontAwesomeIcons.filter,
-                    color: ColorPalette.greenText,
-                    size: 15,
-                  ),
-                  const Gap(10),
-                  Text(
-                    'Filter',
-                    style: TextStyles.titleHeading.copyWith(fontSize: 12),
-                  ),
-                ],
-              ),
+            SizedBox(
+              height: 42,
+              width: double.infinity,
+              child: TextField(
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      searchValue = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: ColorPalette.primaryColor, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: ColorPalette.primaryColor, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.only(top: 4),
+                    prefixIcon: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {},
+                      child: const Icon(
+                        FontAwesomeIcons.magnifyingGlass,
+                        size: 16,
+                        color: ColorPalette.greenText,
+                      ),
+                    ),
+                    suffixIcon: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () {
+                        setState(() {
+                          isVisibleFilter = !isVisibleFilter;
+                        });
+                      },
+                      child: const Icon(
+                        FontAwesomeIcons.barsProgress,
+                        size: 16,
+                        color: ColorPalette.primaryColor,
+                      ),
+                    ),
+                    hintText: 'Search',
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
+                      color: ColorPalette.grayText,
+                    ),
+                  )),
             ),
-            const Gap(10),
+            const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: isVisiable,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                visible: isVisibleFilter,
+                child: Column(
                   children: [
-                    FilterContainerWidget(
-                      name: 'Area',
-                      icon1: const Icon(
-                        FontAwesomeIcons.arrowUp,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      icon2: const Icon(
-                        FontAwesomeIcons.arrowDown,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      onTapIconDown: () {},
-                      onTapIconUp: () {},
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          FontAwesomeIcons.filter,
+                          color: ColorPalette.greenText,
+                          size: 15,
+                        ),
+                        const Gap(10),
+                        Text(
+                          'Filter',
+                          style: TextStyles.titleHeading.copyWith(fontSize: 12),
+                        ),
+                      ],
                     ),
-                    FilterContainerWidget(
-                      name: 'Distance',
-                      icon1: const Icon(
-                        FontAwesomeIcons.arrowUp,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      icon2: const Icon(
-                        FontAwesomeIcons.arrowDown,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      onTapIconDown: () {},
-                    ),
-                    FilterContainerWidget(
-                      name: 'Price',
-                      icon1: const Icon(
-                        FontAwesomeIcons.arrowUp,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      icon2: const Icon(
-                        FontAwesomeIcons.arrowDown,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      onTapIconDown: () {},
-                    ),
-                    FilterContainerWidget(
-                      name: 'Rate',
-                      icon1: const Icon(
-                        FontAwesomeIcons.arrowUp,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      icon2: const Icon(
-                        FontAwesomeIcons.arrowDown,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      onTapIconDown: () {},
-                    ),
-                    FilterContainerWidget(
-                      name: 'Kind',
-                      icon1: const Icon(
-                        FontAwesomeIcons.angleDown,
-                        color: ColorPalette.primaryColor,
-                        size: 10,
-                      ),
-                      onTapIconDown: () {},
+                    const Gap(10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FilterContainerWidget(
+                          name: 'Area',
+                          icon1: const Icon(
+                            FontAwesomeIcons.arrowUp,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          icon2: const Icon(
+                            FontAwesomeIcons.arrowDown,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          onTapIconDown: () {},
+                          onTapIconUp: () {},
+                        ),
+                        FilterContainerWidget(
+                          name: 'Distance',
+                          icon1: const Icon(
+                            FontAwesomeIcons.arrowUp,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          icon2: const Icon(
+                            FontAwesomeIcons.arrowDown,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          onTapIconDown: () {},
+                        ),
+                        FilterContainerWidget(
+                          name: 'Price',
+                          icon1: const Icon(
+                            FontAwesomeIcons.arrowUp,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          icon2: const Icon(
+                            FontAwesomeIcons.arrowDown,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          onTapIconDown: () {},
+                        ),
+                        FilterContainerWidget(
+                          name: 'Rate',
+                          icon1: const Icon(
+                            FontAwesomeIcons.arrowUp,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          icon2: const Icon(
+                            FontAwesomeIcons.arrowDown,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          onTapIconDown: () {},
+                        ),
+                        FilterContainerWidget(
+                          name: 'Kind',
+                          icon1: const Icon(
+                            FontAwesomeIcons.angleDown,
+                            color: ColorPalette.primaryColor,
+                            size: 10,
+                          ),
+                          onTapIconDown: () {},
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -263,10 +321,40 @@ class _HomeScreenState extends State<HomeScreen>
                       )
                     ],
                   ),
-                  const Gap(10),
                 ],
               ),
-            )
+            ),
+            const Gap(20),
+            Container(
+              child: Expanded(
+                child: StreamBuilder<List<Room>>(
+                  stream: RoomRepositoryIml().getRooms(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Something went wrong! ${snapshot.error}'),
+                      );
+                    } else if (snapshot.hasData) {
+                      roomAvailable = snapshot.data!;
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 20,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemBuilder: (context, index) => RoomItem(
+                          room: roomAvailable[index],
+                        ),
+                        itemCount:
+                            roomAvailable.length < 6 ? roomAvailable.length : 6,
+                      );
+                    } else
+                      return Container();
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),

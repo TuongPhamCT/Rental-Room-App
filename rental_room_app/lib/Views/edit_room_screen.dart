@@ -85,7 +85,7 @@ class _EditRoomScreenState extends State<EditRoomScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Room ID:',
+                    'Room Name:',
                     style: TextStyles.roomProps,
                   ),
                   SizedBox(

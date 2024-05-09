@@ -22,8 +22,7 @@ class Price {
     };
   }
 
-  factory Price.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+  factory Price.fromFirestore(Map<String, dynamic> data) {
     return Price(
       room: data['room'],
       water: data['water'],
@@ -31,4 +30,5 @@ class Price {
       others: data['others'],
     );
   }
+  double get roomPrice => room;
 }
