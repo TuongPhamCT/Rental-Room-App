@@ -20,7 +20,7 @@ class CreateRoomPresenter {
   //validate logic
   //
 
-  String? validateRoomId(String? value) {
+  String? validateRoomName(String? value) {
     value = value?.trim();
 
     if (value == null || value == "") {
@@ -233,7 +233,7 @@ class CreateRoomPresenter {
   }
 
   Future<void> createButtonPressed(
-      String roomId,
+      String roomName,
       String kind,
       String area,
       String location,
@@ -263,16 +263,20 @@ class CreateRoomPresenter {
     }
     _view?.onWaitingProgressBar();
     List<String> imageUrls = await _roomRepository.uploadImages(
-        imagesData, _userRepository.userId ?? "owner_id", roomId);
+        imagesData, _userRepository.userId ?? "owner_id", roomName);
 
     //Upload room Data
+    String primaryImgUrl = imageUrls.first;
+    List<String> secondaryImgUrls = imageUrls.sublist(1);
     Room room = Room(
-        roomId: roomId,
+        roomId: "",
+        roomName: roomName,
         kind: kind,
         area: double.parse(area),
         location: location,
         description: description,
-        imageUrls: imageUrls,
+        primaryImgUrl: primaryImgUrl,
+        secondaryImgUrls: secondaryImgUrls,
         price: price,
         ownerId: _userRepository.userId ?? '',
         ownerName: ownerName,

@@ -23,12 +23,18 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
   CreateRoomPresenter? _createRoomPresenter;
   final _formKey = GlobalKey<FormState>();
 
+  final List<String> _roomKinds = <String>[
+    'Standard Room',
+    'Loft Room',
+    'House'
+  ];
+
   //
   //Params Controllers
   //
 
   final _roomIdController = TextEditingController();
-  final _kindController = TextEditingController();
+  String _roomKind = '';
   final _areaController = TextEditingController();
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -47,6 +53,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
   @override
   void initState() {
     super.initState();
+    _roomKind = _roomKinds.first;
     _createRoomPresenter = CreateRoomPresenter(this);
   }
 
@@ -108,15 +115,22 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Room ID:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Room name',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
-                      width: size.width - 140,
+                      width: size.width - 150,
                       child: TextFormField(
                         controller: _roomIdController,
-                        validator: _createRoomPresenter?.validateRoomId,
+                        validator: _createRoomPresenter?.validateRoomName,
                         cursorColor: Colors.black,
                         style: TextStyles.roomPropsContent,
                         scrollPadding: const EdgeInsets.all(0),
@@ -155,44 +169,40 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Kind:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Kind',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
-                      width: size.width - 140,
-                      child: TextFormField(
-                        controller: _kindController,
-                        validator: _createRoomPresenter?.validateKind,
-                        cursorColor: Colors.black,
+                      width: size.width - 150,
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: _roomKind,
+                        elevation: 16,
                         style: TextStyles.roomPropsContent,
-                        scrollPadding: const EdgeInsets.all(0),
-                        maxLines: null,
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textAlign: TextAlign.justify,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.detailBorder,
-                            ),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.primaryColor,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                            left: 0,
-                            right: 0,
-                            top: 5,
-                            bottom: 0,
-                          ),
-                          hintText: 'Example: Standard',
-                          hintStyle: TextStyles.descriptionRoom.copyWith(
-                              color: ColorPalette.rankText.withOpacity(0.5)),
+                        underline: Container(
+                          height: 1,
+                          color: ColorPalette.detailBorder,
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            _roomKind = value!;
+                          });
+                        },
+                        items:
+                            _roomKinds.map<DropdownMenuItem<String>>((value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
@@ -202,12 +212,19 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Area:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Area',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
-                      width: size.width - 140,
+                      width: size.width - 150,
                       child: TextFormField(
                         controller: _areaController,
                         validator: _createRoomPresenter?.validateArea,
@@ -250,12 +267,19 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Location:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Location',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
-                      width: size.width - 140,
+                      width: size.width - 150,
                       child: TextFormField(
                         controller: _locationController,
                         validator: _createRoomPresenter?.validateLocation,
@@ -296,9 +320,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                 const Gap(5),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
-                    'Description:',
-                    style: TextStyles.roomProps,
+                  child: RichText(
+                    text: TextSpan(
+                        text: 'Description',
+                        style: TextStyles.roomProps,
+                        children: [
+                          TextSpan(
+                              text: ' *',
+                              style: TextStyles.roomProps
+                                  .copyWith(color: ColorPalette.redColor))
+                        ]),
                   ),
                 ),
                 TextFormField(
@@ -337,9 +368,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                 const Gap(10),
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
-                    'Pictures:',
-                    style: TextStyles.roomProps,
+                  child: RichText(
+                    text: TextSpan(
+                        text: 'Pictures',
+                        style: TextStyles.roomProps,
+                        children: [
+                          TextSpan(
+                              text: ' *',
+                              style: TextStyles.roomProps
+                                  .copyWith(color: ColorPalette.redColor))
+                        ]),
                   ),
                 ),
                 const Gap(10),
@@ -430,237 +468,256 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                 ),
                 const Gap(10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Room:',
-                            style: TextStyles.roomProps,
-                          ),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Room',
+                              style: TextStyles.roomProps,
+                              children: [
+                                TextSpan(
+                                    text: ' *',
+                                    style: TextStyles.roomProps
+                                        .copyWith(color: ColorPalette.redColor))
+                              ]),
                         ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Water:',
-                            style: TextStyles.roomProps,
-                          ),
-                        ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Electric:',
-                            style: TextStyles.roomProps,
-                          ),
-                        ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Other:',
-                            style: TextStyles.roomProps,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: size.width - 200,
-                          child: TextFormField(
-                            controller: _roomPriceController,
-                            validator: _createRoomPresenter?.validateRoomPrice,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.black,
-                            style: TextStyles.roomPropsContent,
-                            scrollPadding: const EdgeInsets.all(0),
-                            maxLines: null,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            textAlign: TextAlign.justify,
-                            decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.detailBorder,
-                                ),
+                      ),
+                      const Gap(1),
+                      SizedBox(
+                        width: size.width - 215,
+                        child: TextFormField(
+                          controller: _roomPriceController,
+                          validator: _createRoomPresenter?.validateRoomPrice,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.black,
+                          style: TextStyles.roomPropsContent,
+                          scrollPadding: const EdgeInsets.all(0),
+                          maxLines: null,
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          textAlign: TextAlign.justify,
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.detailBorder,
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.primaryColor,
-                                ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.primaryColor,
                               ),
-                              contentPadding: EdgeInsets.only(
-                                left: 5,
-                                right: 5,
-                                top: 0,
-                                bottom: 13,
-                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 5,
+                              right: 0,
+                              top: 5,
+                              bottom: 0,
                             ),
                           ),
                         ),
-                        const Gap(5),
-                        SizedBox(
-                          width: size.width - 200,
-                          child: TextFormField(
-                            controller: _waterPriceController,
-                            validator: _createRoomPresenter?.validateWaterPrice,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.black,
-                            style: TextStyles.roomPropsContent,
-                            scrollPadding: const EdgeInsets.all(0),
-                            maxLines: null,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            textAlign: TextAlign.justify,
-                            decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.detailBorder,
-                                ),
+                      ),
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerRight,
+                        child: const Text(
+                          'VND/Month',
+                          style: TextStyles.roomPropsContent,
+                        ),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Water',
+                              style: TextStyles.roomProps,
+                              children: [
+                                TextSpan(
+                                    text: ' *',
+                                    style: TextStyles.roomProps
+                                        .copyWith(color: ColorPalette.redColor))
+                              ]),
+                        ),
+                      ),
+                      SizedBox(
+                        width: size.width - 200,
+                        child: TextFormField(
+                          controller: _waterPriceController,
+                          validator: _createRoomPresenter?.validateWaterPrice,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.black,
+                          style: TextStyles.roomPropsContent,
+                          scrollPadding: const EdgeInsets.all(0),
+                          maxLines: null,
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          textAlign: TextAlign.justify,
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.detailBorder,
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.primaryColor,
-                                ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.primaryColor,
                               ),
-                              contentPadding: EdgeInsets.only(
-                                left: 5,
-                                right: 5,
-                                top: 0,
-                                bottom: 13,
-                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 5,
+                              right: 0,
+                              top: 5,
+                              bottom: 0,
                             ),
                           ),
                         ),
-                        const Gap(5),
-                        SizedBox(
-                          width: size.width - 200,
-                          child: TextFormField(
-                            controller: _electricPriceController,
-                            validator:
-                                _createRoomPresenter?.validateElectricPrice,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.black,
-                            style: TextStyles.roomPropsContent,
-                            scrollPadding: const EdgeInsets.all(0),
-                            maxLines: null,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            textAlign: TextAlign.justify,
-                            decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.detailBorder,
-                                ),
+                      ),
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          'VND/m3',
+                          style: TextStyles.roomPropsContent,
+                        ),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Electric',
+                              style: TextStyles.roomProps,
+                              children: [
+                                TextSpan(
+                                    text: ' *',
+                                    style: TextStyles.roomProps
+                                        .copyWith(color: ColorPalette.redColor))
+                              ]),
+                        ),
+                      ),
+                      SizedBox(
+                        width: size.width - 200,
+                        child: TextFormField(
+                          controller: _electricPriceController,
+                          validator:
+                              _createRoomPresenter?.validateElectricPrice,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.black,
+                          style: TextStyles.roomPropsContent,
+                          scrollPadding: const EdgeInsets.all(0),
+                          maxLines: null,
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          textAlign: TextAlign.justify,
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.detailBorder,
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.primaryColor,
-                                ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.primaryColor,
                               ),
-                              contentPadding: EdgeInsets.only(
-                                left: 5,
-                                right: 5,
-                                top: 0,
-                                bottom: 13,
-                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 5,
+                              right: 0,
+                              top: 5,
+                              bottom: 0,
                             ),
                           ),
                         ),
-                        const Gap(5),
-                        SizedBox(
-                          width: size.width - 200,
-                          child: TextFormField(
-                            controller: _otherControler,
-                            validator: _createRoomPresenter?.validateOtherPrice,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.black,
-                            style: TextStyles.roomPropsContent,
-                            scrollPadding: const EdgeInsets.all(0),
-                            maxLines: null,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            textAlign: TextAlign.justify,
-                            decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.detailBorder,
-                                ),
+                      ),
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          'VND/kWh',
+                          style: TextStyles.roomPropsContent,
+                        ),
+                      ),
+                    ]),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Other',
+                              style: TextStyles.roomProps,
+                              children: [
+                                TextSpan(
+                                    text: ' *',
+                                    style: TextStyles.roomProps
+                                        .copyWith(color: ColorPalette.redColor))
+                              ]),
+                        ),
+                      ),
+                      const Gap(1),
+                      SizedBox(
+                        width: size.width - 215,
+                        child: TextFormField(
+                          controller: _otherControler,
+                          validator: _createRoomPresenter?.validateOtherPrice,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.black,
+                          style: TextStyles.roomPropsContent,
+                          scrollPadding: const EdgeInsets.all(0),
+                          maxLines: null,
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          textAlign: TextAlign.justify,
+                          decoration: const InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.detailBorder,
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: ColorPalette.primaryColor,
-                                ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: ColorPalette.primaryColor,
                               ),
-                              contentPadding: EdgeInsets.only(
-                                left: 5,
-                                right: 5,
-                                top: 0,
-                                bottom: 13,
-                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 5,
+                              right: 0,
+                              top: 5,
+                              bottom: 0,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'VND/Month',
-                            style: TextStyles.roomPropsContent,
-                          ),
+                      ),
+                      Container(
+                        width: null,
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          'VND/Month',
+                          style: TextStyles.roomPropsContent,
                         ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'VND/m3',
-                            style: TextStyles.roomPropsContent,
-                          ),
-                        ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'VND/kWh',
-                            style: TextStyles.roomPropsContent,
-                          ),
-                        ),
-                        const Gap(5),
-                        Container(
-                          width: null,
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'VND/Month',
-                            style: TextStyles.roomPropsContent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ]),
                 const Gap(30),
                 const Text(
                   'Owner Information',
@@ -671,9 +728,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Name:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Name',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
                       width: size.width - 140,
@@ -719,9 +783,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Phone:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Phone',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
                       width: size.width - 140,
@@ -767,9 +838,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Email:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Email',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
                       width: size.width - 140,
@@ -816,7 +894,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      'Facebook:',
+                      'Facebook',
                       style: TextStyles.roomProps,
                     ),
                     SizedBox(
@@ -864,9 +942,16 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Address:',
-                      style: TextStyles.roomProps,
+                    RichText(
+                      text: TextSpan(
+                          text: 'Address',
+                          style: TextStyles.roomProps,
+                          children: [
+                            TextSpan(
+                                text: ' *',
+                                style: TextStyles.roomProps
+                                    .copyWith(color: ColorPalette.redColor))
+                          ]),
                     ),
                     SizedBox(
                       width: size.width - 140,
@@ -917,7 +1002,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                       if (_formKey.currentState!.validate()) {
                         _createRoomPresenter?.createButtonPressed(
                             _roomIdController.text,
-                            _kindController.text,
+                            _roomKind,
                             _areaController.text,
                             _locationController.text,
                             _descriptionController.text,

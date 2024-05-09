@@ -18,7 +18,7 @@ class NetworkController extends GetxController {
     if (connectivityResult == ConnectivityResult.none) {
       router.go('/nointernet');
     } else {
-      router.go('/home');
+      router.go('/');
     }
   }
 }

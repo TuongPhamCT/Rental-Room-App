@@ -228,14 +228,14 @@ class _SettingScreenState extends State<SettingScreen>
               onTap: () async {
                 showDialog(
                   context: context,
-                  builder: (BuildContext context) {
+                  builder: (dialogContext) {
                     return AlertDialog(
                       title: const Text('Confirm'),
                       content: const Text('Are you sure you want to sign out?'),
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(dialogContext).pop();
                           },
                           child: Text(
                             'Cancel',
@@ -249,6 +249,7 @@ class _SettingScreenState extends State<SettingScreen>
                           onPressed: () async {
                             try {
                               await _userRepository.signOut();
+                              Navigator.of(dialogContext).pop();
                               GoRouter.of(context).go('/log_in');
                             } catch (e) {
                               print("Đăng xuất thất bại: $e");
