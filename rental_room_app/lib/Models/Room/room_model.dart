@@ -66,16 +66,26 @@ class Room {
   }
 
   factory Room.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    print("Firestore data: $data");
+    print("\n\n");
+    double area = 0.0;
+    try {
+      area = double.parse(data['area'].toString());
+    } catch (e) {
+      print("Error parsing 'area': $e");
+    }
+
     return Room(
         roomId: data['roomId'],
         roomName: data['roomName'],
         kind: data['kind'],
-        area: data['area'],
+        area: double.parse(data['area'].toString()),
         location: data['location'],
         description: data['description'],
-        primaryImgUrl: data['primaryImgUrls'],
-        secondaryImgUrls: data['secondaryImgUrls']?.cast<String>(),
+        primaryImgUrl: data['primaryImgUrl'],
+        secondaryImgUrls:
+            (data['secondaryImgUrls'] as List<dynamic>).cast<String>(),
         price: Price.fromFirestore(data['price']),
         ownerId: data['ownerId'],
         ownerName: data['ownerName'],

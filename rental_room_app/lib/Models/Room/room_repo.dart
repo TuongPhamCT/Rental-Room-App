@@ -8,6 +8,7 @@ abstract class RoomRepository {
   Future<void> uploadRoom(Room room);
   Future<List<String>> uploadImages(
       List<Uint8List> images, String userId, String roomId);
+  Stream<List<Room>> getRooms();
 }
 
 class RoomRepositoryIml implements RoomRepository {
@@ -40,5 +41,14 @@ class RoomRepositoryIml implements RoomRepository {
       imageUrls.add(url);
     }
     return imageUrls;
+  }
+
+  @override
+  Stream<List<Room>> getRooms() {
+    return FirebaseFirestore.instance
+        .collection(Room.documentId)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Room.fromFirestore(doc)).toList());
   }
 }

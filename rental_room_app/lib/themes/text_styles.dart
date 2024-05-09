@@ -286,6 +286,13 @@ class TextStyles {
     fontSize: 13,
     color: Colors.black,
   );
+
+  static const TextStyle nameRoomItem = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w800,
+    fontSize: 16,
+    color: ColorPalette.darkBlueText,
+  );
 }
 
 // How to use?
