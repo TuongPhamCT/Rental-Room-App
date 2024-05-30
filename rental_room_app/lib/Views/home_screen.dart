@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
@@ -292,107 +293,124 @@ class _HomeScreenState extends State<HomeScreen>
             const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
-              child: Column(
+              child: const Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Room Available',
                         style: TextStyles.titleHeading,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          if (soLuongPhongCoSan == 6) {
-                            setState(() {
-                              soLuongPhongCoSan = roomAvailable.length;
-                            });
-                          } else {
-                            setState(() {
-                              soLuongPhongCoSan = 6;
-                            });
-                          }
-                        },
-                        child: soLuongPhongCoSan == 6
-                            ? const Row(
-                                children: [
-                                  Text(
-                                    'See All',
-                                    style: TextStyles.seeAll,
-                                  ),
-                                  Gap(10),
-                                  Icon(
-                                    FontAwesomeIcons.angleRight,
-                                    size: 12,
-                                    color: ColorPalette.grayText,
-                                  ),
-                                ],
-                              )
-                            : const Row(
-                                children: [
-                                  Text(
-                                    'Collapse',
-                                    style: TextStyles.seeAll,
-                                  ),
-                                  Gap(10),
-                                  Icon(
-                                    FontAwesomeIcons.angleLeft,
-                                    size: 12,
-                                    color: ColorPalette.grayText,
-                                  ),
-                                ],
-                              ),
-                      )
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     if (soLuongPhongCoSan == 6) {
+                      //       setState(() {
+                      //         soLuongPhongCoSan = roomAvailable.length;
+                      //       });
+                      //     } else {
+                      //       setState(() {
+                      //         soLuongPhongCoSan = 6;
+                      //       });
+                      //     }
+                      //   },
+                      //   child: soLuongPhongCoSan == 6
+                      //       ? const Row(
+                      //           children: [
+                      //             Text(
+                      //               'See All',
+                      //               style: TextStyles.seeAll,
+                      //             ),
+                      //             Gap(10),
+                      //             Icon(
+                      //               FontAwesomeIcons.angleRight,
+                      //               size: 12,
+                      //               color: ColorPalette.grayText,
+                      //             ),
+                      //           ],
+                      //         )
+                      //       : const Row(
+                      //           children: [
+                      //             Text(
+                      //               'Collapse',
+                      //               style: TextStyles.seeAll,
+                      //             ),
+                      //             Gap(10),
+                      //             Icon(
+                      //               FontAwesomeIcons.angleLeft,
+                      //               size: 12,
+                      //               color: ColorPalette.grayText,
+                      //             ),
+                      //           ],
+                      //         ),
+                      // )
                     ],
                   ),
                 ],
               ),
             ),
             const Gap(20),
-            Container(
-              child: Expanded(
-                child: StreamBuilder<List<Room>>(
-                  stream: RoomRepositoryIml().getRooms(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Something went wrong! ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData) {
-                      roomAvailable = snapshot.data!;
-                      return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemBuilder: (context, index) => RoomItem(
-                          room: roomAvailable[index],
-                        ),
-                        itemCount: roomAvailable.length < soLuongPhongCoSan
-                            ? roomAvailable.length
-                            : soLuongPhongCoSan,
-                      );
-                    } else
-                      return Container();
-                  },
-                ),
+            Expanded(
+              child: StreamBuilder<List<Room>>(
+                stream: RoomRepositoryIml().getRooms(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Something went wrong! ${snapshot.error}'),
+                    );
+                  } else if (snapshot.hasData) {
+                    roomAvailable = snapshot.data!;
+                    return roomAvailable.length <= 6
+                        ? GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              childAspectRatio: 0.7,
+                            ),
+                            itemBuilder: (context, index) => RoomItem(
+                              room: roomAvailable[index],
+                            ),
+                            itemCount: roomAvailable.length,
+                          )
+                        : LazyLoadScrollView(
+                            onEndOfPage: () => setState(() {
+                              soLuongPhongCoSan += 6;
+                            }),
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 20,
+                                childAspectRatio: 0.7,
+                              ),
+                              itemBuilder: (context, index) => RoomItem(
+                                room: roomAvailable[index],
+                              ),
+                              itemCount: soLuongPhongCoSan,
+                            ),
+                          );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
             ),
             Container(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
                 backgroundColor: ColorPalette.primaryColor.withOpacity(0.7),
+                shape: const CircleBorder(),
+                onPressed: () {
+                  GoRouter.of(context).go('/home/create_room');
+                },
                 child: const Icon(
                   FontAwesomeIcons.plus,
                   size: 30,
                   color: Colors.white,
                 ),
-                shape: const CircleBorder(),
-                onPressed: () {
-                  GoRouter.of(context).go('/home/create_room');
-                },
               ),
             )
           ],
