@@ -78,12 +78,6 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const ReportScreen(key: Key('report')),
         ),
         GoRoute(
-          path: 'rental_form',
-          name: 'rental_form',
-          builder: (context, state) =>
-              const RentalFormScreen(key: Key('rental_form')),
-        ),
-        GoRoute(
           path: 'edit_form',
           name: 'edit_form',
           builder: (context, state) =>

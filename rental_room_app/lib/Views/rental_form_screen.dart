@@ -3,6 +3,7 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -11,7 +12,9 @@ import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
 
 class RentalFormScreen extends StatefulWidget {
-  const RentalFormScreen({super.key});
+  final Room room;
+  const RentalFormScreen({super.key, required this.room});
+  static const String routeName = "rental_form";
 
   @override
   State<RentalFormScreen> createState() => _RentalFormScreenState();
@@ -43,6 +46,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
   void initState() {
     super.initState();
     _rentalFormPresenter = RentalFormPresenter(this);
+    _roomIdController.text = widget.room.roomId;
   }
 
   @override
@@ -109,6 +113,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
+                        enabled: false,
                         stringValidator: _rentalFormPresenter!.validateRoomId,
                         editingController: _roomIdController,
                         keyboardType: TextInputType.text,
@@ -392,9 +397,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                         width: 150),
                     const Gap(10),
                     ModelButton(
-                        onTap: () {
-                          //TODO: cancel ontap handle
-                        },
+                        onTap: () => context.pop(),
                         name: "Cancel",
                         color: ColorPalette.redColor.withOpacity(0.75),
                         width: 150),

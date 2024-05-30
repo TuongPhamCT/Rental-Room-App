@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -18,11 +21,52 @@ class RoomItem extends StatefulWidget {
 }
 
 class _RoomItemState extends State<RoomItem> {
+  double? _distance;
+
+  @override
+  void initState() {
+    super.initState();
+    _calculateDistance();
+  }
+
+  Future<void> _calculateDistance() async {
+    try {
+      // Lấy vị trí hiện tại của thiết bị
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // Chuyển đổi địa chỉ của phòng thành tọa độ
+      List<Location> locations =
+          await locationFromAddress(widget.room.location);
+      if (locations.isNotEmpty) {
+        double distanceInMeters = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          locations.first.latitude,
+          locations.first.longitude,
+        );
+
+        setState(() {
+          _distance = distanceInMeters / 1000; // Chuyển đổi sang km
+        });
+      }
+    } catch (e) {
+      print("Error calculating distance: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        //To Do: Navigate to RoomDetailScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DetailRoomScreen(
+              room: widget.room,
+            ),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.only(bottom: 10),
@@ -52,13 +96,28 @@ class _RoomItemState extends State<RoomItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        widget.room.roomId,
-                        style: TextStyles.nameRoomItem,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Text(
+                            widget.room.roomId,
+                            style: TextStyles.nameRoomItem,
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        Icon(
+                          Icons.location_pin,
+                          size: 20,
+                        ),
+                        if (_distance != null)
+                          Text(
+                            _distance!.toStringAsFixed(1) + ' km',
+                            style: TextStyles.desFunction,
+                          ),
+                      ],
                     ),
                     Row(
                       children: [

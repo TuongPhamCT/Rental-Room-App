@@ -66,6 +66,9 @@ dependencies:
   date_field: ^5.0.1
   image_picker: ^1.0.7
 
+  geolocator: ^12.0.0
+  geocoding: ^3.0.0
+
 
 dev_dependencies:
   flutter_test:

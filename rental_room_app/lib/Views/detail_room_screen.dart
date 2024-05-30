@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/border_container.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/sub_image_frame.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailRoomScreen extends StatefulWidget {
-  const DetailRoomScreen({super.key});
+  final Room room;
+  const DetailRoomScreen({super.key, required this.room});
   static const String routeName = "detail_room";
 
   @override
@@ -31,8 +35,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   final int numberstar = 5;
   double rating = 0;
 
+  bool isOwner = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInfor();
+  }
+
+  // Phương thức để load thông tin từ SharedPreferences
+  Future<void> _loadInfor() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isOwner = _prefs.getBool('isOwner') ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Room room = widget.room;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
@@ -50,17 +71,24 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       _currenImage = index;
                     });
                   },
-                  itemCount: 4,
+                  itemCount: room.secondaryImgUrls.length + 1,
                   itemBuilder: (context, index) {
                     return Container(
                       height: 250,
                       alignment: Alignment.bottomCenter,
-                      child: Image(
-                        image: AssetImage(images[index]),
-                        height: 250,
-                        width: size.width,
-                        fit: BoxFit.fill,
-                      ),
+                      child: index == 0
+                          ? Image.network(
+                              room.primaryImgUrl,
+                              fit: BoxFit.cover,
+                              height: 250,
+                              width: size.width,
+                            )
+                          : Image.network(
+                              room.secondaryImgUrls[index - 1],
+                              fit: BoxFit.cover,
+                              height: 250,
+                              width: size.width,
+                            ),
                     );
                   },
                 ),
@@ -70,7 +98,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     Container(
                       height: 90,
                       padding:
-                          const EdgeInsets.only(left: 42, right: 42, top: 50),
+                          const EdgeInsets.only(left: 20, right: 42, top: 50),
                       child: Row(
                         children: [
                           GestureDetector(
@@ -84,10 +112,10 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   : ColorPalette.backgroundColor,
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                               child: Center(
                                   child: Text(
-                            'P001',
+                            room.roomId,
                             style: TextStyles.h8,
                           ))),
                         ],
@@ -105,34 +133,35 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: 4,
+                              itemCount: room.secondaryImgUrls.length + 1,
                               itemBuilder: (context, index) {
                                 return imageIndicator(index == _currenImage);
                               },
                             ),
                           ),
-                          Container(
-                            width: size.width,
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              width: 55,
-                              height: 20,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10)),
-                                color: Colors.orangeAccent.withOpacity(0.8),
-                              ),
-                              child: Text(
-                                'Booked',
-                                textAlign: TextAlign.center,
-                                style: TextStyles.calendarNote.copyWith(
-                                  fontSize: 10,
-                                  color: ColorPalette.backgroundColor,
+                          if (isOwner)
+                            Container(
+                              width: size.width,
+                              alignment: Alignment.bottomRight,
+                              child: Container(
+                                width: 55,
+                                height: 20,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10)),
+                                  color: Colors.orangeAccent.withOpacity(0.8),
+                                ),
+                                child: Text(
+                                  'Booked',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyles.calendarNote.copyWith(
+                                    fontSize: 10,
+                                    color: ColorPalette.backgroundColor,
+                                  ),
                                 ),
                               ),
                             ),
-                          )
                         ],
                       ),
                     ),
@@ -168,8 +197,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               ),
                               SizedBox(
                                 width: size.width - 120,
-                                child: const Text(
-                                  '43 Tân Lập, Đông Hoà, Dĩ An, Bình Dương',
+                                child: Text(
+                                  room.location,
                                   style: TextStyles.descriptionRoom,
                                   softWrap: true,
                                   maxLines: 3,
@@ -192,22 +221,21 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const SubFrame(
-                                child: Image(
-                                  image: AssetImage(AssetHelper.subOne),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              const SubFrame(
-                                child: Image(
-                                  image: AssetImage(AssetHelper.subTwo),
+                              SubFrame(
+                                child: Image.network(
+                                  room.secondaryImgUrls[0],
                                   fit: BoxFit.cover,
                                 ),
                               ),
                               SubFrame(
-                                child: Image(
-                                  image: const AssetImage(AssetHelper.subThree),
-                                  width: (size.width - 120) / 3,
+                                child: Image.network(
+                                  room.secondaryImgUrls[1],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              SubFrame(
+                                child: Image.network(
+                                  room.secondaryImgUrls[2],
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -217,16 +245,16 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                     ),
                     const Gap(10),
-                    const BorderContainer(
+                    BorderContainer(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Description',
                             style: TextStyles.detailTitle,
                           ),
                           Text(
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consequat nunc. Nulla nec purus feugiat, molestie ipsum et, consequat nunc. Nulla nec purus feugiat, molestie ipsum et, consequat nunc.',
+                            room.description,
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
@@ -236,16 +264,16 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ],
                 ),
                 const Gap(10),
-                const BorderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Kind',
                         style: TextStyles.detailTitle,
                       ),
                       Text(
-                        'Standard',
+                        room.kind,
                         style: TextStyles.descriptionRoom,
                         textAlign: TextAlign.justify,
                       ),
@@ -253,11 +281,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                const BorderContainer(
+                BorderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Area',
                         style: TextStyles.detailTitle,
                       ),
@@ -265,11 +293,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '60',
+                            room.area.toString(),
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
-                          Text(
+                          const Text(
                             'm2',
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
@@ -303,8 +331,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: ColorPalette.primaryColor,
                                 ),
                               ),
-                              const Text(
-                                '1.500.000',
+                              Text(
+                                room.price.roomPrice.toString(),
                                 style: TextStyles.descriptionRoom,
                                 textAlign: TextAlign.justify,
                               ),
@@ -331,8 +359,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: ColorPalette.primaryColor,
                                 ),
                               ),
-                              const Text(
-                                '16.000',
+                              Text(
+                                room.price.waterPrice.toString(),
                                 style: TextStyles.descriptionRoom,
                                 textAlign: TextAlign.justify,
                               ),
@@ -359,8 +387,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: ColorPalette.primaryColor,
                                 ),
                               ),
-                              const Text(
-                                '4.500',
+                              Text(
+                                room.price.electricPrice.toString(),
                                 style: TextStyles.descriptionRoom,
                                 textAlign: TextAlign.justify,
                               ),
@@ -387,8 +415,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: ColorPalette.primaryColor,
                                 ),
                               ),
-                              const Text(
-                                '120.000',
+                              Text(
+                                room.price.othersPrice.toString(),
                                 style: TextStyles.descriptionRoom,
                                 textAlign: TextAlign.justify,
                               ),
@@ -425,8 +453,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               color: ColorPalette.primaryColor,
                             ),
                           ),
-                          const Text(
-                            'Nguyen Chu Tro',
+                          Text(
+                            room.ownerName,
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
@@ -443,8 +471,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               color: ColorPalette.primaryColor,
                             ),
                           ),
-                          const Text(
-                            '0123456789',
+                          Text(
+                            room.ownerPhone,
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
@@ -461,8 +489,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               color: ColorPalette.primaryColor,
                             ),
                           ),
-                          const Text(
-                            'abcd@gmail.com',
+                          Text(
+                            room.ownerEmail,
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
@@ -479,8 +507,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               color: ColorPalette.primaryColor,
                             ),
                           ),
-                          const Text(
-                            'www.facebook.com/username',
+                          Text(
+                            room.ownerFacebook,
                             style: TextStyles.descriptionRoom,
                             textAlign: TextAlign.justify,
                           ),
@@ -499,8 +527,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           ),
                           SizedBox(
                             width: size.width - 120,
-                            child: const Text(
-                              '1 Vo Van Ngan, Thu Duc, HCMC',
+                            child: Text(
+                              room.ownerAddress,
                               style: TextStyles.descriptionRoom,
                               textAlign: TextAlign.justify,
                             ),
@@ -511,11 +539,23 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                ModelButton(
-                  onTap: () {},
-                  name: 'Rental',
-                  color: ColorPalette.primaryColor.withOpacity(0.75),
-                  width: 150,
+                Container(
+                  alignment: Alignment.center,
+                  child: ModelButton(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => RentalFormScreen(
+                            room: widget.room,
+                          ),
+                        ),
+                      );
+                    },
+                    name: 'Rental',
+                    color: ColorPalette.primaryColor.withOpacity(0.75),
+                    width: 150,
+                  ),
                 ),
                 const Gap(10),
                 BorderContainer(
@@ -787,11 +827,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         ),
                       ),
                       const Gap(10),
-                      ModelButton(
-                        onTap: () {},
-                        name: 'POST',
-                        color: ColorPalette.primaryColor.withOpacity(0.75),
-                        width: 150,
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {},
+                          name: 'POST',
+                          color: ColorPalette.primaryColor.withOpacity(0.75),
+                          width: 150,
+                        ),
                       ),
                     ],
                   ),
