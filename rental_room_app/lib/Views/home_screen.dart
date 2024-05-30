@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool isVisiable = false;
   String? searchValue;
   bool isVisibleFilter = false;
+  int soLuongPhongCoSan = 6;
 
   late List<Room> roomAvailable;
 
@@ -302,22 +303,45 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                       GestureDetector(
                         onTap: () {
-                          GoRouter.of(context).go('/home/create_room');
+                          if (soLuongPhongCoSan == 6) {
+                            setState(() {
+                              soLuongPhongCoSan = roomAvailable.length;
+                            });
+                          } else {
+                            setState(() {
+                              soLuongPhongCoSan = 6;
+                            });
+                          }
                         },
-                        child: const Row(
-                          children: [
-                            Text(
-                              'See All',
-                              style: TextStyles.seeAll,
-                            ),
-                            Gap(10),
-                            Icon(
-                              FontAwesomeIcons.angleRight,
-                              size: 12,
-                              color: ColorPalette.grayText,
-                            ),
-                          ],
-                        ),
+                        child: soLuongPhongCoSan == 6
+                            ? const Row(
+                                children: [
+                                  Text(
+                                    'See All',
+                                    style: TextStyles.seeAll,
+                                  ),
+                                  Gap(10),
+                                  Icon(
+                                    FontAwesomeIcons.angleRight,
+                                    size: 12,
+                                    color: ColorPalette.grayText,
+                                  ),
+                                ],
+                              )
+                            : const Row(
+                                children: [
+                                  Text(
+                                    'Collapse',
+                                    style: TextStyles.seeAll,
+                                  ),
+                                  Gap(10),
+                                  Icon(
+                                    FontAwesomeIcons.angleLeft,
+                                    size: 12,
+                                    color: ColorPalette.grayText,
+                                  ),
+                                ],
+                              ),
                       )
                     ],
                   ),
@@ -346,8 +370,9 @@ class _HomeScreenState extends State<HomeScreen>
                         itemBuilder: (context, index) => RoomItem(
                           room: roomAvailable[index],
                         ),
-                        itemCount:
-                            roomAvailable.length < 6 ? roomAvailable.length : 6,
+                        itemCount: roomAvailable.length < soLuongPhongCoSan
+                            ? roomAvailable.length
+                            : soLuongPhongCoSan,
                       );
                     } else
                       return Container();

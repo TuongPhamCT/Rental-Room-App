@@ -24,10 +24,10 @@ class Price {
 
   factory Price.fromFirestore(Map<String, dynamic> data) {
     return Price(
-      room: data['room'],
-      water: data['water'],
-      electric: data['electric'],
-      others: data['others'],
+      room: double.parse(data['room'].toString()),
+      water: double.parse(data['water'].toString()),
+      electric: double.parse(data['electric'].toString()),
+      others: double.parse(data['others'].toString()),
     );
   }
   double get roomPrice => room;

@@ -1028,7 +1028,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                   child: ModelButton(
                     name: 'CANCEL',
                     onTap: () {
-                      //TODO: save room
+                      context.pop();
                     },
                     width: 150,
                     color: ColorPalette.redColor,
@@ -1065,6 +1065,23 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
 
   @override
   void onCreateSucceeded() {
+    setState(() {
+      _roomIdController.clear();
+      _roomKind = _roomKinds.first;
+      _areaController.clear();
+      _locationController.clear();
+      _descriptionController.clear();
+      _roomPriceController.clear();
+      _waterPriceController.clear();
+      _electricPriceController.clear();
+      _otherControler.clear();
+      _nameController.clear();
+      _phoneController.clear();
+      _emailController.clear();
+      _facebookController.clear();
+      _addressController.clear();
+      _images.clear();
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         backgroundColor: ColorPalette.greenText,
