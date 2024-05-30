@@ -100,10 +100,12 @@ class _RoomItemState extends State<RoomItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
+                          width: 50,
                           alignment: Alignment.centerLeft,
                           padding: const EdgeInsets.only(top: 5),
                           child: Text(
-                            widget.room.roomId,
+                            maxLines: 1,
+                            widget.room.roomName,
                             style: TextStyles.nameRoomItem,
                           ),
                         ),
@@ -140,16 +142,17 @@ class _RoomItemState extends State<RoomItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$ ' + widget.room.price.roomPrice.toString(),
+                          '\$ ' +
+                              widget.room.price.roomPrice.toStringAsFixed(0),
                           style: TextStyles.nameRoomItem.copyWith(
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
                           'VNĐ/month',
                           style: TextStyles.nameRoomItem.copyWith(
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -165,7 +168,7 @@ class _RoomItemState extends State<RoomItem> {
                         Container(
                           padding: const EdgeInsets.only(left: 6),
                           child: Text(
-                            widget.room.area.toString(),
+                            widget.room.area.toStringAsFixed(0),
                             style: TextStyles.nameRoomItem.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -176,7 +179,7 @@ class _RoomItemState extends State<RoomItem> {
                         Text(
                           'm2',
                           style: TextStyles.nameRoomItem.copyWith(
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
                         ),

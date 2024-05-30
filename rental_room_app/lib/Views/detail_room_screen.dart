@@ -115,7 +115,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           Expanded(
                               child: Center(
                                   child: Text(
-                            room.roomId,
+                            room.roomName,
                             style: TextStyles.h8,
                           ))),
                         ],
@@ -221,24 +221,27 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SubFrame(
-                                child: Image.network(
-                                  room.secondaryImgUrls[0],
-                                  fit: BoxFit.cover,
+                              if (room.secondaryImgUrls.length > 0)
+                                SubFrame(
+                                  child: Image.network(
+                                    room.secondaryImgUrls[0],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              SubFrame(
-                                child: Image.network(
-                                  room.secondaryImgUrls[1],
-                                  fit: BoxFit.cover,
+                              if (room.secondaryImgUrls.length > 1)
+                                SubFrame(
+                                  child: Image.network(
+                                    room.secondaryImgUrls[1],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              SubFrame(
-                                child: Image.network(
-                                  room.secondaryImgUrls[2],
-                                  fit: BoxFit.cover,
+                              if (room.secondaryImgUrls.length > 2)
+                                SubFrame(
+                                  child: Image.network(
+                                    room.secondaryImgUrls[2],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ],

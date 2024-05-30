@@ -14,9 +14,12 @@ abstract class RoomRepository {
 class RoomRepositoryIml implements RoomRepository {
   @override
   Future<void> uploadRoom(Room room) async {
-    await FirebaseFirestore.instance
-        .collection(Room.documentId)
-        .doc()
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection(Room.documentId).doc();
+
+    // Cập nhật roomId với documentID
+    room.roomId = docRef.id;
+    await docRef
         .set(room.toJson())
         .onError((e, _) => throw Exception('Upload Room Failed'));
   }
