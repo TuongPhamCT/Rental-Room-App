@@ -31,4 +31,7 @@ class Price {
     );
   }
   double get roomPrice => room;
+  double get waterPrice => water;
+  double get electricPrice => electric;
+  double get othersPrice => others;
 }

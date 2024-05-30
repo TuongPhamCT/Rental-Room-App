@@ -68,6 +68,9 @@ class _SignupScreenState extends State<SignupScreen>
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 50),
                         child: TextFormField(
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           validator: _signupPresenter?.validateEmail,
@@ -184,6 +187,6 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   void onPopContext() {
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }

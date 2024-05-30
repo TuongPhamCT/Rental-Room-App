@@ -31,6 +31,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
   String _gender = "";
   DateTime birthday = DateTime.now();
   bool? _passwordVisible;
+  bool? _confirmPasswordVisible;
   final _accountPasswordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
   bool _isOwner = false;
@@ -41,6 +42,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
     super.initState();
     _registerFormPresenter = RegisterFormPresenter(this);
     _passwordVisible = true;
+    _confirmPasswordVisible = true;
   }
 
   @override
@@ -400,19 +402,20 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                                     .copyWith(color: ColorPalette.rankText),
                                 helperText: " ",
                                 suffixIcon: IconButton(
-                                  icon: Icon(_passwordVisible!
+                                  icon: Icon(_confirmPasswordVisible!
                                       ? Icons.visibility
                                       : Icons.visibility_off),
                                   onPressed: () {
                                     setState(
                                       () {
-                                        _passwordVisible = !_passwordVisible!;
+                                        _confirmPasswordVisible =
+                                            !_confirmPasswordVisible!;
                                       },
                                     );
                                   },
                                 ),
                               ),
-                              obscureText: _passwordVisible!,
+                              obscureText: _confirmPasswordVisible!,
                               obscuringCharacter: '*',
                             ),
                           ),
@@ -533,6 +536,6 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
 
   @override
   void onPopContext() {
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }

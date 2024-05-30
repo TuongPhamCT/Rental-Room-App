@@ -131,7 +131,6 @@ class RegisterFormPresenter {
         'birthDay': birthday,
         'gender': gender,
         'isOwner': isOwner,
-        'password': password,
       });
       return userCredential;
     } catch (e) {

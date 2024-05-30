@@ -355,6 +355,21 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
+            Container(
+              alignment: Alignment.bottomRight,
+              child: FloatingActionButton(
+                backgroundColor: ColorPalette.primaryColor.withOpacity(0.7),
+                child: const Icon(
+                  FontAwesomeIcons.plus,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                shape: const CircleBorder(),
+                onPressed: () {
+                  GoRouter.of(context).go('/home/create_room');
+                },
+              ),
+            )
           ],
         ),
       ),

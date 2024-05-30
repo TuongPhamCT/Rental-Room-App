@@ -1,1 +1,4 @@
-abstract class EditProfileContract {}
+abstract class EditProfileContract {
+  void onUpdateProfileSuccess();
+  void onUpdateProfileFailed();
+}
