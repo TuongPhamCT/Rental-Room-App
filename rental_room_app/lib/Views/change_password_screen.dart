@@ -60,70 +60,91 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen>
 
   void _changePassword() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        oldPasswordError = null;
+        newPasswordError = null;
+        confirmPasswordError = null;
+      });
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) {
             return const Center(child: CircularProgressIndicator());
           });
+      String oldPassword = _oldPasswordController.text.trim();
+      String newPassword = _newPasswordController.text.trim();
+      String confirmPassword = _confirmPasswordController.text.trim();
+
+      User? user = FirebaseAuth.instance.currentUser;
+
+      AuthCredential credential =
+          EmailAuthProvider.credential(email: email, password: oldPassword);
+
       try {
-        if (_oldPasswordController.text != currentPassword) {
-          setState(() {
-            oldPasswordError = "Old password is incorrect.";
-          });
-
-          Navigator.of(context).pop();
-          return;
-        } else {
-          setState(() {
-            oldPasswordError = null;
-          });
-        }
-
-        if (_newPasswordController.text.length < 6) {
-          setState(() {
-            newPasswordError =
-                "New password must be at least 6 characters long.";
-          });
-
-          Navigator.of(context).pop();
-          return;
-        } else {
-          setState(() {
-            newPasswordError = null;
-          });
-        }
-
-        if (_newPasswordController.text != _confirmPasswordController.text) {
-          setState(() {
-            confirmPasswordError = "Confirm password does not match.";
-          });
-
-          Navigator.of(context).pop();
-          return;
-        } else {
-          setState(() {
-            confirmPasswordError = null;
-          });
-        }
-
-        await FirebaseAuth.instance.currentUser!
-            .updatePassword(_newPasswordController.text);
-      } catch (e) {
-        try {
-          AuthCredential credential = EmailAuthProvider.credential(
-            email: email,
-            password: _oldPasswordController.text,
-          );
-          await FirebaseAuth.instance.currentUser!
-              .reauthenticateWithCredential(credential);
-          await FirebaseAuth.instance.currentUser!
-              .updatePassword(_newPasswordController.text);
-        } on Exception catch (e) {
-          _errorMessage = e.toString();
-        }
+        await user!.reauthenticateWithCredential(credential);
+      } catch (error) {
+        // Nếu xảy ra lỗi, hiển thị dialog thông báo lỗi
+        setState(() {
+          oldPasswordError = "Old password is incorrect.";
+        });
+        Navigator.of(context, rootNavigator: true).pop();
+        return;
       }
-      Navigator.of(context).pop();
+
+      if (_newPasswordController.text.length < 6) {
+        setState(() {
+          newPasswordError = "New password must be at least 6 characters long.";
+        });
+        Navigator.of(context, rootNavigator: true).pop();
+        return;
+      } else {
+        setState(() {
+          newPasswordError = null;
+        });
+      }
+
+      if (_newPasswordController.text != _confirmPasswordController.text) {
+        setState(() {
+          confirmPasswordError = "Confirm password does not match.";
+        });
+        Navigator.of(context, rootNavigator: true).pop();
+        return;
+      } else {
+        setState(() {
+          confirmPasswordError = null;
+        });
+      }
+
+      try {
+        await user.updatePassword(newPassword);
+        Navigator.of(context, rootNavigator: true).pop();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Change Password"),
+                content: const Text("Change password successfully!"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _oldPasswordController.clear();
+                      _newPasswordController.clear();
+                      _confirmPasswordController.clear();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"),
+                  )
+                ],
+              );
+            });
+      } catch (error) {
+        setState(() {
+          _errorMessage = error.toString();
+        });
+        Navigator.of(context, rootNavigator: true).pop();
+        return;
+      }
     }
   }
 

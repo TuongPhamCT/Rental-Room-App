@@ -41,6 +41,7 @@ class SignupPresenter {
     _view?.onWaitingProgressBar();
     bool? result = await _checkIfEmailInUse(email);
     _view?.onPopContext();
+
     if (result == true) {
       _view?.onEmailAlreadyInUse();
     } else if (result == false) {

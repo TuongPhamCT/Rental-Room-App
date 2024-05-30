@@ -28,15 +28,14 @@ class _EditProfileScreenState extends State<EditProfileScreen>
   final _formKey = GlobalKey<FormState>();
 
   final _fullnameTextController = TextEditingController();
-
-  String? _gender;
+  final _phoneTextController = TextEditingController();
+  String _gender = "";
+  DateTime birthday = DateTime.now();
 
   String _userName = "nguyen van a";
   String _email = "nguyenvana@gmail.com";
   String _userAvatarUrl = '';
 
-  // ignore: unused_field
-  DateTime? _birthday;
   @override
   void initState() {
     super.initState();
@@ -163,14 +162,39 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     const Gap(5),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.genderFormField(
-                        stringValidator: _editProfilePresenter!.validateGender,
-                        gender: _gender,
-                        onChangedString: (value) {
-                          setState(() {
-                            _gender = value!;
-                          });
-                        },
+                      child: Row(
+                        children: <Widget>[
+                          const Gap(10),
+                          Radio<String>(
+                            activeColor: ColorPalette.primaryColor,
+                            value: "Male",
+                            groupValue: _gender,
+                            onChanged: (value) {
+                              setState(() {
+                                _gender = value!;
+                              });
+                            },
+                          ),
+                          const Text(
+                            "Male",
+                            style: TextStyles.h5,
+                          ),
+                          const Gap(35),
+                          Radio<String>(
+                            activeColor: ColorPalette.primaryColor,
+                            value: "Female",
+                            groupValue: _gender,
+                            onChanged: (value) {
+                              setState(() {
+                                _gender = value!;
+                              });
+                            },
+                          ),
+                          const Text(
+                            "Female",
+                            style: TextStyles.h5,
+                          ),
+                        ],
                       ),
                     ),
                     const Gap(5),
@@ -191,34 +215,9 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
                         stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
+                            _editProfilePresenter!.validatePhoneNum,
+                        editingController: _phoneTextController,
                         keyboardType: TextInputType.phone,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Identification Number",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
-                        keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
                       ),
@@ -245,40 +244,22 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         style: TextStyles.h6.italic,
                         onChangedDateTime: (value) {
                           setState(() {
-                            _birthday = value;
+                            birthday = value!;
                           });
                         },
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Facebook",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator:
-                            _editProfilePresenter!.validateFullName,
-                        editingController: _fullnameTextController,
-                        keyboardType: TextInputType.url,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
                       ),
                     ),
                     const Gap(20),
                     ModelButton(
                         onTap: () {
-                          //TODO: save ontap handle
+                          if (_formKey.currentState!.validate()) {
+                            _editProfilePresenter?.onUpdateProfile(
+                              _fullnameTextController.text,
+                              _gender,
+                              _phoneTextController.text,
+                              birthday,
+                            );
+                          }
                         },
                         name: "Save",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
@@ -286,7 +267,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                     const Gap(10),
                     ModelButton(
                         onTap: () {
-                          //TODO: cancel ontap handle
+                          Navigator.of(context).pop();
                         },
                         name: "Cancel",
                         color: ColorPalette.redColor.withOpacity(0.75),
@@ -319,6 +300,48 @@ class _EditProfileScreenState extends State<EditProfileScreen>
         ),
       );
     });
+  }
+
+  @override
+  void onUpdateProfileSuccess() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Update Profile"),
+          content: const Text("Update profile successfully!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void onUpdateProfileFailed() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Update Profile"),
+          content: const Text("Update profile failed!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
