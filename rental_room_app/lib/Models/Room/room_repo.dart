@@ -9,6 +9,7 @@ abstract class RoomRepository {
   Future<List<String>> uploadImages(
       List<Uint8List> images, String userId, String roomId);
   Stream<List<Room>> getRooms();
+  Future<Room> getOneRoom(String roomID);
 }
 
 class RoomRepositoryIml implements RoomRepository {
@@ -53,5 +54,16 @@ class RoomRepositoryIml implements RoomRepository {
         .snapshots()
         .map((snapshot) =>
             snapshot.docs.map((doc) => Room.fromFirestore(doc)).toList());
+  }
+
+  @override
+  Future<Room> getOneRoom(String roomID) async {
+    DocumentSnapshot doc =
+        await FirebaseFirestore.instance.collection('Rooms').doc(roomID).get();
+    if (doc.exists) {
+      return Room.fromFirestore(doc);
+    } else {
+      throw Exception('This Room data not found');
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/edit_form_contract.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Presenter/edit_form_presenter.dart';
 import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
@@ -14,7 +15,8 @@ import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/numeric_up_down.dart';
 
 class EditFormScreen extends StatefulWidget {
-  const EditFormScreen({super.key});
+  final Room room;
+  const EditFormScreen({super.key, required this.room});
 
   @override
   State<EditFormScreen> createState() => _EditFormScreenState();
@@ -28,23 +30,22 @@ class _EditFormScreenState extends State<EditFormScreen>
   //
   //params controllers
   //
-  String roomId = "P001";
-  final _guestNameController = TextEditingController();
-  String _gender = "";
-  final _phoneNumberController = TextEditingController();
+  final TextEditingController _roomIdController = TextEditingController();
+
   final _citizenIdentificationController = TextEditingController();
-  final _emailController = TextEditingController();
-  DateTime? _birthday = DateTime.now();
   final _numberOfPeopleController = TextEditingController();
   DateTime? _startDate = DateTime.now();
-  String deposit = "500000";
   final _durationController = TextEditingController();
+  final _depositController = TextEditingController();
   final _facebookController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _editFormPresenter = EditFormPresenter(this);
+    _roomIdController.text = widget.room.roomName;
+    _durationController.text = "1";
+    _numberOfPeopleController.text = "1";
   }
 
   @override
@@ -100,10 +101,15 @@ class _EditFormScreenState extends State<EditFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Room ID",
+                            "Room Name",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -111,84 +117,10 @@ class _EditFormScreenState extends State<EditFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic
-                            .copyWith(color: ColorPalette.grayText),
                         enabled: false,
-                        initialValue: roomId,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Guest Name",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator:
-                            _editFormPresenter!.validateGuestName,
-                        editingController: _guestNameController,
-                        keyboardType: TextInputType.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Gender",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.genderFormField(
-                        stringValidator: _editFormPresenter!.validateGender,
-                        gender: _gender,
-                        onChangedString: (value) {
-                          setState(() {
-                            _gender = value!;
-                          });
-                        },
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Phone Number",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator: _editFormPresenter!.validatePhoneNum,
-                        editingController: _phoneNumberController,
-                        keyboardType: TextInputType.phone,
+                        stringValidator: _editFormPresenter!.validateRoomId,
+                        editingController: _roomIdController,
+                        keyboardType: TextInputType.text,
                         textAlign: TextAlign.center,
                         style: TextStyles.h6.italic,
                       ),
@@ -202,7 +134,12 @@ class _EditFormScreenState extends State<EditFormScreen>
                             "Identification Number",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -224,61 +161,15 @@ class _EditFormScreenState extends State<EditFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Email Address",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator: _editFormPresenter!.validateEmail,
-                        editingController: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Birthday",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.dateFormField(
-                        dateTimeValidator:
-                            _editFormPresenter!.validateBirthday,
-                        style: TextStyles.h6.italic,
-                        onChangedDateTime: (value) {
-                          setState(() {
-                            _birthday = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
                             "Number of People",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -298,7 +189,12 @@ class _EditFormScreenState extends State<EditFormScreen>
                             "Start Date",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -325,7 +221,12 @@ class _EditFormScreenState extends State<EditFormScreen>
                             "Duration",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -333,6 +234,8 @@ class _EditFormScreenState extends State<EditFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: NumericUpDown(
+                        min: 1,
+                        max: 24,
                         controller: _durationController,
                       ),
                     ),
@@ -345,7 +248,12 @@ class _EditFormScreenState extends State<EditFormScreen>
                             "Deposit",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -353,11 +261,11 @@ class _EditFormScreenState extends State<EditFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: CustomFormField.textFormField(
+                        stringValidator: _editFormPresenter!.validateDeposit,
+                        editingController: _depositController,
+                        keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic
-                            .copyWith(color: ColorPalette.grayText),
-                        enabled: false,
-                        initialValue: deposit,
+                        style: TextStyles.h6.italic,
                       ),
                     ),
                     const Gap(5),
@@ -369,7 +277,12 @@ class _EditFormScreenState extends State<EditFormScreen>
                             "Facebook",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -386,17 +299,13 @@ class _EditFormScreenState extends State<EditFormScreen>
                     ),
                     const Gap(20),
                     ModelButton(
-                        onTap: () {
-                          //TODO: save ontap handle
-                        },
+                        onTap: () {},
                         name: "Save",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
                         width: 150),
                     const Gap(10),
                     ModelButton(
-                        onTap: () {
-                          //TODO: cancel ontap handle
-                        },
+                        onTap: () => context.pop(),
                         name: "Cancel",
                         color: ColorPalette.redColor.withOpacity(0.75),
                         width: 150),
