@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
@@ -30,12 +31,8 @@ class _RentalFormScreenState extends State<RentalFormScreen>
   //
 
   final TextEditingController _roomIdController = TextEditingController();
-  final _guestNameController = TextEditingController();
-  String _gender = "";
-  final _phoneNumberController = TextEditingController();
+
   final _citizenIdentificationController = TextEditingController();
-  final _emailController = TextEditingController();
-  DateTime? _birthday = DateTime.now();
   final _numberOfPeopleController = TextEditingController();
   DateTime? _startDate = DateTime.now();
   final _durationController = TextEditingController();
@@ -46,7 +43,9 @@ class _RentalFormScreenState extends State<RentalFormScreen>
   void initState() {
     super.initState();
     _rentalFormPresenter = RentalFormPresenter(this);
-    _roomIdController.text = widget.room.roomId;
+    _roomIdController.text = widget.room.roomName;
+    _durationController.text = "1";
+    _numberOfPeopleController.text = "1";
   }
 
   @override
@@ -102,10 +101,15 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Room ID",
+                            "Room Name",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -127,85 +131,15 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Guest Name",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator:
-                            _rentalFormPresenter!.validateGuestName,
-                        editingController: _guestNameController,
-                        keyboardType: TextInputType.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Gender",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.genderFormField(
-                        stringValidator: _rentalFormPresenter!.validateGender,
-                        gender: _gender,
-                        onChangedString: (value) {
-                          setState(() {
-                            _gender = value!;
-                          });
-                        },
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Phone Number",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validatePhoneNum,
-                        editingController: _phoneNumberController,
-                        keyboardType: TextInputType.phone,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
                             "Identification Number",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -227,61 +161,15 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Email Address",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.textFormField(
-                        stringValidator: _rentalFormPresenter!.validateEmail,
-                        editingController: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        textAlign: TextAlign.center,
-                        style: TextStyles.h6.italic,
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Birthday",
-                            style: TextStyles.timenotifi.medium
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: CustomFormField.dateFormField(
-                        dateTimeValidator:
-                            _rentalFormPresenter!.validateBirthday,
-                        style: TextStyles.h6.italic,
-                        onChangedDateTime: (value) {
-                          setState(() {
-                            _birthday = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const Gap(5),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Row(
-                        children: [
-                          Text(
                             "Number of People",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -301,7 +189,12 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                             "Start Date",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -328,7 +221,12 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                             "Duration",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -336,6 +234,8 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: NumericUpDown(
+                        min: 1,
+                        max: 24,
                         controller: _durationController,
                       ),
                     ),
@@ -348,7 +248,12 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                             "Deposit",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -372,7 +277,12 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                             "Facebook",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
-                          )
+                          ),
+                          Text(
+                            ' *',
+                            style: TextStyles.roomProps
+                                .copyWith(color: ColorPalette.redColor),
+                          ),
                         ],
                       ),
                     ),
@@ -390,7 +300,16 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                     const Gap(20),
                     ModelButton(
                         onTap: () {
-                          //TODO: save ontap handle
+                          if (_formKey.currentState!.validate()) {
+                            _rentalFormPresenter!.sendRentalForm(
+                                widget.room.roomId,
+                                _citizenIdentificationController.text,
+                                _numberOfPeopleController.text,
+                                _startDate,
+                                _durationController.text,
+                                _depositController.text,
+                                _facebookController.text);
+                          }
                         },
                         name: "Send",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
@@ -410,5 +329,47 @@ class _RentalFormScreenState extends State<RentalFormScreen>
         ),
       );
     });
+  }
+
+  @override
+  void onRentalFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Cannot Rental This Room! Please try again later!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onRentalSucceed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Rental succeeded!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+    GoRouter.of(context).go('/home');
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }

@@ -9,35 +9,8 @@ class EditFormPresenter {
   //*
   //Validators
   //*
-  String? validateGuestName(String? guestName) {
-    return null;
-  }
-
-  String? validateGender(String? gender) {
-    if (gender == null || gender.isEmpty) {
-      return "Please choose your gender!";
-    }
-    return null;
-  }
-
-  String? validatePhoneNum(String? phoneNum) {
-    return null;
-  }
 
   String? validateIdentification(String? id) {
-    return null;
-  }
-
-  String? validateEmail(String? email) {
-    return null;
-  }
-
-  String? validateBirthday(DateTime? birthday) {
-    if (birthday == null) {
-      return "Please enter your birthday!";
-    } else if (birthday.isAfter(DateTime.now())) {
-      return "Invalid birthday!";
-    }
     return null;
   }
 
@@ -57,4 +30,13 @@ class EditFormPresenter {
   //*
   //Screen Logics
   //*
+
+  String? validateRoomId(String? p1) {
+    return null;
+  }
+
+  String? validateDeposit(String? p1) {}
+
+  void sendRentalForm(String roomId, String text, String text2,
+      DateTime? startDate, String text3, String text4, String text5) {}
 }

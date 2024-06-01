@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
@@ -7,16 +9,18 @@ import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
 import 'package:rental_room_app/widgets/room_item.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static const String routeName = "home_screen";
+  static const String routeName = "/home";
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -36,12 +40,44 @@ class _HomeScreenState extends State<HomeScreen>
   int soLuongPhongCoSan = 6;
 
   late List<Room> roomAvailable;
+  late String rentalID;
+  final String userID = FirebaseAuth.instance.currentUser!.uid;
+  late Room yourRoom;
 
   @override
   void initState() {
     super.initState();
     _preferencesPresenter = SharedPreferencesPresenter(this);
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
+    _loadRentalRoom();
+  }
+
+  Future<void> _loadRentalRoom() async {
+    CollectionReference rentalroomRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('rentalroom');
+
+    try {
+      // Truy vấn tất cả các documents bên trong rentalroom
+      QuerySnapshot querySnapshot = await rentalroomRef.get();
+
+      if (querySnapshot.docs.isEmpty) {
+        print('No documents found.');
+        return;
+      }
+
+      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+      Map<String, dynamic> rentalRoomData =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      rentalID = rentalRoomData['roomID'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('yourRoomId', rentalID);
+      yourRoom = await RoomRepositoryIml().getOneRoom(rentalID);
+    } catch (e) {
+      print('Error getting document: $e');
+    }
   }
 
   @override
@@ -398,102 +434,117 @@ class _HomeScreenState extends State<HomeScreen>
                 },
               ),
             ),
-            Container(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                backgroundColor: ColorPalette.primaryColor.withOpacity(0.7),
-                shape: const CircleBorder(),
-                onPressed: () {
-                  GoRouter.of(context).go('/home/create_room');
-                },
-                child: const Icon(
-                  FontAwesomeIcons.plus,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-            )
           ],
         ),
       ),
+      floatingActionButton: _isOwner
+          ? FloatingActionButton(
+              backgroundColor: ColorPalette.primaryColor.withOpacity(0.8),
+              shape: const CircleBorder(),
+              onPressed: () {
+                GoRouter.of(context).go('/home/create_room');
+              },
+              child: const Icon(
+                FontAwesomeIcons.plus,
+                size: 30,
+                color: Colors.white,
+              ),
+            )
+          : null,
       bottomNavigationBar: SalomonBottomBar(
-          backgroundColor: ColorPalette.backgroundColor,
-          currentIndex: _selectedIndex,
-          onTap: (id) {
-            setState(() {
-              _selectedIndex = id;
-            });
-            switch (id) {
-              case 0:
-                GoRouter.of(context).go('/home');
-                break;
-              case 1:
-                GoRouter.of(context).go('/your_room');
-                break;
-              case 2:
-                GoRouter.of(context).go('/notification_list');
-                break;
-              case 3:
-                GoRouter.of(context).go('/setting');
-                break;
-              default:
-                break;
-            }
-          },
-          items: [
+        backgroundColor: ColorPalette.backgroundColor,
+        currentIndex: _selectedIndex,
+        onTap: (id) {
+          setState(() {
+            _selectedIndex = id;
+          });
+          switch (id) {
+            case 0:
+              GoRouter.of(context).go('/home');
+              break;
+            case 1:
+              if (_isOwner) {
+                GoRouter.of(context).go('/statistic');
+              } else {
+                if (rentalID.isNotEmpty) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DetailRoomScreen(
+                        room: yourRoom,
+                      ),
+                    ),
+                  );
+                } else {
+                  GoRouter.of(context).go('/your_room');
+                }
+              }
+              break;
+            case 2:
+              GoRouter.of(context).go('/notification_list');
+              break;
+            case 3:
+              GoRouter.of(context).go('/setting');
+              break;
+            default:
+              break;
+          }
+        },
+        items: [
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.house,
+                color: ColorPalette.primaryColor,
+                size: 20,
+              ),
+              title: const Text(
+                'Home',
+                style: TextStyles.bottomBar,
+              )),
+          if (!_isOwner)
             SalomonBottomBarItem(
                 icon: const Icon(
-                  FontAwesomeIcons.house,
+                  FontAwesomeIcons.doorOpen,
                   color: ColorPalette.primaryColor,
                   size: 20,
                 ),
                 title: const Text(
-                  'Home',
+                  'Your Room',
                   style: TextStyles.bottomBar,
                 )),
-            if (!_isOwner)
-              SalomonBottomBarItem(
-                  icon: const Icon(
-                    FontAwesomeIcons.doorOpen,
-                    color: ColorPalette.primaryColor,
-                    size: 20,
-                  ),
-                  title: const Text(
-                    'Your Room',
-                    style: TextStyles.bottomBar,
-                  )),
-            if (_isOwner)
-              SalomonBottomBarItem(
-                  icon: const Icon(
-                    FontAwesomeIcons.chartLine,
-                    color: ColorPalette.primaryColor,
-                    size: 20,
-                  ),
-                  title: const Text(
-                    'Statistic',
-                    style: TextStyles.bottomBar,
-                  )),
+          if (_isOwner)
             SalomonBottomBarItem(
                 icon: const Icon(
-                  FontAwesomeIcons.bell,
+                  FontAwesomeIcons.chartLine,
                   color: ColorPalette.primaryColor,
                   size: 20,
                 ),
                 title: const Text(
-                  'Notification',
+                  'Statistic',
                   style: TextStyles.bottomBar,
                 )),
-            SalomonBottomBarItem(
-                icon: const Icon(
-                  FontAwesomeIcons.gear,
-                  color: ColorPalette.primaryColor,
-                  size: 20,
-                ),
-                title: const Text(
-                  'Setting',
-                  style: TextStyles.bottomBar,
-                )),
-          ]),
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.bell,
+                color: ColorPalette.primaryColor,
+                size: 20,
+              ),
+              title: const Text(
+                'Notification',
+                style: TextStyles.bottomBar,
+              )),
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.gear,
+                color: ColorPalette.primaryColor,
+                size: 20,
+              ),
+              title: const Text(
+                'Setting',
+                style: TextStyles.bottomBar,
+              )),
+        ],
+      ),
     );
   }
 

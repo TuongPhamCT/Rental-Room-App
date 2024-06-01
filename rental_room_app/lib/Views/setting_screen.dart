@@ -3,12 +3,16 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Models/Room/room_repo.dart';
 import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -28,11 +32,23 @@ class _SettingScreenState extends State<SettingScreen>
   bool _isOwner = true;
   String _userAvatarUrl = "";
 
+  late String rentalID;
+  late Room yourRoom;
+
   @override
   void initState() {
     super.initState();
     _preferencesPresenter = SharedPreferencesPresenter(this);
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
+    _loadYourRoom();
+  }
+
+  Future<void> _loadYourRoom() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    rentalID = prefs.getString('yourRoomId') ?? '';
+    if (rentalID.isNotEmpty) {
+      yourRoom = await RoomRepositoryIml().getOneRoom(rentalID);
+    }
   }
 
   Future<void> launchEmailApp() async {
@@ -305,7 +321,22 @@ class _SettingScreenState extends State<SettingScreen>
                 GoRouter.of(context).go('/home');
                 break;
               case 1:
-                GoRouter.of(context).go('/your_room');
+                if (_isOwner) {
+                  GoRouter.of(context).go('/statistic');
+                } else {
+                  if (rentalID.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DetailRoomScreen(
+                          room: yourRoom,
+                        ),
+                      ),
+                    );
+                  } else {
+                    GoRouter.of(context).go('/your_room');
+                  }
+                }
                 break;
               case 2:
                 GoRouter.of(context).go('/notification_list');

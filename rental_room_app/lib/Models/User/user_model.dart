@@ -36,12 +36,19 @@ class Users {
     Map data = doc.data() as Map<String, dynamic>;
     return Users(
       userID: data['userID'],
-      userName: data['userName'],
+      userName: data['name'],
       email: data['email'],
       phone: data['phone'],
-      birthday: data['birthday'].toDate(),
+      birthday: data['birthDay'].toDate(),
       gender: data['gender'],
       isOwner: data['isOwner'],
     );
   }
+
+  String get getUserName => userName;
+  String get getEmail => email;
+  String get getPhone => phone;
+  DateTime get getBirthday => birthday;
+  String get getGender => gender;
+  bool get getIsOwner => isOwner;
 }

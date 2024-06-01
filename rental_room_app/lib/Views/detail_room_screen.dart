@@ -1,8 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:rental_room_app/Models/Rental/rental_model.dart';
+import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Models/User/user_model.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
+import 'package:rental_room_app/Views/edit_form_screen.dart';
+import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
@@ -37,10 +47,47 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
 
   bool isOwner = false;
 
+  Rental? rental;
+  Users? user;
+  final RentalRepository _rentalRepository = RentalRepositoryIml();
+  final String rentalID = FirebaseAuth.instance.currentUser!.uid;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
     _loadInfor();
+    if (!widget.room.isAvailable) {
+      _rentalRepository
+          .getRentalData(rentalID, widget.room.roomId)
+          .then((value) {
+        setState(() {
+          rental = value;
+        });
+      });
+
+      _loadTenant();
+    } else
+      rental = null;
+  }
+
+  // Phương thức để load thông tin người thuê
+  Future<void> _loadTenant() async {
+    DocumentSnapshot doc = await _firestore
+        .collection('users')
+        .doc(rentalID)
+        .collection('rentalroom')
+        .doc(widget.room.roomId)
+        .get();
+    if (doc.exists) {
+      DocumentSnapshot docUser =
+          await _firestore.collection('users').doc(rentalID).get();
+      if (docUser.exists) {
+        setState(() {
+          user = Users.fromFirestore(docUser);
+        });
+      }
+    }
   }
 
   // Phương thức để load thông tin từ SharedPreferences
@@ -104,6 +151,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (_) => HomeScreen(),
+                              //   ),
+                              // );
                             },
                             child: Icon(
                               FontAwesomeIcons.arrowLeft,
@@ -133,7 +186,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: room.secondaryImgUrls.length + 1,
+                              itemCount: room.secondaryImgUrls.length + 2,
                               itemBuilder: (context, index) {
                                 return imageIndicator(index == _currenImage);
                               },
@@ -542,24 +595,251 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                Container(
-                  alignment: Alignment.center,
-                  child: ModelButton(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => RentalFormScreen(
-                            room: widget.room,
-                          ),
+                if (!room.isAvailable)
+                  Column(
+                    children: [
+                      BorderContainer(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Rental Information',
+                              style: TextStyles.detailTitle,
+                            ),
+                            const Gap(10),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    FontAwesomeIcons.user,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  user?.getUserName ?? 'Nguyen Nguoi Thue',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    Icons.male,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  user?.getGender ?? 'Male',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    Icons.phone_outlined,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  user?.getPhone ?? '0123456789',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    Icons.business,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  rental?.identity ?? '123456789',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    FontAwesomeIcons.envelope,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  user?.getEmail ?? 'abcde@gmail.com',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    Icons.cake_outlined,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat('dd/MM/yyyy').format(
+                                      user?.getBirthday ??
+                                          DateTime.parse('2000-01-01')),
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    Icons.people_alt_outlined,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  rental?.numberPeople.toString() ?? '1',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    FontAwesomeIcons.solidHourglassHalf,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  (rental?.duration.toString() ?? '12') +
+                                      ' months',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    FontAwesomeIcons.moneyBillWave,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  (rental?.deposit.toStringAsFixed(0) ??
+                                          '1000000') +
+                                      ' VNĐ',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Icon(
+                                    FontAwesomeIcons.squareFacebook,
+                                    size: 15,
+                                    color: ColorPalette.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  rental?.facebook ??
+                                      'https://www.facebook.com',
+                                  style: TextStyles.descriptionRoom,
+                                  textAlign: TextAlign.justify,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    name: 'Rental',
-                    color: ColorPalette.primaryColor.withOpacity(0.75),
-                    width: 150,
+                      ),
+                      const Gap(10),
+                      ModelButton(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditFormScreen(
+                                room: widget.room,
+                              ),
+                            ),
+                          );
+                        },
+                        name: 'EDIT FORM',
+                        color: ColorPalette.primaryColor.withOpacity(0.75),
+                        width: 150,
+                      ),
+                      const Gap(5),
+                      ModelButton(
+                        onTap: () {},
+                        name: 'CHECK OUT',
+                        color: ColorPalette.redColor,
+                        width: 150,
+                      ),
+                    ],
                   ),
-                ),
+                if (room.isAvailable)
+                  Container(
+                    alignment: Alignment.center,
+                    child: ModelButton(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RentalFormScreen(
+                              room: widget.room,
+                            ),
+                          ),
+                        );
+                      },
+                      name: 'Rental',
+                      color: ColorPalette.primaryColor.withOpacity(0.75),
+                      width: 150,
+                    ),
+                  ),
                 const Gap(10),
                 BorderContainer(
                   child: Column(
