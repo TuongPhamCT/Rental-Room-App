@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
   int soLuongPhongCoSan = 6;
 
   late List<Room> roomAvailable;
-  late String rentalID;
+  String rentalID = '';
   final String userID = FirebaseAuth.instance.currentUser!.uid;
   late Room yourRoom;
 
@@ -71,7 +71,9 @@ class _HomeScreenState extends State<HomeScreen>
       Map<String, dynamic> rentalRoomData =
           documentSnapshot.data() as Map<String, dynamic>;
 
-      rentalID = rentalRoomData['roomID'];
+      setState(() {
+        rentalID = rentalRoomData['roomID'];
+      });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('yourRoomId', rentalID);
       yourRoom = await RoomRepositoryIml().getOneRoom(rentalID);

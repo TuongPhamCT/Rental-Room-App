@@ -90,12 +90,67 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     }
   }
 
+  Future<bool> isHaveRoom() async {
+    try {
+      DocumentReference userDocRef =
+          FirebaseFirestore.instance.collection('users').doc(rentalID);
+      CollectionReference roomCollectionRef =
+          userDocRef.collection('rentalroom');
+      QuerySnapshot roomSnapshot = await roomCollectionRef.limit(1).get();
+
+      return roomSnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("Lỗi khi kiểm tra thuê phòng: $e");
+      return false;
+    }
+  }
+
   // Phương thức để load thông tin từ SharedPreferences
   Future<void> _loadInfor() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     setState(() {
       isOwner = _prefs.getBool('isOwner') ?? false;
     });
+  }
+
+  Future<void> checkOutRoom() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+    try {
+      QuerySnapshot rentalroomSnapshot = await _firestore
+          .collection('users')
+          .doc(rentalID)
+          .collection('rentalroom')
+          .get();
+      for (var doc in rentalroomSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Xóa collection con 'tenant' trong 'room'
+      QuerySnapshot tenantSnapshot = await _firestore
+          .collection('Rooms')
+          .doc(widget.room.roomId)
+          .collection('tenant')
+          .get();
+      for (var doc in tenantSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Đổi thuộc tính isAvailable từ false sang true
+      await _firestore
+          .collection('Rooms')
+          .doc(widget.room.roomId)
+          .update({'isAvailable': true});
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      _prefs.remove('yourRoomId');
+    } catch (e) {
+      print("Lỗi khi check out phòng: $e");
+    }
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   @override
@@ -274,7 +329,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              if (room.secondaryImgUrls.length > 0)
+                              if (room.secondaryImgUrls.isNotEmpty)
                                 SubFrame(
                                   child: Image.network(
                                     room.secondaryImgUrls[0],
@@ -814,7 +869,33 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                       const Gap(5),
                       ModelButton(
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Notification'),
+                                content: const Text(
+                                    'Are you sure you want to check out this room?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('CANCEL'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      checkOutRoom();
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         name: 'CHECK OUT',
                         color: ColorPalette.redColor,
                         width: 150,
@@ -825,15 +906,37 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   Container(
                     alignment: Alignment.center,
                     child: ModelButton(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => RentalFormScreen(
-                              room: widget.room,
+                      onTap: () async {
+                        bool abc = await isHaveRoom();
+                        if (abc) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Notification'),
+                                content: const Text(
+                                    'You have already rented a room. Please check out before renting another room!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RentalFormScreen(
+                                room: widget.room,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                       name: 'Rental',
                       color: ColorPalette.primaryColor.withOpacity(0.75),

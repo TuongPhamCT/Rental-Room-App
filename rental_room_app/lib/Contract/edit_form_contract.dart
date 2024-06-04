@@ -1,1 +1,6 @@
-abstract class EditFormContract {}
+abstract class EditFormContract {
+  void onUpdateSucceed();
+  void onUpdateFailed();
+  void onWaitingProgressBar();
+  void onPopContext();
+}
