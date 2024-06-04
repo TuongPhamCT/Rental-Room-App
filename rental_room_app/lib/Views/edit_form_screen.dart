@@ -3,11 +3,9 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/edit_form_contract.dart';
-import 'package:rental_room_app/Contract/rental_form_contract.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Presenter/edit_form_presenter.dart';
-import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
-import 'package:rental_room_app/Views/rental_form_screen.dart';
+import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
@@ -299,7 +297,18 @@ class _EditFormScreenState extends State<EditFormScreen>
                     ),
                     const Gap(20),
                     ModelButton(
-                        onTap: () {},
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            _editFormPresenter!.updateForm(
+                                widget.room.roomId,
+                                _citizenIdentificationController.text,
+                                _numberOfPeopleController.text,
+                                _startDate,
+                                _durationController.text,
+                                _depositController.text,
+                                _facebookController.text);
+                          }
+                        },
                         name: "Save",
                         color: ColorPalette.primaryColor.withOpacity(0.75),
                         width: 150),
@@ -318,5 +327,52 @@ class _EditFormScreenState extends State<EditFormScreen>
         ),
       );
     });
+  }
+
+  @override
+  void onUpdateFailed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'Cannot UPDATE This FORM! Please try again later!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void onUpdateSucceed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ColorPalette.greenText,
+        content: Text(
+          'UPDATE succeeded!',
+          style: TextStyle(color: ColorPalette.errorColor),
+        ),
+      ),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(),
+      ),
+    );
+  }
+
+  @override
+  void onWaitingProgressBar() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  @override
+  void onPopContext() {
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }
