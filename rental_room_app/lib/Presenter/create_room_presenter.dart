@@ -250,10 +250,10 @@ class CreateRoomPresenter {
       String ownerAddress) async {
     //create data model
     Price price = Price(
-        room: double.parse(roomPrice),
-        water: double.parse(waterPrice),
-        electric: double.parse(electricPrice),
-        others: double.parse(otherPrice));
+        room: int.parse(roomPrice),
+        water: int.parse(waterPrice),
+        electric: int.parse(electricPrice),
+        others: int.parse(otherPrice));
 
     //Upload Image and retrieve URLs
     List<Uint8List> imagesData = [];

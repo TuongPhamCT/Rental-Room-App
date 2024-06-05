@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Price {
-  double room;
-  double water;
-  double electric;
-  double others;
+  int room;
+  int water;
+  int electric;
+  int others;
 
   Price(
       {required this.room,
@@ -24,14 +24,14 @@ class Price {
 
   factory Price.fromFirestore(Map<String, dynamic> data) {
     return Price(
-      room: double.parse(data['room'].toString()),
-      water: double.parse(data['water'].toString()),
-      electric: double.parse(data['electric'].toString()),
-      others: double.parse(data['others'].toString()),
+      room: int.parse(data['room'].toString()),
+      water: int.parse(data['water'].toString()),
+      electric: int.parse(data['electric'].toString()),
+      others: int.parse(data['others'].toString()),
     );
   }
-  double get roomPrice => room;
-  double get waterPrice => water;
-  double get electricPrice => electric;
-  double get othersPrice => others;
+  int get roomPrice => room;
+  int get waterPrice => water;
+  int get electricPrice => electric;
+  int get othersPrice => others;
 }

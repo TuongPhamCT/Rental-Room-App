@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:rental_room_app/Models/Rental/rental_model.dart';
 import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
-import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
@@ -71,7 +69,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       rental = null;
   }
 
-  // Phương thức để load thông tin người thuê
   Future<void> _loadTenant() async {
     DocumentSnapshot doc = await _firestore
         .collection('users')
@@ -151,6 +148,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       print("Lỗi khi check out phòng: $e");
     }
     Navigator.of(context, rootNavigator: true).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(),
+      ),
+    );
   }
 
   @override

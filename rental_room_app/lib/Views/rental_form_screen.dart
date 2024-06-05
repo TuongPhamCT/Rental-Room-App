@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Presenter/rental_from_presenter.dart';
+import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/custom_text_field.dart';
@@ -355,7 +356,12 @@ class _RentalFormScreenState extends State<RentalFormScreen>
         ),
       ),
     );
-    GoRouter.of(context).go('/home');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(),
+      ),
+    );
   }
 
   @override
