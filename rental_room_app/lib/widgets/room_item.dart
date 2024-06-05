@@ -142,8 +142,7 @@ class _RoomItemState extends State<RoomItem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$ ' +
-                              widget.room.price.roomPrice.toStringAsFixed(0),
+                          '\$ ' + widget.room.price.roomPrice.toString(),
                           style: TextStyles.nameRoomItem.copyWith(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,

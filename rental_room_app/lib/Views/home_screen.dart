@@ -5,6 +5,7 @@ import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
@@ -35,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isOwner = true;
   String _userAvatarUrl = '';
   bool isVisiable = false;
-  String? searchValue;
   bool isVisibleFilter = false;
   int soLuongPhongCoSan = 6;
 
@@ -44,12 +44,78 @@ class _HomeScreenState extends State<HomeScreen>
   final String userID = FirebaseAuth.instance.currentUser!.uid;
   late Room yourRoom;
 
+  bool priceDesc = false;
+  bool areaDesc = false;
+  bool rateDesc = false;
+  String? kindRoom;
+  String? valueSearch;
+  String? dropdownKindValue;
+
+  List<Room> loadListRoom(List<Room> list) {
+    if (priceDesc) {
+      list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
+    } else {
+      list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
+    }
+    if (areaDesc) {
+      list.sort((a, b) => b.area.compareTo(a.area));
+    } else {
+      list.sort((a, b) => a.area.compareTo(b.area));
+    }
+    List<Room> newList = List.from(list);
+    newList = list.where((element) => element.isAvailable == true).toList();
+    switch (kindRoom) {
+      case 'All':
+        break;
+      case 'Standard':
+        newList = list
+            .where((element) =>
+                element.kind == 'Standard Room' && element.isAvailable)
+            .toList();
+        break;
+      case 'Loft':
+        newList = list
+            .where(
+                (element) => element.kind == 'Loft Room' && element.isAvailable)
+            .toList();
+        break;
+      case 'House':
+        newList = list
+            .where((element) => element.kind == 'House' && element.isAvailable)
+            .toList();
+        break;
+      default:
+        break;
+    }
+    if (valueSearch != null) {
+      newList = list
+          .where((element) =>
+              element.location
+                  .toLowerCase()
+                  .contains(valueSearch!.toLowerCase()) &&
+              element.isAvailable)
+          .toList();
+    }
+    return newList;
+  }
+
   @override
   void initState() {
     super.initState();
     _preferencesPresenter = SharedPreferencesPresenter(this);
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
     _loadRentalRoom();
+    requestLocationPermission();
+  }
+
+  Future<void> requestLocationPermission() async {
+    PermissionStatus status = await Permission.location.status;
+    if (!status.isGranted) {
+      PermissionStatus result = await Permission.location.request();
+      if (result.isDenied) {
+        print('Permission denied');
+      }
+    }
   }
 
   Future<void> _loadRentalRoom() async {
@@ -96,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen>
               width: size.width,
               child: GestureDetector(
                 onTap: () {
-                  GoRouter.of(context).go('/home/rental_form');
+                  GoRouter.of(context).go('/setting');
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -145,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                   onChanged: (value) {
                     setState(() {
-                      searchValue = value;
+                      valueSearch = value;
                     });
                   },
                   decoration: InputDecoration(
@@ -227,22 +293,18 @@ class _HomeScreenState extends State<HomeScreen>
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          onTapIconDown: () {},
-                          onTapIconUp: () {},
-                        ),
-                        FilterContainerWidget(
-                          name: 'Distance',
-                          icon1: const Icon(
-                            FontAwesomeIcons.arrowUp,
-                            color: ColorPalette.primaryColor,
-                            size: 10,
-                          ),
-                          icon2: const Icon(
-                            FontAwesomeIcons.arrowDown,
-                            color: ColorPalette.primaryColor,
-                            size: 10,
-                          ),
-                          onTapIconDown: () {},
+                          onTapIconDown: () {
+                            setState(() {
+                              areaDesc = true;
+                              print('Dien tich giam dan\n');
+                            });
+                          },
+                          onTapIconUp: () {
+                            setState(() {
+                              areaDesc = false;
+                              print('Dien tich tang dan\n');
+                            });
+                          },
                         ),
                         FilterContainerWidget(
                           name: 'Price',
@@ -256,7 +318,18 @@ class _HomeScreenState extends State<HomeScreen>
                             color: ColorPalette.primaryColor,
                             size: 10,
                           ),
-                          onTapIconDown: () {},
+                          onTapIconDown: () {
+                            setState(() {
+                              priceDesc = true;
+                              print('Gia giam dan\n');
+                            });
+                          },
+                          onTapIconUp: () {
+                            setState(() {
+                              priceDesc = false;
+                              print('Gia tang dan\n');
+                            });
+                          },
                         ),
                         FilterContainerWidget(
                           name: 'Rate',
@@ -272,15 +345,55 @@ class _HomeScreenState extends State<HomeScreen>
                           ),
                           onTapIconDown: () {},
                         ),
-                        FilterContainerWidget(
-                          name: 'Kind',
-                          icon1: const Icon(
-                            FontAwesomeIcons.angleDown,
-                            color: ColorPalette.primaryColor,
-                            size: 10,
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: ColorPalette.grayText)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 3),
+                            child: Container(
+                              height: 15,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  borderRadius: BorderRadius.circular(15),
+                                  hint: Text(
+                                    'Kind',
+                                    style: TextStyles.defaultStyle.grayText
+                                        .copyWith(fontSize: 12),
+                                  ),
+                                  value: kindRoom,
+                                  style: TextStyles.defaultStyle.grayText
+                                      .copyWith(fontSize: 12),
+                                  icon: const Icon(
+                                    FontAwesomeIcons.arrowDown,
+                                    color: ColorPalette.primaryColor,
+                                    size: 10,
+                                  ),
+                                  items: <String>[
+                                    'All',
+                                    'Standard',
+                                    'Loft',
+                                    'House'
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      kindRoom = newValue;
+                                      print(kindRoom);
+                                      print('Chon loai phong\n');
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
                           ),
-                          onTapIconDown: () {},
-                        ),
+                        )
                       ],
                     ),
                   ],
@@ -398,38 +511,47 @@ class _HomeScreenState extends State<HomeScreen>
                     );
                   } else if (snapshot.hasData) {
                     roomAvailable = snapshot.data!;
-                    return roomAvailable.length <= 6
-                        ? GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 20,
-                              crossAxisSpacing: 20,
-                              childAspectRatio: 0.7,
-                            ),
-                            itemBuilder: (context, index) => RoomItem(
-                              room: roomAvailable[index],
-                            ),
-                            itemCount: roomAvailable.length,
-                          )
-                        : LazyLoadScrollView(
-                            onEndOfPage: () => setState(() {
-                              soLuongPhongCoSan += 6;
-                            }),
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 20,
-                                childAspectRatio: 0.7,
-                              ),
-                              itemBuilder: (context, index) => RoomItem(
-                                room: roomAvailable[index],
-                              ),
-                              itemCount: soLuongPhongCoSan,
-                            ),
-                          );
+                    return // roomAvailable.length <= 6 ?
+                        // ? GridView.builder(
+                        //     gridDelegate:
+                        //         const SliverGridDelegateWithFixedCrossAxisCount(
+                        //       crossAxisCount: 2,
+                        //       mainAxisSpacing: 20,
+                        //       crossAxisSpacing: 20,
+                        //       childAspectRatio: 0.7,
+                        //     ),
+                        //     itemBuilder: (context, index) => RoomItem(
+                        //       room: roomAvailable[index],
+                        //     ),
+                        //     itemCount: roomAvailable.length,
+                        //   )
+                        GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 0.7,
+                      children: loadListRoom(roomAvailable)
+                          .map((e) => RoomItem(room: e))
+                          .toList(),
+                    );
+                    // : LazyLoadScrollView(
+                    //     onEndOfPage: () => setState(() {
+                    //       soLuongPhongCoSan += 6;
+                    //     }),
+                    //     child: GridView.builder(
+                    //       gridDelegate:
+                    //           const SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisCount: 2,
+                    //         mainAxisSpacing: 20,
+                    //         crossAxisSpacing: 20,
+                    //         childAspectRatio: 0.7,
+                    //       ),
+                    //       itemBuilder: (context, index) => RoomItem(
+                    //         room: roomAvailable[index],
+                    //       ),
+                    //       itemCount: soLuongPhongCoSan,
+                    //     ),
+                    //   );
                   } else {
                     return Container();
                   }
