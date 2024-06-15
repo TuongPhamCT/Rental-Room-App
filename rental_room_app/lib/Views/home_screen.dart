@@ -6,9 +6,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rental_room_app/Contract/home_contract.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
+import 'package:rental_room_app/Presenter/home_presenter.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
@@ -28,8 +30,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    implements SharedPreferencesContract {
+    implements SharedPreferencesContract, HomeContract {
   SharedPreferencesPresenter? _preferencesPresenter;
+  HomePresenter? _homePresenter;
+  final RoomRepository _roomRepository = RoomRepositoryIml();
 
   int _selectedIndex = 0;
   String _userName = "nguyen van a";
@@ -50,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen>
   String? kindRoom;
   String? valueSearch;
   String? dropdownKindValue;
+
+  String _recommendTextError = "Service Unavailable!";
 
   List<Room> loadListRoom(List<Room> list) {
     if (priceDesc) {
@@ -104,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _preferencesPresenter = SharedPreferencesPresenter(this);
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
+    _homePresenter = HomePresenter(this);
     _loadRentalRoom();
     requestLocationPermission();
   }
@@ -142,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen>
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('yourRoomId', rentalID);
-      yourRoom = await RoomRepositoryIml().getOneRoom(rentalID);
+      yourRoom = await RoomRepositoryIml().getRoomById(rentalID);
     } catch (e) {
       print('Error getting document: $e');
     }
@@ -296,13 +303,11 @@ class _HomeScreenState extends State<HomeScreen>
                           onTapIconDown: () {
                             setState(() {
                               areaDesc = true;
-                              print('Dien tich giam dan\n');
                             });
                           },
                           onTapIconUp: () {
                             setState(() {
                               areaDesc = false;
-                              print('Dien tich tang dan\n');
                             });
                           },
                         ),
@@ -321,13 +326,11 @@ class _HomeScreenState extends State<HomeScreen>
                           onTapIconDown: () {
                             setState(() {
                               priceDesc = true;
-                              print('Gia giam dan\n');
                             });
                           },
                           onTapIconUp: () {
                             setState(() {
                               priceDesc = false;
-                              print('Gia tang dan\n');
                             });
                           },
                         ),
@@ -352,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen>
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 3),
-                            child: Container(
+                            child: SizedBox(
                               height: 15,
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
@@ -385,8 +388,6 @@ class _HomeScreenState extends State<HomeScreen>
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       kindRoom = newValue;
-                                      print(kindRoom);
-                                      print('Chon loai phong\n');
                                     });
                                   },
                                 ),
@@ -436,7 +437,51 @@ class _HomeScreenState extends State<HomeScreen>
                       ],
                     ),
                     const Gap(10),
-                    Container(),
+                    FutureBuilder(
+                      future: _roomRepository.getRecommendedRooms(
+                          FirebaseAuth.instance.currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Container();
+                        } else if (snapshot.hasData) {
+                          if (snapshot.data!.isEmpty) {
+                            return Center(
+                              child: Text(
+                                "Empty list",
+                                style: TextStyles.titleHeading
+                                    .copyWith(color: ColorPalette.errorColor),
+                              ),
+                            );
+                          }
+                          List<Room> recommendedRooms = snapshot.data!;
+                          return Container(
+                            height: 250,
+                            width: size.width,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: recommendedRooms
+                                  .map((room) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Container(
+                                            height: 250,
+                                            width: 170,
+                                            child: RoomItem(room: room)),
+                                      ))
+                                  .toList(),
+                            ),
+                          );
+                        } else {
+                          return Center(
+                            child: Text(
+                              "Loading",
+                              style: TextStyles.titleHeading
+                                  .copyWith(color: ColorPalette.errorColor),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -503,7 +548,7 @@ class _HomeScreenState extends State<HomeScreen>
             const Gap(20),
             Expanded(
               child: StreamBuilder<List<Room>>(
-                stream: RoomRepositoryIml().getRooms(),
+                stream: _roomRepository.getRooms(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
@@ -680,5 +725,17 @@ class _HomeScreenState extends State<HomeScreen>
       _isOwner = isOwner ?? true;
       _userAvatarUrl = userAvatarUrl ?? "";
     });
+  }
+
+  @override
+  void onRecommendFailed() {
+    _recommendTextError = "Service Unavailable!";
+    setState(() {});
+  }
+
+  @override
+  void onRecommendSuccess() {
+    _recommendTextError = "";
+    setState(() {});
   }
 }

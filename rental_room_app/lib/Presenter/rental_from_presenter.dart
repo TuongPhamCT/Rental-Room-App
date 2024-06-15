@@ -29,15 +29,18 @@ class RentalFormPresenter {
 
   String? validateStartDate(DateTime? startDate) {
     DateTime today = DateTime.now();
-    DateTime startDateOnly =
-        DateTime(startDate!.year, startDate.month, startDate.day);
+
     DateTime todayOnly = DateTime(today.year, today.month, today.day);
     if (startDate == null) {
       return "Please enter your start date!";
-    } else if (startDateOnly.isBefore(todayOnly)) {
-      return "Invalid start date!";
+    } else {
+      DateTime startDateOnly =
+          DateTime(startDate.year, startDate.month, startDate.day);
+      if (startDateOnly.isBefore(todayOnly)) {
+        return "Invalid start date!";
+      }
+      return null;
     }
-    return null;
   }
 
   String? validateDeposit(String? deposit) {

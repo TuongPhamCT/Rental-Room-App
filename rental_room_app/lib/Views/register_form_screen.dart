@@ -35,6 +35,8 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
   final _accountPasswordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
   bool _isOwner = false;
+  final _desiredPriceController = TextEditingController();
+  final _desiredLocationController = TextEditingController();
   //
 
   @override
@@ -419,29 +421,103 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                               obscuringCharacter: '*',
                             ),
                           ),
+                          Row(
+                            children: [
+                              const Gap(30),
+                              Checkbox(
+                                value: _isOwner,
+                                onChanged: (value) =>
+                                    setState(() => _isOwner = value!),
+                                checkColor: ColorPalette.backgroundColor,
+                                side: const BorderSide(
+                                    width: 2, color: ColorPalette.blackText),
+                                activeColor: ColorPalette.primaryColor,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  'You are the owner of a rental property',
+                                  style: TextStyles.h6.copyWith(
+                                      color: ColorPalette.darkBlueText),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Gap(5),
+                          Visibility(
+                            visible: !_isOwner,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                controller: _desiredPriceController,
+                                validator: _registerFormPresenter
+                                    ?.validateDesiredPrice,
+                                keyboardType: TextInputType.number,
+                                style: TextStyles.h5,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: ColorPalette.bgTextFieldColor,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 10,
+                                          color: ColorPalette.bgTextFieldColor),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 5,
+                                          color: ColorPalette.bgTextFieldColor),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  labelText: "Desired Room Price (VND)",
+                                  labelStyle: TextStyles.h5
+                                      .copyWith(color: ColorPalette.rankText),
+                                  helperText: " ",
+                                ),
+                                obscureText: false,
+                              ),
+                            ),
+                          ),
+                          const Gap(5),
+                          Visibility(
+                            visible: !_isOwner,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                controller: _desiredLocationController,
+                                validator: _registerFormPresenter!
+                                    .validateDesiredLocation,
+                                keyboardType: TextInputType.streetAddress,
+                                style: TextStyles.h5,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: ColorPalette.bgTextFieldColor,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 10,
+                                          color: ColorPalette.bgTextFieldColor),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          width: 5,
+                                          color: ColorPalette.bgTextFieldColor),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  labelText: "Desired Location",
+                                  labelStyle: TextStyles.h5
+                                      .copyWith(color: ColorPalette.rankText),
+                                  helperText: " ",
+                                ),
+                                obscureText: false,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const Gap(30),
-                        Checkbox(
-                          value: _isOwner,
-                          onChanged: (value) =>
-                              setState(() => _isOwner = value!),
-                          checkColor: ColorPalette.backgroundColor,
-                          side: const BorderSide(
-                              width: 2, color: ColorPalette.blackText),
-                          activeColor: ColorPalette.primaryColor,
-                        ),
-                        Flexible(
-                          child: Text(
-                            'You are the owner of a rental property',
-                            style: TextStyles.h6
-                                .copyWith(color: ColorPalette.darkBlueText),
-                          ),
-                        ),
-                      ],
                     ),
                     const Gap(30),
                     Padding(
@@ -450,15 +526,17 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _registerFormPresenter?.doneButtonPressed(
-                              widget.email,
-                              _accountPasswordTextController.text,
-                              _fullnameTextController.text,
-                              _phoneNumTextController.text,
-                              _gender,
-                              birthday,
-                              _isOwner,
-                              _imageFile,
-                            );
+                                widget.email,
+                                _accountPasswordTextController.text,
+                                _fullnameTextController.text,
+                                _phoneNumTextController.text,
+                                _gender,
+                                birthday,
+                                _isOwner,
+                                _imageFile,
+                                _isOwner
+                                    ? 'None'
+                                    : _desiredPriceController.text);
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -67,8 +67,6 @@ class Room {
 
   factory Room.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    print("Firestore data: $data");
-    print("\n\n");
     double area = 0.0;
     try {
       area = double.parse(data['area'].toString());
