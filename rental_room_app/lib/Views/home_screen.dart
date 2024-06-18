@@ -51,6 +51,57 @@ class _HomeScreenState extends State<HomeScreen>
   String? valueSearch;
   String? dropdownKindValue;
 
+  String? ownerPhone;
+
+  List<Room> loadListOwnerRoom(List<Room> list) {
+    if (priceDesc) {
+      list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
+    } else {
+      list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
+    }
+    if (areaDesc) {
+      list.sort((a, b) => b.area.compareTo(a.area));
+    } else {
+      list.sort((a, b) => a.area.compareTo(b.area));
+    }
+    List<Room> newList = List.from(list);
+    newList =
+        list.where((element) => element.ownerPhone == ownerPhone).toList();
+    switch (kindRoom) {
+      case 'All':
+        break;
+      case 'Standard':
+        newList = list
+            .where((element) =>
+                element.kind == 'Standard Room' && element.isAvailable)
+            .toList();
+        break;
+      case 'Loft':
+        newList = list
+            .where(
+                (element) => element.kind == 'Loft Room' && element.isAvailable)
+            .toList();
+        break;
+      case 'House':
+        newList = list
+            .where((element) => element.kind == 'House' && element.isAvailable)
+            .toList();
+        break;
+      default:
+        break;
+    }
+    if (valueSearch != null) {
+      newList = list
+          .where((element) =>
+              element.location
+                  .toLowerCase()
+                  .contains(valueSearch!.toLowerCase()) &&
+              element.isAvailable)
+          .toList();
+    }
+    return newList;
+  }
+
   List<Room> loadListRoom(List<Room> list) {
     if (priceDesc) {
       list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
@@ -106,6 +157,18 @@ class _HomeScreenState extends State<HomeScreen>
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
     _loadRentalRoom();
     requestLocationPermission();
+    _loadPhoneNumber();
+  }
+
+  Future<void> _loadPhoneNumber() async {
+    CollectionReference userRef =
+        FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot documentSnapshot = await userRef.doc(userID).get();
+    Map<String, dynamic> userData =
+        documentSnapshot.data() as Map<String, dynamic>;
+    setState(() {
+      ownerPhone = userData['phone'];
+    });
   }
 
   Future<void> requestLocationPermission() async {
@@ -444,57 +507,15 @@ class _HomeScreenState extends State<HomeScreen>
             const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
-              child: const Column(
+              child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Room Available',
+                        _isOwner ? 'Your Room' : 'Room Available',
                         style: TextStyles.titleHeading,
                       ),
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     if (soLuongPhongCoSan == 6) {
-                      //       setState(() {
-                      //         soLuongPhongCoSan = roomAvailable.length;
-                      //       });
-                      //     } else {
-                      //       setState(() {
-                      //         soLuongPhongCoSan = 6;
-                      //       });
-                      //     }
-                      //   },
-                      //   child: soLuongPhongCoSan == 6
-                      //       ? const Row(
-                      //           children: [
-                      //             Text(
-                      //               'See All',
-                      //               style: TextStyles.seeAll,
-                      //             ),
-                      //             Gap(10),
-                      //             Icon(
-                      //               FontAwesomeIcons.angleRight,
-                      //               size: 12,
-                      //               color: ColorPalette.grayText,
-                      //             ),
-                      //           ],
-                      //         )
-                      //       : const Row(
-                      //           children: [
-                      //             Text(
-                      //               'Collapse',
-                      //               style: TextStyles.seeAll,
-                      //             ),
-                      //             Gap(10),
-                      //             Icon(
-                      //               FontAwesomeIcons.angleLeft,
-                      //               size: 12,
-                      //               color: ColorPalette.grayText,
-                      //             ),
-                      //           ],
-                      //         ),
-                      // )
                     ],
                   ),
                 ],
@@ -511,47 +532,19 @@ class _HomeScreenState extends State<HomeScreen>
                     );
                   } else if (snapshot.hasData) {
                     roomAvailable = snapshot.data!;
-                    return // roomAvailable.length <= 6 ?
-                        // ? GridView.builder(
-                        //     gridDelegate:
-                        //         const SliverGridDelegateWithFixedCrossAxisCount(
-                        //       crossAxisCount: 2,
-                        //       mainAxisSpacing: 20,
-                        //       crossAxisSpacing: 20,
-                        //       childAspectRatio: 0.7,
-                        //     ),
-                        //     itemBuilder: (context, index) => RoomItem(
-                        //       room: roomAvailable[index],
-                        //     ),
-                        //     itemCount: roomAvailable.length,
-                        //   )
-                        GridView.count(
+                    return GridView.count(
                       crossAxisCount: 2,
                       mainAxisSpacing: 20,
                       crossAxisSpacing: 20,
                       childAspectRatio: 0.7,
-                      children: loadListRoom(roomAvailable)
-                          .map((e) => RoomItem(room: e))
-                          .toList(),
+                      children: _isOwner
+                          ? loadListOwnerRoom(roomAvailable)
+                              .map((e) => RoomItem(room: e))
+                              .toList()
+                          : loadListRoom(roomAvailable)
+                              .map((e) => RoomItem(room: e))
+                              .toList(),
                     );
-                    // : LazyLoadScrollView(
-                    //     onEndOfPage: () => setState(() {
-                    //       soLuongPhongCoSan += 6;
-                    //     }),
-                    //     child: GridView.builder(
-                    //       gridDelegate:
-                    //           const SliverGridDelegateWithFixedCrossAxisCount(
-                    //         crossAxisCount: 2,
-                    //         mainAxisSpacing: 20,
-                    //         crossAxisSpacing: 20,
-                    //         childAspectRatio: 0.7,
-                    //       ),
-                    //       itemBuilder: (context, index) => RoomItem(
-                    //         room: roomAvailable[index],
-                    //       ),
-                    //       itemCount: soLuongPhongCoSan,
-                    //     ),
-                    //   );
                   } else {
                     return Container();
                   }
