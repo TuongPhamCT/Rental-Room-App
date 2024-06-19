@@ -156,6 +156,48 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     );
   }
 
+  Future<void> deleteRoom() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+    try {
+      await FirebaseFirestore.instance
+          .collection('Rooms')
+          .doc(widget.room.roomId)
+          .delete();
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: ColorPalette.greenText,
+          content: Text(
+            'Xoá phòng trọ thành công!',
+            style: TextStyle(color: ColorPalette.errorColor),
+          ),
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: ColorPalette.greenText,
+          content: Text(
+            'Xoá phòng trọ thất bại!',
+            style: TextStyle(color: ColorPalette.errorColor),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Room room = widget.room;
@@ -209,12 +251,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => HomeScreen(),
-                              //   ),
-                              // );
                             },
                             child: Icon(
                               FontAwesomeIcons.arrowLeft,
@@ -244,7 +280,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: room.secondaryImgUrls.length + 2,
+                              itemCount: room.secondaryImgUrls.length + 1,
                               itemBuilder: (context, index) {
                                 return imageIndicator(index == _currenImage);
                               },
@@ -255,20 +291,24 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                               width: size.width,
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                width: 55,
-                                height: 20,
                                 alignment: Alignment.center,
+                                height: 25,
+                                width: 80,
                                 decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(10)),
-                                  color: Colors.orangeAccent.withOpacity(0.8),
+                                  color: widget.room.isAvailable
+                                      ? Colors.greenAccent.withOpacity(0.8)
+                                      : Colors.orangeAccent.withOpacity(0.8),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                  ),
                                 ),
                                 child: Text(
-                                  'Booked',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyles.calendarNote.copyWith(
-                                    fontSize: 10,
-                                    color: ColorPalette.backgroundColor,
+                                  widget.room.isAvailable
+                                      ? 'Available'
+                                      : 'Rented',
+                                  style: TextStyles.nameRoomItem.copyWith(
+                                    fontSize: 13,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -653,7 +693,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                if (!room.isAvailable)
+                if (!room.isAvailable && !isOwner)
                   Column(
                     children: [
                       BorderContainer(
@@ -905,7 +945,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                     ],
                   ),
-                if (room.isAvailable)
+                if (room.isAvailable && !isOwner)
                   Container(
                     alignment: Alignment.center,
                     child: ModelButton(
@@ -942,6 +982,66 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         }
                       },
                       name: 'Rental',
+                      color: ColorPalette.primaryColor.withOpacity(0.75),
+                      width: 150,
+                    ),
+                  ),
+                if (room.isAvailable && isOwner)
+                  Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {},
+                          name: 'Edit room',
+                          color: ColorPalette.primaryColor.withOpacity(0.75),
+                          width: 150,
+                        ),
+                      ),
+                      const Gap(10),
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Notification'),
+                                  content: const Text(
+                                      'Are you sure you want to DELETE this room?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        deleteRoom();
+                                      },
+                                      child: const Text('CONFIRM'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          name: 'Delete room',
+                          color: ColorPalette.redColor,
+                          width: 150,
+                        ),
+                      ),
+                    ],
+                  ),
+                if (!room.isAvailable && isOwner)
+                  Container(
+                    alignment: Alignment.center,
+                    child: ModelButton(
+                      onTap: () {},
+                      name: 'New Receipt',
                       color: ColorPalette.primaryColor.withOpacity(0.75),
                       width: 150,
                     ),
@@ -1148,86 +1248,87 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     ],
                   ),
                 ),
-                BorderContainer(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Rating for this room',
-                        style: TextStyles.detailTitle,
-                      ),
-                      const Gap(5),
-                      Container(
-                        alignment: Alignment.center,
-                        child: RatingBar.builder(
-                          initialRating: rating,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemSize: 60,
-                          unratedColor: ColorPalette.primaryColor,
-                          itemBuilder: (context, index) {
-                            if (index < rating) {
-                              return const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              );
-                            } else {
-                              return const Icon(
-                                Icons.star_border_outlined,
-                              );
-                            }
-                          },
-                          onRatingUpdate: (double newRating) {
-                            setState(() {
-                              rating = newRating;
-                            });
-                          },
+                if (!isOwner)
+                  BorderContainer(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Rating for this room',
+                          style: TextStyles.detailTitle,
                         ),
-                      ),
-                      const Gap(5),
-                      const Text(
-                        'Write your review:',
-                        style: TextStyles.detailTitle,
-                      ),
-                      TextField(
-                        maxLines: null,
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textAlign: TextAlign.justify,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: ColorPalette.primaryColor,
-                            ),
-                          ),
-                          hintText: 'Write your review',
-                          hintStyle: TextStyles.descriptionRoom.copyWith(
-                              color: ColorPalette.rankText.withOpacity(0.5)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                              color: ColorPalette.rankText.withOpacity(0.1),
-                            ),
+                        const Gap(5),
+                        Container(
+                          alignment: Alignment.center,
+                          child: RatingBar.builder(
+                            initialRating: rating,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemSize: 60,
+                            unratedColor: ColorPalette.primaryColor,
+                            itemBuilder: (context, index) {
+                              if (index < rating) {
+                                return const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                );
+                              } else {
+                                return const Icon(
+                                  Icons.star_border_outlined,
+                                );
+                              }
+                            },
+                            onRatingUpdate: (double newRating) {
+                              setState(() {
+                                rating = newRating;
+                              });
+                            },
                           ),
                         ),
-                      ),
-                      const Gap(10),
-                      Container(
-                        alignment: Alignment.center,
-                        child: ModelButton(
-                          onTap: () {},
-                          name: 'POST',
-                          color: ColorPalette.primaryColor.withOpacity(0.75),
-                          width: 150,
+                        const Gap(5),
+                        const Text(
+                          'Write your review:',
+                          style: TextStyles.detailTitle,
                         ),
-                      ),
-                    ],
+                        TextField(
+                          maxLines: null,
+                          onTapOutside: (event) {
+                            FocusScope.of(context).unfocus();
+                          },
+                          textAlign: TextAlign.justify,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: ColorPalette.primaryColor,
+                              ),
+                            ),
+                            hintText: 'Write your review',
+                            hintStyle: TextStyles.descriptionRoom.copyWith(
+                                color: ColorPalette.rankText.withOpacity(0.5)),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: ColorPalette.rankText.withOpacity(0.1),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Gap(10),
+                        Container(
+                          alignment: Alignment.center,
+                          child: ModelButton(
+                            onTap: () {},
+                            name: 'POST',
+                            color: ColorPalette.primaryColor.withOpacity(0.75),
+                            width: 150,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 const Gap(15),
               ],
             ),
