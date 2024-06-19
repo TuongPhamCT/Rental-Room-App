@@ -45,7 +45,7 @@ class _FilterContainerWidgetState extends State<FilterContainerWidget> {
           const Gap(5),
           GestureDetector(
             onTap: () {
-              widget.onTapIconUp!();
+              widget.onTapIconDown();
             },
             child: widget.icon2 ??
                 const SizedBox(
@@ -53,10 +53,11 @@ class _FilterContainerWidgetState extends State<FilterContainerWidget> {
                 ),
           ),
           GestureDetector(
-              onTap: () {
-                widget.onTapIconDown();
-              },
-              child: widget.icon1),
+            onTap: () {
+              widget.onTapIconUp!();
+            },
+            child: widget.icon1,
+          ),
         ]),
       ),
     );

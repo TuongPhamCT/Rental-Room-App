@@ -45,9 +45,9 @@ class _HomeScreenState extends State<HomeScreen>
   final String userID = FirebaseAuth.instance.currentUser!.uid;
   late Room yourRoom;
 
-  bool? priceDesc = false;
-  bool? areaDesc = false;
-  bool? rateDesc = false;
+  bool? priceDesc;
+  bool? areaDesc;
+  bool? rateDesc;
   String? kindRoom;
   String? valueSearch;
   String? dropdownKindValue;
@@ -55,35 +55,38 @@ class _HomeScreenState extends State<HomeScreen>
   String? oPhone;
 
   List<Room> loadListOwnerRoom(List<Room> list) {
-    if (priceDesc!) {
-      list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
-    } else {
-      list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
-    }
-    if (areaDesc!) {
-      list.sort((a, b) => b.area.compareTo(a.area));
-    } else {
-      list.sort((a, b) => a.area.compareTo(b.area));
-    }
     List<Room> newList = List.from(list);
     newList = list.where((element) => element.ownerPhone == oPhone).toList();
+    if (priceDesc == true) {
+      newList.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
+    }
+    if (priceDesc == false) {
+      newList.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
+    }
+    if (areaDesc == true) {
+      newList.sort((a, b) => b.area.compareTo(a.area));
+    }
+    if (areaDesc == false) {
+      newList.sort((a, b) => a.area.compareTo(b.area));
+    }
+
     switch (kindRoom) {
       case 'All':
         break;
       case 'Standard':
-        newList = list
+        newList = newList
             .where((element) =>
                 element.kind == 'Standard Room' && element.isAvailable)
             .toList();
         break;
       case 'Loft':
-        newList = list
+        newList = newList
             .where(
                 (element) => element.kind == 'Loft Room' && element.isAvailable)
             .toList();
         break;
       case 'House':
-        newList = list
+        newList = newList
             .where((element) => element.kind == 'House' && element.isAvailable)
             .toList();
         break;
@@ -91,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen>
         break;
     }
     if (valueSearch != null) {
-      newList = list
+      newList = newList
           .where((element) =>
               element.location
                   .toLowerCase()
@@ -103,35 +106,37 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   List<Room> loadListRoom(List<Room> list) {
-    if (priceDesc!) {
-      list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
-    } else {
-      list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
-    }
-    if (areaDesc!) {
-      list.sort((a, b) => b.area.compareTo(a.area));
-    } else {
-      list.sort((a, b) => a.area.compareTo(b.area));
-    }
     List<Room> newList = List.from(list);
     newList = list.where((element) => element.isAvailable == true).toList();
+    if (priceDesc == true) {
+      newList.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
+    }
+    if (priceDesc == false) {
+      newList.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
+    }
+    if (areaDesc == true) {
+      newList.sort((a, b) => b.area.compareTo(a.area));
+    }
+    if (areaDesc == false) {
+      newList.sort((a, b) => a.area.compareTo(b.area));
+    }
     switch (kindRoom) {
       case 'All':
         break;
       case 'Standard':
-        newList = list
+        newList = newList
             .where((element) =>
                 element.kind == 'Standard Room' && element.isAvailable)
             .toList();
         break;
       case 'Loft':
-        newList = list
+        newList = newList
             .where(
                 (element) => element.kind == 'Loft Room' && element.isAvailable)
             .toList();
         break;
       case 'House':
-        newList = list
+        newList = newList
             .where((element) => element.kind == 'House' && element.isAvailable)
             .toList();
         break;
@@ -139,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen>
         break;
     }
     if (valueSearch != null) {
-      newList = list
+      newList = newList
           .where((element) =>
               element.location
                   .toLowerCase()

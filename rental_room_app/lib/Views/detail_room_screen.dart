@@ -275,8 +275,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            alignment: Alignment.topRight,
-                            width: 21 * 4,
+                            alignment: Alignment.center,
+                            width: 21 *
+                                (room.secondaryImgUrls.length + 1).toDouble(),
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
