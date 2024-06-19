@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen>
   String? valueSearch;
   String? dropdownKindValue;
 
-  String? ownerPhone;
+  String? oPhone;
 
   List<Room> loadListOwnerRoom(List<Room> list) {
     if (priceDesc) {
@@ -66,8 +66,7 @@ class _HomeScreenState extends State<HomeScreen>
       list.sort((a, b) => a.area.compareTo(b.area));
     }
     List<Room> newList = List.from(list);
-    newList =
-        list.where((element) => element.ownerPhone == ownerPhone).toList();
+    newList = list.where((element) => element.ownerPhone == oPhone).toList();
     switch (kindRoom) {
       case 'All':
         break;
@@ -168,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen>
     Map<String, dynamic> userData =
         documentSnapshot.data() as Map<String, dynamic>;
     setState(() {
-      ownerPhone = userData['phone'];
+      oPhone = userData['phone'];
     });
   }
 
