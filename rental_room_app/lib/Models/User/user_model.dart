@@ -8,16 +8,21 @@ class Users {
   String gender;
   DateTime birthday;
   bool isOwner;
+  String desiredPrice;
+  String desiredLocation_Long;
+  String desiredLocaiton_Lat;
 
-  Users({
-    required this.userID,
-    required this.userName,
-    required this.email,
-    required this.phone,
-    required this.birthday,
-    required this.gender,
-    required this.isOwner,
-  });
+  Users(
+      {required this.userID,
+      required this.userName,
+      required this.email,
+      required this.phone,
+      required this.birthday,
+      required this.gender,
+      required this.isOwner,
+      this.desiredPrice = "0",
+      this.desiredLocation_Long = "None",
+      this.desiredLocaiton_Lat = "None"});
 
   // Phương thức để chuyển đổi dữ liệu thành một Map để lưu trữ trên Firestore
   Map<String, dynamic> toJson() {
@@ -29,20 +34,25 @@ class Users {
       'birthday': birthday,
       'gender': gender,
       'isOwner': isOwner,
+      'desiredPrice': desiredPrice,
+      'desiredLocation_Long': desiredLocation_Long,
+      'desiredLocaiton_Lat': desiredLocaiton_Lat
     };
   }
 
   factory Users.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Users(
-      userID: data['userID'],
-      userName: data['name'],
-      email: data['email'],
-      phone: data['phone'],
-      birthday: data['birthDay'].toDate(),
-      gender: data['gender'],
-      isOwner: data['isOwner'],
-    );
+        userID: data['userID'],
+        userName: data['name'],
+        email: data['email'],
+        phone: data['phone'],
+        birthday: data['birthDay'].toDate(),
+        gender: data['gender'],
+        isOwner: data['isOwner'],
+        desiredPrice: data['desiredPrice'],
+        desiredLocation_Long: data['desiredLocation_Long'],
+        desiredLocaiton_Lat: data['desiredLocation_Lat']);
   }
 
   String get getUserName => userName;
@@ -51,4 +61,7 @@ class Users {
   DateTime get getBirthday => birthday;
   String get getGender => gender;
   bool get getIsOwner => isOwner;
+  String get getDesiredPrice => desiredPrice;
+  String get getDesiredLocation_Long => desiredLocation_Long;
+  String get getDesiredLocation_Lat => desiredLocaiton_Lat;
 }
