@@ -15,6 +15,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/filter_container_widget.dart';
+import 'package:rental_room_app/widgets/owner_room_item.dart';
 import 'package:rental_room_app/widgets/room_item.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -504,7 +505,6 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-            const Gap(20),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
@@ -539,7 +539,7 @@ class _HomeScreenState extends State<HomeScreen>
                       childAspectRatio: 0.7,
                       children: _isOwner
                           ? loadListOwnerRoom(roomAvailable)
-                              .map((e) => RoomItem(room: e))
+                              .map((e) => OwnerRoomItem(room: e))
                               .toList()
                           : loadListRoom(roomAvailable)
                               .map((e) => RoomItem(room: e))
