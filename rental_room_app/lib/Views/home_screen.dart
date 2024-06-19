@@ -45,9 +45,9 @@ class _HomeScreenState extends State<HomeScreen>
   final String userID = FirebaseAuth.instance.currentUser!.uid;
   late Room yourRoom;
 
-  bool priceDesc = false;
-  bool areaDesc = false;
-  bool rateDesc = false;
+  bool? priceDesc = false;
+  bool? areaDesc = false;
+  bool? rateDesc = false;
   String? kindRoom;
   String? valueSearch;
   String? dropdownKindValue;
@@ -55,12 +55,12 @@ class _HomeScreenState extends State<HomeScreen>
   String? oPhone;
 
   List<Room> loadListOwnerRoom(List<Room> list) {
-    if (priceDesc) {
+    if (priceDesc!) {
       list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
     } else {
       list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
     }
-    if (areaDesc) {
+    if (areaDesc!) {
       list.sort((a, b) => b.area.compareTo(a.area));
     } else {
       list.sort((a, b) => a.area.compareTo(b.area));
@@ -103,12 +103,12 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   List<Room> loadListRoom(List<Room> list) {
-    if (priceDesc) {
+    if (priceDesc!) {
       list.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
     } else {
       list.sort((a, b) => a.price.roomPrice.compareTo(b.price.roomPrice));
     }
-    if (areaDesc) {
+    if (areaDesc!) {
       list.sort((a, b) => b.area.compareTo(a.area));
     } else {
       list.sort((a, b) => a.area.compareTo(b.area));
