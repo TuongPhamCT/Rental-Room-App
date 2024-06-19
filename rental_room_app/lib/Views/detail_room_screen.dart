@@ -156,6 +156,48 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     );
   }
 
+  Future<void> deleteRoom() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+    try {
+      await FirebaseFirestore.instance
+          .collection('Rooms')
+          .doc(widget.room.roomId)
+          .delete();
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: ColorPalette.greenText,
+          content: Text(
+            'Xoá phòng trọ thành công!',
+            style: TextStyle(color: ColorPalette.errorColor),
+          ),
+        ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: ColorPalette.greenText,
+          content: Text(
+            'Xoá phòng trọ thất bại!',
+            style: TextStyle(color: ColorPalette.errorColor),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Room room = widget.room;
@@ -209,12 +251,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (_) => HomeScreen(),
-                              //   ),
-                              // );
                             },
                             child: Icon(
                               FontAwesomeIcons.arrowLeft,
@@ -244,7 +280,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: room.secondaryImgUrls.length + 2,
+                              itemCount: room.secondaryImgUrls.length + 1,
                               itemBuilder: (context, index) {
                                 return imageIndicator(index == _currenImage);
                               },
@@ -966,7 +1002,33 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       Container(
                         alignment: Alignment.center,
                         child: ModelButton(
-                          onTap: () {},
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Notification'),
+                                  content: const Text(
+                                      'Are you sure you want to DELETE this room?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        deleteRoom();
+                                      },
+                                      child: const Text('CONFIRM'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                           name: 'Delete room',
                           color: ColorPalette.redColor,
                           width: 150,
