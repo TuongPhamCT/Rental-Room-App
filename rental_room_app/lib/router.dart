@@ -86,11 +86,6 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/edit_room',
-      name: 'edit_room',
-      builder: (context, state) => const EditRoomScreen(key: Key('edit_room')),
-    ),
-    GoRoute(
       path: '/your_room',
       name: 'your_room',
       builder: (context, state) => const YourRoomScreen(key: Key('your_room')),
