@@ -92,8 +92,13 @@ class RoomRepositoryIml implements RoomRepository {
         "desiredLocation_Lat": user.desiredLocaiton_Lat
       }),
     );
-    List<String> recommendedRoomIds =
-        json.decode(response.body)['recommend'].cast<String>();
+    List<String> recommendedRoomIds = [];
+    try {
+      recommendedRoomIds =
+          json.decode(response.body)['recommend'].cast<String>();
+    } catch (e) {
+      print("unavailable server!");
+    }
     List<Room> recommendedRooms = [];
     for (String id in recommendedRoomIds) {
       Room r = await getRoomById(id);

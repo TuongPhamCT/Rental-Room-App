@@ -5,10 +5,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:rental_room_app/Contract/detail_room_contract.dart';
+import 'package:rental_room_app/Models/Comment/comment_model.dart';
+import 'package:rental_room_app/Models/Comment/comment_repo.dart';
 import 'package:rental_room_app/Models/Rental/rental_model.dart';
 import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
+import 'package:rental_room_app/Presenter/detail_room_presenter.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
@@ -16,6 +20,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/border_container.dart';
+import 'package:rental_room_app/widgets/comment.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/sub_image_frame.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +34,12 @@ class DetailRoomScreen extends StatefulWidget {
   State<DetailRoomScreen> createState() => _DetailRoomScreenState();
 }
 
-class _DetailRoomScreenState extends State<DetailRoomScreen> {
+class _DetailRoomScreenState extends State<DetailRoomScreen>
+    implements DetailRoomContract {
+  DetailRoomPresenter? _detailRoomPresenter;
+  final CommentRepository _commentRepository = CommentRepositoryIml();
+  final _formKey = GlobalKey<FormState>();
+
   bool isPressed = false;
   final PageController _pageController = PageController();
   int _currenImage = 0;
@@ -51,9 +61,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   final String rentalID = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  final _commentTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+    _detailRoomPresenter = DetailRoomPresenter(this);
     _loadInfor();
     if (!widget.room.isAvailable) {
       _rentalRepository
@@ -142,8 +155,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
           .collection('Rooms')
           .doc(widget.room.roomId)
           .update({'isAvailable': true});
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      _prefs.remove('yourRoomId');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove('yourRoomId');
     } catch (e) {
       print("Lỗi khi check out phòng: $e");
     }
@@ -151,7 +164,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => HomeScreen(),
+        builder: (_) => const HomeScreen(),
       ),
     );
   }
@@ -298,7 +311,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: widget.room.isAvailable
                                       ? Colors.greenAccent.withOpacity(0.8)
                                       : Colors.orangeAccent.withOpacity(0.8),
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(10),
                                   ),
                                 ),
@@ -845,8 +858,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   ),
                                 ),
                                 Text(
-                                  (rental?.duration.toString() ?? '12') +
-                                      ' months',
+                                  '${rental?.duration.toString() ?? '12'} months',
                                   style: TextStyles.descriptionRoom,
                                   textAlign: TextAlign.justify,
                                 ),
@@ -864,9 +876,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   ),
                                 ),
                                 Text(
-                                  (rental?.deposit.toStringAsFixed(0) ??
-                                          '1000000') +
-                                      ' VNĐ',
+                                  '${rental?.deposit.toStringAsFixed(0) ?? '1000000'} VNĐ',
                                   style: TextStyles.descriptionRoom,
                                   textAlign: TextAlign.justify,
                                 ),
@@ -1248,6 +1258,24 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     ],
                   ),
                 ),
+                FutureBuilder(
+                    future: _commentRepository
+                        .getAllCommentsbyRoomId(widget.room.roomId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Comment>? comments = snapshot.data;
+                        return Container(
+                            constraints: const BoxConstraints(maxHeight: 300),
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: comments!
+                                  .map((e) => CommentWidget(comment: e))
+                                  .toList(),
+                            ));
+                      } else {
+                        return Container();
+                      }
+                    }),
                 if (!isOwner)
                   BorderContainer(
                     child: Column(
@@ -1292,26 +1320,32 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           'Write your review:',
                           style: TextStyles.detailTitle,
                         ),
-                        TextField(
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: ColorPalette.primaryColor,
+                        Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            maxLines: null,
+                            controller: _commentTextController,
+                            validator: _detailRoomPresenter?.validateComment,
+                            onTapOutside: (event) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            textAlign: TextAlign.justify,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: ColorPalette.primaryColor,
+                                ),
                               ),
-                            ),
-                            hintText: 'Write your review',
-                            hintStyle: TextStyles.descriptionRoom.copyWith(
-                                color: ColorPalette.rankText.withOpacity(0.5)),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: ColorPalette.rankText.withOpacity(0.1),
+                              hintText: 'Write your review',
+                              hintStyle: TextStyles.descriptionRoom.copyWith(
+                                  color:
+                                      ColorPalette.rankText.withOpacity(0.5)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: ColorPalette.rankText.withOpacity(0.1),
+                                ),
                               ),
                             ),
                           ),
@@ -1320,7 +1354,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         Container(
                           alignment: Alignment.center,
                           child: ModelButton(
-                            onTap: () {},
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                _detailRoomPresenter?.postCommentButtonPressed(
+                                    widget.room.roomId,
+                                    _commentTextController.text,
+                                    rating);
+                              }
+                            },
                             name: 'POST',
                             color: ColorPalette.primaryColor.withOpacity(0.75),
                             width: 150,
@@ -1348,5 +1389,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
         color: isActive ? const Color(0xffE5E5E5) : ColorPalette.detailBorder,
       ),
     );
+  }
+
+  @override
+  void onCommentPosted() {
+    _commentTextController.clear();
+    rating = 0;
+    setState(() {});
   }
 }
