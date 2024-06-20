@@ -27,7 +27,7 @@ class CreateRoomPresenter {
     value = value?.trim();
 
     if (value == null || value == "") {
-      return "Please enter a Room ID";
+      return "Please enter a Room Name";
     }
     return null;
   }

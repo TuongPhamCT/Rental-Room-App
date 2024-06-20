@@ -10,6 +10,7 @@ import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
+import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
@@ -993,7 +994,16 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       Container(
                         alignment: Alignment.center,
                         child: ModelButton(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => EditRoomScreen(
+                                  room: widget.room,
+                                ),
+                              ),
+                            );
+                          },
                           name: 'Edit room',
                           color: ColorPalette.primaryColor.withOpacity(0.75),
                           width: 150,

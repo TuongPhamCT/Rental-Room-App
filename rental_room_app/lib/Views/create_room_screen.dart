@@ -314,7 +314,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                     ),
                   ],
                 ),
-                const Gap(5),
+                const Gap(15),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: RichText(

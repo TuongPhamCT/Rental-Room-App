@@ -1,4 +1,4 @@
-abstract class CreateRoomContract {
+abstract class EditRoomContract {
   void onEditSucceeded();
   void onEditFailed();
   void onChangeProfilePicture(String pickedImage);
