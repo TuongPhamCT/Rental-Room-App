@@ -1065,10 +1065,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                         List<Comment>? comments = snapshot.data;
                         comments?.sort((a, b) => a.time.compareTo(b.time));
 
-                        double avgRating = comments!
-                                .map((m) => m.rating)
-                                .reduce((a, b) => a + b) /
-                            comments.length;
+                        double avgRating = comments!.isEmpty
+                            ? 0
+                            : comments
+                                    .map((m) => m.rating)
+                                    .reduce((a, b) => a + b) /
+                                comments.length;
                         return Column(
                           children: [
                             BorderContainer(
@@ -1147,12 +1149,15 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                                     width: size.width - 190,
                                                     child:
                                                         LinearProgressIndicator(
-                                                      value: comments
-                                                              .where((e) =>
-                                                                  e.rating >= 4)
-                                                              .toList()
-                                                              .length /
-                                                          comments.length,
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                      4)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
                                                       backgroundColor:
                                                           const Color(
                                                               0xffDADADA),
@@ -1186,14 +1191,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                                     width: size.width - 190,
                                                     child:
                                                         LinearProgressIndicator(
-                                                      value: comments
-                                                              .where((e) =>
-                                                                  e.rating >=
-                                                                      3 &&
-                                                                  e.rating < 4)
-                                                              .toList()
-                                                              .length /
-                                                          comments.length,
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          3 &&
+                                                                      e.rating <
+                                                                          4)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
                                                       backgroundColor:
                                                           const Color(
                                                               0xffDADADA),
@@ -1227,14 +1235,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                                     width: size.width - 190,
                                                     child:
                                                         LinearProgressIndicator(
-                                                      value: comments
-                                                              .where((e) =>
-                                                                  e.rating >=
-                                                                      2 &&
-                                                                  e.rating < 3)
-                                                              .toList()
-                                                              .length /
-                                                          comments.length,
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          2 &&
+                                                                      e.rating <
+                                                                          3)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
                                                       backgroundColor:
                                                           const Color(
                                                               0xffDADADA),
@@ -1268,14 +1279,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                                     width: size.width - 190,
                                                     child:
                                                         LinearProgressIndicator(
-                                                      value: comments
-                                                              .where((e) =>
-                                                                  e.rating >=
-                                                                      1 &&
-                                                                  e.rating < 2)
-                                                              .toList()
-                                                              .length /
-                                                          comments.length,
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          1 &&
+                                                                      e.rating <
+                                                                          2)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
                                                       backgroundColor:
                                                           const Color(
                                                               0xffDADADA),
@@ -1309,14 +1323,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                                     width: size.width - 190,
                                                     child:
                                                         LinearProgressIndicator(
-                                                      value: comments
-                                                              .where((e) =>
-                                                                  e.rating >=
-                                                                      0 &&
-                                                                  e.rating < 1)
-                                                              .toList()
-                                                              .length /
-                                                          comments.length,
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          0 &&
+                                                                      e.rating <
+                                                                          1)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
                                                       backgroundColor:
                                                           const Color(
                                                               0xffDADADA),
