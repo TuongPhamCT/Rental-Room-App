@@ -1057,207 +1057,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                     ),
                   ),
                 const Gap(10),
-                BorderContainer(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Rating',
-                        style: TextStyles.detailTitle,
-                      ),
-                      const Gap(5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: 130,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  '4,8',
-                                  style: TextStyles.ratingNumb,
-                                ),
-                                RatingBar.builder(
-                                  initialRating: 4.8,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemSize: 18,
-                                  unratedColor: const Color(0xffDADADA),
-                                  itemBuilder: (context, _) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                  onRatingUpdate: (value) {},
-                                  ignoreGestures: true,
-                                ),
-                                const Text(
-                                  '123.456',
-                                  style: TextStyles.ratingText,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Gap(15),
-                          SizedBox(
-                            height: 100,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '5',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.8,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '4',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.2,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '3',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.1,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '2',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.05,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '1',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 FutureBuilder(
                     future: _commentRepository
                         .getAllCommentsbyRoomId(widget.room.roomId),
@@ -1265,14 +1064,295 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                       if (snapshot.hasData) {
                         List<Comment>? comments = snapshot.data;
                         comments?.sort((a, b) => a.time.compareTo(b.time));
-                        return Container(
-                            constraints: const BoxConstraints(maxHeight: 300),
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: comments!
-                                  .map((e) => CommentWidget(comment: e))
-                                  .toList(),
-                            ));
+
+                        double avgRating = comments!
+                                .map((m) => m.rating)
+                                .reduce((a, b) => a + b) /
+                            comments.length;
+                        return Column(
+                          children: [
+                            BorderContainer(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Rating',
+                                    style: TextStyles.detailTitle,
+                                  ),
+                                  const Gap(5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        height: 130,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              avgRating.toStringAsFixed(1),
+                                              style: TextStyles.ratingNumb,
+                                            ),
+                                            RatingBar.builder(
+                                              initialRating: avgRating,
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemSize: 18,
+                                              unratedColor:
+                                                  const Color(0xffDADADA),
+                                              itemBuilder: (context, _) =>
+                                                  const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (value) {},
+                                              ignoreGestures: true,
+                                            ),
+                                            Text(
+                                              comments.length.toString(),
+                                              style: TextStyles.ratingText,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Gap(15),
+                                      SizedBox(
+                                        height: 100,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '5',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments
+                                                              .where((e) =>
+                                                                  e.rating >= 4)
+                                                              .toList()
+                                                              .length /
+                                                          comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '4',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments
+                                                              .where((e) =>
+                                                                  e.rating >=
+                                                                      3 &&
+                                                                  e.rating < 4)
+                                                              .toList()
+                                                              .length /
+                                                          comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '3',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments
+                                                              .where((e) =>
+                                                                  e.rating >=
+                                                                      2 &&
+                                                                  e.rating < 3)
+                                                              .toList()
+                                                              .length /
+                                                          comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '2',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments
+                                                              .where((e) =>
+                                                                  e.rating >=
+                                                                      1 &&
+                                                                  e.rating < 2)
+                                                              .toList()
+                                                              .length /
+                                                          comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '1',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments
+                                                              .where((e) =>
+                                                                  e.rating >=
+                                                                      0 &&
+                                                                  e.rating < 1)
+                                                              .toList()
+                                                              .length /
+                                                          comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                                constraints:
+                                    const BoxConstraints(maxHeight: 300),
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: comments!
+                                      .map((e) => CommentWidget(comment: e))
+                                      .toList(),
+                                ))
+                          ],
+                        );
                       } else {
                         print(snapshot.data);
                         return Container();
