@@ -1264,6 +1264,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         List<Comment>? comments = snapshot.data;
+                        comments?.sort((a, b) => a.time.compareTo(b.time));
                         return Container(
                             constraints: const BoxConstraints(maxHeight: 300),
                             child: ListView(
@@ -1273,6 +1274,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                   .toList(),
                             ));
                       } else {
+                        print(snapshot.data);
                         return Container();
                       }
                     }),

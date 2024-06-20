@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rental_room_app/Contract/home_contract.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';

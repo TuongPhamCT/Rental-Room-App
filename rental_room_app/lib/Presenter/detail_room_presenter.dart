@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:rental_room_app/Contract/detail_room_contract.dart';
 import 'package:rental_room_app/Models/Comment/comment_model.dart';
 import 'package:rental_room_app/Models/Comment/comment_repo.dart';
@@ -24,15 +23,12 @@ class DetailRoomPresenter {
 
   void postCommentButtonPressed(String roomId, String content, double rating) {
     content = content.trim();
-    final now = DateTime.now();
-    final formatter = DateFormat('dd/MM/yyyy');
-    final formattedDate = formatter.format(now);
     Comment comment = Comment(
         content: content,
         rating: rating,
         roomId: roomId,
         userId: FirebaseAuth.instance.currentUser!.uid,
-        time: formattedDate);
+        time: DateTime.now());
     _commentRepository.uploadComment(comment);
     _view?.onCommentPosted();
   }
