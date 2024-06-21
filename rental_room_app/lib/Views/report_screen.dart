@@ -1,16 +1,14 @@
-import 'dart:io';
-
-import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
-import 'package:keyboard_dismisser/keyboard_dismisser.dart';
-import 'package:open_file_plus/open_file_plus.dart';
-
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rental_room_app/Contract/report_contract.dart';
+import 'package:rental_room_app/Presenter/report_presenter.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:path/path.dart' as path;
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -20,357 +18,381 @@ class ReportScreen extends StatefulWidget {
   State<ReportScreen> createState() => _ReportScreenState();
 }
 
-class _ReportScreenState extends State<ReportScreen> {
-  bool isPressed = false;
+class _ReportScreenState extends State<ReportScreen> implements ReportContract {
+  ReportPresenter? _reportPresenter;
+  int _selectedIndex = 1;
+  int _totalRoom = 0;
 
-  String? dropdownMonthReportValue;
-  String? dropdownYearReportValue;
-  String? monthSelected;
-  String? yearSelected;
-  String? yearOfMonthReportSelected;
-  int totalMonthPrice = 0;
-  int totalYearPrice = 0;
-  List<String> monthItems = [
-    'JANUARY',
-    'FEBRUARY',
-    'MARCH',
-    'APRIL',
-    'MAY',
-    'JUNE',
-    'JULY',
-    'AUGUST',
-    'SEPTEMBER',
-    'OCTOBER',
-    'NOVEMBER',
-    'DECEMBER'
-  ];
-  List<String> yearItems = [
-    '2021',
-    '2022',
-    '2023',
-    '2024',
-    '2025',
-  ];
+  final String oID = FirebaseAuth.instance.currentUser!.uid;
+
+  bool isLoading = true;
+  Map<String, int> totalRooms = {
+    'Standard Room': 0,
+    'Loft Room': 0,
+    'House': 0
+  };
+  Map<String, int> occupiedRooms = {
+    'Standard Room': 0,
+    'Loft Room': 0,
+    'House': 0
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _reportPresenter = ReportPresenter(this);
+    _fetchRoomData();
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // listRoomKind = RoomKindModel.AllRoomKinds;
-    //listRoom = RoomModel.AllRooms;
-    return KeyboardDismisser(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: ColorPalette.primaryColor,
-          leadingWidth: 18 * 3,
-          leading: SizedBox(
-            width: double.infinity,
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onHighlightChanged: (param) {},
-              splashColor: ColorPalette.primaryColor,
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: const Icon(
-                FontAwesomeIcons.arrowLeft,
-                color: ColorPalette.backgroundColor,
-                shadows: [
-                  Shadow(
-                      color: Colors.black12,
-                      offset: Offset(3, 6),
-                      blurRadius: 6)
-                ],
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: ColorPalette.primaryColor,
+        title: Text(
+          'STATISTIC',
+          style: TextStyles.h8.bold.copyWith(
+            shadows: [
+              const Shadow(
+                color: Colors.black12,
+                offset: Offset(3, 6),
+                blurRadius: 6,
+              )
+            ],
+            letterSpacing: 1.175,
           ),
-          title: Text(
-            'REPORT',
-            style: TextStyles.h8.bold.copyWith(
-              shadows: [
-                const Shadow(
-                  color: Colors.black12,
-                  offset: Offset(3, 6),
-                  blurRadius: 6,
-                )
-              ],
-              letterSpacing: 1.175,
-            ),
-          ),
-          centerTitle: true,
-          toolbarHeight: kToolbarHeight * 1.5,
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 28,
-              ),
-              Row(
+        centerTitle: true,
+        toolbarHeight: kToolbarHeight * 1.5,
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Center(
+              child: Column(
                 children: [
                   Container(
-                    height: 42,
-                    width: 170,
-                    margin: const EdgeInsets.only(right: 10, left: 20),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: ColorPalette.grayText),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        alignment: Alignment.center,
-                        value: dropdownMonthReportValue,
-                        hint: Text(
-                          "MONTHLY",
-                          style: TextStyles.defaultStyle.copyWith(
-                              fontSize: 16,
-                              color: ColorPalette.calendarGround,
-                              fontWeight: FontWeight.bold),
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black,
+                          width: 1,
                         ),
-                        iconStyleData: const IconStyleData(
-                            iconEnabledColor: ColorPalette.grayText,
-                            iconSize: 36),
-                        onChanged: (value) {
-                          setState(() {
-                            dropdownMonthReportValue = value;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                            padding: EdgeInsets.only(left: 20),
-                            height: 42,
-                            width: 200),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 24,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        items: monthItems
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                onTap: () {
-                                  setState(() {
-                                    monthSelected = e;
-                                  });
-                                },
-                                child: Text(
-                                  e,
-                                  style: TextStyles.defaultStyle.copyWith(
-                                      color: ColorPalette.calendarGround,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            )
-                            .toList(),
                       ),
                     ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Standard',
+                              style: TextStyles.noInternetTitle.copyWith(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Gap(10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          totalRooms['Standard Room']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    Text('${totalRooms['Standard Room']}'),
+                                  ],
+                                ),
+                                const Gap(5),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          occupiedRooms['Standard Room']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    Text('${occupiedRooms['Standard Room']}'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        // Loft Room
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Loft',
+                              style: TextStyles.noInternetTitle.copyWith(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Gap(10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          totalRooms['Loft Room']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    Text('${totalRooms['Loft Room']}'),
+                                  ],
+                                ),
+                                const Gap(5),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          occupiedRooms['Loft Room']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    Text('${occupiedRooms['Loft Room']}'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        // House
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'House',
+                              style: TextStyles.noInternetTitle.copyWith(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Gap(10),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          totalRooms['House']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    Text('${totalRooms['House']}'),
+                                  ],
+                                ),
+                                const Gap(5),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: ((size.height * 0.6 - 50) /
+                                              _totalRoom) *
+                                          occupiedRooms['House']!,
+                                      width: size.width / 12,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    Text('${occupiedRooms['House']}'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
                   Container(
-                    height: 42,
-                    width: 160,
-                    margin: const EdgeInsets.only(right: 20),
-                    alignment: Alignment.topRight,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: ColorPalette.grayText),
-                        borderRadius: BorderRadius.circular(24)),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        alignment: Alignment.center,
-                        value: yearOfMonthReportSelected,
-                        hint: Text(
-                          "YEARLY",
-                          style: TextStyles.defaultStyle.copyWith(
-                              fontSize: 16,
-                              color: ColorPalette.calendarGround,
-                              fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: size.width / 12,
+                          width: size.width / 12,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                          ),
                         ),
-                        iconStyleData: const IconStyleData(
-                            iconEnabledColor: ColorPalette.grayText,
-                            iconSize: 36),
-                        onChanged: (value) {
-                          setState(() {
-                            yearOfMonthReportSelected = value!;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                            padding: EdgeInsets.only(left: 36),
-                            height: 42,
-                            width: 200),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 24,
+                        const Gap(15),
+                        Text(
+                          'Total Room',
+                          style:
+                              TextStyles.noInternetDes.copyWith(fontSize: 18),
                         ),
-                        dropdownStyleData: DropdownStyleData(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5))),
-                        items: yearItems
-                            .map((e) => DropdownMenuItem(
-                                value: e,
-                                onTap: () {
-                                  setState(() {
-                                    yearOfMonthReportSelected = e;
-                                  });
-                                },
-                                child: Center(
-                                  child: Text(
-                                    e,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyles.defaultStyle.copyWith(
-                                        color: ColorPalette.calendarGround,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )))
-                            .toList(),
-                      ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: size.width / 12,
+                          width: size.width / 12,
+                          decoration: const BoxDecoration(
+                            color: Colors.orange,
+                          ),
+                        ),
+                        const Gap(15),
+                        Text(
+                          'Rented Room',
+                          style:
+                              TextStyles.noInternetDes.copyWith(fontSize: 18),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 40,
-              ),
-              const SizedBox(height: 24),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 22),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('TOTAL',
-                        style: TextStyles.defaultStyle.bold.copyWith(
-                          color: ColorPalette.greenText,
-                        )),
-                    Text(' VND',
-                        style: TextStyles.defaultStyle.bold.copyWith(
-                          color: ColorPalette.greenText,
-                        )),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Material(
+            ),
+      bottomNavigationBar: SalomonBottomBar(
+        backgroundColor: ColorPalette.backgroundColor,
+        currentIndex: _selectedIndex,
+        onTap: (id) {
+          setState(() {
+            _selectedIndex = id;
+          });
+          switch (id) {
+            case 0:
+              GoRouter.of(context).go('/home');
+              break;
+            case 1:
+              GoRouter.of(context).go('/report');
+              break;
+            case 2:
+              GoRouter.of(context).go('/notification_list');
+              break;
+            case 3:
+              GoRouter.of(context).go('/setting');
+              break;
+            default:
+              break;
+          }
+        },
+        items: [
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.house,
                 color: ColorPalette.primaryColor,
-                borderRadius: BorderRadius.circular(20),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(20),
-                  splashColor: Colors.black38,
-                  onTap: () {},
-                  child: Container(
-                    width: size.width / 2,
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Print',
-                      style: TextStyles.h8.copyWith(
-                        color: ColorPalette.backgroundColor,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
+                size: 20,
               ),
-              const SizedBox(
-                height: 40,
+              title: const Text(
+                'Home',
+                style: TextStyles.bottomBar,
+              )),
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.chartLine,
+                color: ColorPalette.primaryColor,
+                size: 20,
               ),
-              Container(
-                height: 42,
-                width: 220,
-                decoration: BoxDecoration(
-                    border: Border.all(color: ColorPalette.grayText),
-                    borderRadius: BorderRadius.circular(24)),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                    alignment: Alignment.center,
-                    value: dropdownYearReportValue,
-                    hint: Text(
-                      "YEARLY REPORT",
-                      style: TextStyles.defaultStyle.copyWith(
-                          fontSize: 16,
-                          color: ColorPalette.calendarGround,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    iconStyleData: const IconStyleData(
-                        iconEnabledColor: ColorPalette.grayText, iconSize: 36),
-                    onChanged: (value) {
-                      setState(() {
-                        dropdownYearReportValue = value;
-                      });
-                    },
-                    buttonStyleData: const ButtonStyleData(
-                        padding: EdgeInsets.only(left: 36),
-                        height: 42,
-                        width: 200),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 24,
-                    ),
-                    dropdownStyleData: DropdownStyleData(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5))),
-                    items: yearItems
-                        .map((e) => DropdownMenuItem(
-                            value: e,
-                            onTap: () {
-                              setState(() {
-                                yearSelected = e;
-                              });
-                            },
-                            child: Text(
-                              e,
-                              textAlign: TextAlign.center,
-                              style: TextStyles.defaultStyle.copyWith(
-                                  color: ColorPalette.calendarGround,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            )))
-                        .toList(),
-                  ),
-                ),
+              title: const Text(
+                'Statistic',
+                style: TextStyles.bottomBar,
+              )),
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.bell,
+                color: ColorPalette.primaryColor,
+                size: 20,
               ),
-              const SizedBox(
-                height: 40,
+              title: const Text(
+                'Notification',
+                style: TextStyles.bottomBar,
+              )),
+          SalomonBottomBarItem(
+              icon: const Icon(
+                FontAwesomeIcons.gear,
+                color: ColorPalette.primaryColor,
+                size: 20,
               ),
-              Container(),
-            ],
-          ),
-        ),
+              title: const Text(
+                'Setting',
+                style: TextStyles.bottomBar,
+              )),
+        ],
       ),
     );
   }
 
-  double rate(int revenue, int totalPrice) {
-    try {
-      if (totalPrice == 0) return 0;
-      return revenue / totalPrice;
-    } catch (e) {
-      return 0;
-    }
-  }
+  void _fetchRoomData() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Rooms')
+        .where('ownerId', isEqualTo: oID)
+        .get();
 
-  Future<void> generatePDF() async {
-    PdfDocument document = PdfDocument();
-    var page = document.pages.add();
+    Map<String, int> tempTotalRooms = {
+      'Standard Room': 0,
+      'Loft Room': 0,
+      'House': 0
+    };
+    Map<String, int> tempOccupiedRooms = {
+      'Standard Room': 0,
+      'Loft Room': 0,
+      'House': 0
+    };
 
-    List<int> bytes = await document.save();
-    document.dispose();
-    saveAndLaunchFile(bytes, 'output.pdf');
-  }
+    snapshot.docs.forEach((doc) {
+      String roomType = doc['kind'];
+      bool isAvailable = doc['isAvailable'];
 
-  Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    String? selectedPath;
+      if (tempTotalRooms.containsKey(roomType)) {
+        tempTotalRooms[roomType] = tempTotalRooms[roomType]! + 1;
+        if (!isAvailable) {
+          tempOccupiedRooms[roomType] = tempOccupiedRooms[roomType]! + 1;
+        }
+      } else {
+        print('Room type $roomType is not recognized.');
+      }
+    });
 
-    if (result != null) {
-      selectedPath = result;
-
-      final file = File(path.join(selectedPath, fileName));
-      await file.writeAsBytes(bytes, flush: true);
-      await OpenFile.open(file.path);
-    }
+    setState(() {
+      totalRooms = tempTotalRooms;
+      occupiedRooms = tempOccupiedRooms;
+      isLoading = false;
+      totalRooms.forEach((key, value) {
+        _totalRoom += value;
+      });
+    });
   }
 }
