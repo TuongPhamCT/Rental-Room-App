@@ -52,11 +52,9 @@ class _HomeScreenState extends State<HomeScreen>
   String? valueSearch;
   String? dropdownKindValue;
 
-  String? oPhone;
-
   List<Room> loadListOwnerRoom(List<Room> list) {
     List<Room> newList = List.from(list);
-    newList = list.where((element) => element.ownerPhone == oPhone).toList();
+    newList = list.where((element) => element.ownerId == userID).toList();
     if (priceDesc == true) {
       newList.sort((a, b) => b.price.roomPrice.compareTo(a.price.roomPrice));
     }
@@ -162,18 +160,6 @@ class _HomeScreenState extends State<HomeScreen>
     _preferencesPresenter?.getUserInfoFromSharedPreferences();
     _loadRentalRoom();
     requestLocationPermission();
-    _loadPhoneNumber();
-  }
-
-  Future<void> _loadPhoneNumber() async {
-    CollectionReference userRef =
-        FirebaseFirestore.instance.collection('users');
-    DocumentSnapshot documentSnapshot = await userRef.doc(userID).get();
-    Map<String, dynamic> userData =
-        documentSnapshot.data() as Map<String, dynamic>;
-    setState(() {
-      oPhone = userData['phone'];
-    });
   }
 
   Future<void> requestLocationPermission() async {
@@ -585,7 +571,7 @@ class _HomeScreenState extends State<HomeScreen>
               break;
             case 1:
               if (_isOwner) {
-                GoRouter.of(context).go('/statistic');
+                GoRouter.of(context).go('/report');
               } else {
                 if (rentalID.isNotEmpty) {
                   Navigator.push(
