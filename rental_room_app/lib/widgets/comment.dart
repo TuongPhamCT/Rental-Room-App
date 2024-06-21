@@ -17,7 +17,9 @@ import 'package:rental_room_app/widgets/reply.dart';
 
 class CommentWidget extends StatefulWidget {
   final Comment comment;
-  const CommentWidget({super.key, required this.comment});
+  final bool isOwner;
+  const CommentWidget(
+      {super.key, required this.comment, required this.isOwner});
 
   @override
   State<CommentWidget> createState() => _CommentWidgetState();
@@ -133,20 +135,23 @@ class _CommentWidgetState extends State<CommentWidget> {
                         ],
                       ),
                       const Gap(3),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 60),
-                        child: RichText(
-                            text: TextSpan(
-                                text: "Reply",
-                                style: TextStyles.h6.copyWith(
-                                    fontFamily: GoogleFonts.ntr().fontFamily,
-                                    color: ColorPalette.greenText),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    isReplyVisible = !isReplyVisible;
-                                    setState(() {});
-                                  })),
-                      ),
+                      widget.isOwner
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 60),
+                              child: RichText(
+                                  text: TextSpan(
+                                      text: "Reply",
+                                      style: TextStyles.h6.copyWith(
+                                          fontFamily:
+                                              GoogleFonts.ntr().fontFamily,
+                                          color: ColorPalette.greenText),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          isReplyVisible = !isReplyVisible;
+                                          setState(() {});
+                                        })),
+                            )
+                          : Container(),
                       Padding(
                         padding: const EdgeInsets.only(
                           left: 50,

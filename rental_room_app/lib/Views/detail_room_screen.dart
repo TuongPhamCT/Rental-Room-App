@@ -1364,8 +1364,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                     const BoxConstraints(maxHeight: 300),
                                 child: ListView(
                                   shrinkWrap: true,
-                                  children: comments!
-                                      .map((e) => CommentWidget(comment: e))
+                                  children: comments
+                                      .map((e) => CommentWidget(
+                                          comment: e, isOwner: isOwner))
                                       .toList(),
                                 ))
                           ],
