@@ -1,18 +1,26 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:http/http.dart' as http;
 import 'package:rental_room_app/Models/Room/room_model.dart';
+import 'package:rental_room_app/Models/User/user_model.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 
 abstract class RoomRepository {
   Future<void> uploadRoom(Room room);
   Future<List<String>> uploadImages(
       List<Uint8List> images, String userId, String roomId);
   Stream<List<Room>> getRooms();
-  Future<Room> getOneRoom(String roomID);
+  Future<Room> getRoomById(String roomID);
+  Future<List<Room>> getRecommendedRooms(String userId);
 }
 
 class RoomRepositoryIml implements RoomRepository {
+  String apiUrl = 'https://26db-34-42-117-136.ngrok-free.app/';
   @override
   Future<void> uploadRoom(Room room) async {
     DocumentReference docRef =
@@ -57,7 +65,7 @@ class RoomRepositoryIml implements RoomRepository {
   }
 
   @override
-  Future<Room> getOneRoom(String roomID) async {
+  Future<Room> getRoomById(String roomID) async {
     DocumentSnapshot doc =
         await FirebaseFirestore.instance.collection('Rooms').doc(roomID).get();
     if (doc.exists) {
@@ -65,5 +73,32 @@ class RoomRepositoryIml implements RoomRepository {
     } else {
       throw Exception('This Room data not found');
     }
+  }
+
+  @override
+  Future<List<Room>> getRecommendedRooms(String userId) async {
+    UserRepository userRepo = UserRepositoryIml();
+    Users user = await userRepo.getUserById(userId);
+
+    http.Response response = await http.post(
+      Uri.parse('${apiUrl}recommend/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "gender": user.gender,
+        "desiredPrice": user.desiredPrice,
+        "desiredLocation_Long": user.desiredLocation_Long,
+        "desiredLocation_Lat": user.desiredLocaiton_Lat
+      }),
+    );
+    List<String> recommendedRoomIds =
+        json.decode(response.body)['recommend'].cast<String>();
+    List<Room> recommendedRooms = [];
+    for (String id in recommendedRoomIds) {
+      Room r = await getRoomById(id);
+      recommendedRooms.add(r);
+    }
+    return recommendedRooms;
   }
 }
