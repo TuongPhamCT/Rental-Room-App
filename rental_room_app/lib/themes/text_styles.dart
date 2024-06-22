@@ -259,7 +259,7 @@ class TextStyles {
   static const TextStyle total = TextStyle(
     fontFamily: AppFonts.inter,
     fontWeight: FontWeight.w700,
-    fontSize: 14,
+    fontSize: 18,
     color: ColorPalette.primaryColor,
   );
   static const TextStyle roomProps = TextStyle(
@@ -291,6 +291,13 @@ class TextStyles {
     fontFamily: AppFonts.poppins,
     fontWeight: FontWeight.w800,
     fontSize: 16,
+    color: ColorPalette.darkBlueText,
+  );
+
+  static const TextStyle monthStyle = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.bold,
+    fontSize: 30,
     color: ColorPalette.darkBlueText,
   );
 }
