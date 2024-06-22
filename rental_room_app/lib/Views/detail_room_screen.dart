@@ -49,14 +49,19 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   Rental? rental;
   Users? user;
   final RentalRepository _rentalRepository = RentalRepositoryIml();
-  final String rentalID = FirebaseAuth.instance.currentUser!.uid;
+  String rentalID = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
     _loadInfor();
+    _beginProgram();
+  }
+
+  Future<void> _beginProgram() async {
     if (!widget.room.isAvailable) {
+      await _loadRentalID();
       _rentalRepository
           .getRentalData(rentalID, widget.room.roomId)
           .then((value) {
@@ -68,6 +73,26 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       _loadTenant();
     } else
       rental = null;
+  }
+
+  Future<void> _loadRentalID() async {
+    CollectionReference collection = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc(widget.room.roomId)
+        .collection('tenant');
+    QuerySnapshot querySnapshot = await collection.limit(1).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        rentalID = querySnapshot.docs[0].id;
+        print('RentalID: $rentalID \n');
+      });
+    } else {
+      print('Không tìm thấy rentalID');
+      setState(() {
+        rentalID = '';
+      });
+    }
   }
 
   Future<void> _loadTenant() async {
@@ -695,7 +720,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 ),
                 const Gap(10),
-                if (!room.isAvailable && !isOwner)
+                if (!room.isAvailable)
                   Column(
                     children: [
                       BorderContainer(
@@ -897,53 +922,65 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         ),
                       ),
                       const Gap(10),
-                      ModelButton(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => EditFormScreen(
-                                room: widget.room,
+                    ],
+                  ),
+                if (!room.isAvailable && !isOwner)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => EditFormScreen(
+                                  room: widget.room,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        name: 'EDIT FORM',
-                        color: ColorPalette.primaryColor.withOpacity(0.75),
-                        width: 150,
+                            );
+                          },
+                          name: 'EDIT FORM',
+                          color: ColorPalette.primaryColor.withOpacity(0.75),
+                          width: 150,
+                        ),
                       ),
                       const Gap(5),
-                      ModelButton(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Notification'),
-                                content: const Text(
-                                    'Are you sure you want to check out this room?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('CANCEL'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      checkOutRoom();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        name: 'CHECK OUT',
-                        color: ColorPalette.redColor,
-                        width: 150,
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Notification'),
+                                  content: const Text(
+                                      'Are you sure you want to check out this room?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('CANCEL'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        checkOutRoom();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          name: 'CHECK OUT',
+                          color: ColorPalette.redColor,
+                          width: 150,
+                        ),
                       ),
                     ],
                   ),
