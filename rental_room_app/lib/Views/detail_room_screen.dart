@@ -52,6 +52,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   final RentalRepository _rentalRepository = RentalRepositoryIml();
   String rentalID = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String status = 'PTT';
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   Future<void> _beginProgram() async {
     if (!widget.room.isAvailable) {
       await _loadRentalID();
+      await _loadReceiptStatus();
       _rentalRepository
           .getRentalData(rentalID, widget.room.roomId)
           .then((value) {
@@ -74,6 +76,69 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       _loadTenant();
     } else {
       rental = null;
+    }
+  }
+
+  Future<void> _loadReceiptStatus() async {
+    try {
+      DateTime now = DateTime.now();
+
+      CollectionReference receiptCollection =
+          FirebaseFirestore.instance.collection('Receipts');
+
+      // Query to filter and sort documents by 'createdDay' in descending order
+      Query query = receiptCollection
+          .where('roomID', isEqualTo: widget.room.roomId)
+          .where('tenantID', isEqualTo: rentalID)
+          .orderBy('createdDay', descending: true);
+
+      QuerySnapshot querySnapshot;
+      try {
+        querySnapshot = await query.limit(1).get(); // Get the first document
+      } catch (e) {
+        print('Error fetching query snapshot: $e');
+        setState(() {
+          status = 'Error fetching data';
+        });
+        return;
+      }
+
+      if (querySnapshot.docs.isEmpty) {
+        setState(() {
+          status = 'No receipt';
+        });
+        return;
+      }
+
+      DocumentSnapshot closestDoc = querySnapshot.docs.first;
+
+      // Check the distance from today to the closest document's day
+      Timestamp closestDayTimestamp = closestDoc['createdDay'];
+      DateTime closestDay = closestDayTimestamp.toDate();
+      int daysInMonth = DateTime(closestDay.year, closestDay.month + 1, 0)
+          .day; // Get number of days in the month of the closest day's month
+      Duration durationToClosestDay =
+          closestDay.difference(now).abs(); // Absolute difference from today
+
+      // Check if the duration exceeds the limit (number of days in the month)
+      if (durationToClosestDay.inDays > daysInMonth) {
+        setState(() {
+          status = 'No receipt';
+        });
+      } else {
+        // Check the status of the closest document
+        bool sta = closestDoc['status'];
+        setState(() {
+          status = sta ? 'PAID' : 'UNPAID';
+        });
+      }
+    } catch (e, stackTrace) {
+      // Handle errors if needed
+      print('Error loading receipt status: $e');
+      print('StackTrace: $stackTrace');
+      setState(() {
+        status = 'Error loading receipt status';
+      });
     }
   }
 
@@ -925,6 +990,21 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         ),
                       ),
                       const Gap(10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Receipt Status:',
+                            style: TextStyles.receiptStatus,
+                          ),
+                          Text(
+                            status,
+                            style: TextStyles.descriptionRoom
+                                .copyWith(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const Gap(10),
                     ],
                   ),
                 if (!room.isAvailable && !isOwner)
@@ -1092,15 +1172,36 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     alignment: Alignment.center,
                     child: ModelButton(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => NewReceipt(
-                              room: widget.room,
-                              tenantID: rentalID,
+                        if (status != 'No receipt') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Notification'),
+                                content: const Text(
+                                    'You have already created a receipt. Please wait before creating another receipt!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NewReceipt(
+                                room: widget.room,
+                                tenantID: rentalID,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                       name: 'New Receipt',
                       color: ColorPalette.primaryColor.withOpacity(0.75),

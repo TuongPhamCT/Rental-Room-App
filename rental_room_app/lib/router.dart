@@ -86,12 +86,6 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const YourRoomScreen(key: Key('your_room')),
     ),
     GoRoute(
-      path: '/receipt_detail',
-      name: 'receipt_detail',
-      builder: (context, state) =>
-          const ReceiptDetailScreen(key: Key('receipt_detail')),
-    ),
-    GoRoute(
       path: '/notification_list',
       name: 'notification_list',
       builder: (context, state) =>

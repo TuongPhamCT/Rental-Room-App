@@ -300,6 +300,13 @@ class TextStyles {
     fontSize: 30,
     color: ColorPalette.darkBlueText,
   );
+
+  static const TextStyle receiptStatus = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    color: ColorPalette.darkBlueText,
+  );
 }
 
 // How to use?
