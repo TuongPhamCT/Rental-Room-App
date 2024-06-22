@@ -47,7 +47,7 @@ class _SettingScreenState extends State<SettingScreen>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     rentalID = prefs.getString('yourRoomId') ?? '';
     if (rentalID.isNotEmpty) {
-      yourRoom = await RoomRepositoryIml().getOneRoom(rentalID);
+      yourRoom = await RoomRepositoryIml().getRoomById(rentalID);
     }
   }
 

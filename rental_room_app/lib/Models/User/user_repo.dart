@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rental_room_app/Models/User/user_model.dart';
 
 abstract class UserRepository {
   Future<Map<String, dynamic>> getUserData(String userId);
@@ -8,6 +9,7 @@ abstract class UserRepository {
   Future<UserCredential> signInWithEmailAndPassword(
       String email, String password);
   String? get userId;
+  Future<Users> getUserById(String userId);
 }
 
 class UserRepositoryIml implements UserRepository {
@@ -45,7 +47,18 @@ class UserRepositoryIml implements UserRepository {
     return await _auth.signInWithEmailAndPassword(
         email: email.trim(), password: password.trim());
   }
-  
+
   @override
   String? get userId => FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  Future<Users> getUserById(String userId) async {
+    DocumentSnapshot doc =
+        await _firestore.collection('users').doc(userId).get();
+    if (doc.exists) {
+      return Users.fromFirestore(doc);
+    } else {
+      throw Exception('User data not found');
+    }
+  }
 }

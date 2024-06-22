@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rental_room_app/Contract/register_form_contract.dart';
 
@@ -12,6 +13,7 @@ class RegisterFormPresenter {
   RegisterFormPresenter(this._view);
 
   String? password;
+  Location? desiredLocation;
 
   //*
   //Validators
@@ -80,20 +82,53 @@ class RegisterFormPresenter {
     return null;
   }
 
+  String? validateDesiredPrice(String? value) {
+    value = value?.trim();
+    RegExp reg = RegExp(r'^\d+$');
+    if (value == null || value.isEmpty) {
+      return "Please enter your desired price!";
+    } else if (!reg.hasMatch(value) || value[0] == '0') {
+      return "Invalid Price value!";
+    }
+    return null;
+  }
+
+  Future<bool> isValidLocation(String value) async {
+    List<Location> locations = await locationFromAddress(value);
+    if (locations.isEmpty) {
+      return true;
+    }
+    desiredLocation = locations.first;
+    return false;
+  }
+
+  String? validateDesiredLocation(String? value) {
+    value = value?.trim();
+    if (value == null || value.isEmpty) {
+      return "Please enter your desired location!";
+    } else {
+      String? returnString;
+      isValidLocation(value).then((val) => {
+            if (!val) {returnString = "Invalid Location"}
+          });
+      return returnString;
+    }
+  }
+
   //*
   //Screen Logics
   //*
 
   Future<UserCredential?> _registerWithEmailAndPassword(
-    String email,
-    String password,
-    String displayName,
-    String phone,
-    String gender,
-    DateTime birthday,
-    bool isOwner,
-    String? avatar,
-  ) async {
+      String email,
+      String password,
+      String displayName,
+      String phone,
+      String gender,
+      DateTime birthday,
+      bool isOwner,
+      String? avatar,
+      String desiredPrice) async {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -131,6 +166,11 @@ class RegisterFormPresenter {
         'birthDay': birthday,
         'gender': gender,
         'isOwner': isOwner,
+        'desiredPrice': desiredPrice,
+        'desiredLocation_Long':
+            isOwner ? 'None' : desiredLocation?.longitude.toString(),
+        'desiredLocation_Lat':
+            isOwner ? 'None' : desiredLocation?.latitude.toString()
       });
       return userCredential;
     } catch (e) {
@@ -151,23 +191,30 @@ class RegisterFormPresenter {
   }
 
   Future<void> doneButtonPressed(
-    String? email,
-    String password,
-    String displayName,
-    String phone,
-    String gender,
-    DateTime birthday,
-    bool isOwner,
-    String? avatar,
-  ) async {
+      String? email,
+      String password,
+      String displayName,
+      String phone,
+      String gender,
+      DateTime birthday,
+      bool isOwner,
+      String? avatar,
+      String desiredPrice) async {
     email = email?.trim();
     password = password.trim();
     displayName = displayName.trim();
     _view?.onWaitingProgressBar();
 
-    UserCredential? result = await _registerWithEmailAndPassword(email!,
-        password, displayName, phone, gender, birthday, isOwner, avatar);
-
+    UserCredential? result = await _registerWithEmailAndPassword(
+        email!,
+        password,
+        displayName,
+        phone,
+        gender,
+        birthday,
+        isOwner,
+        avatar,
+        desiredPrice);
     _view?.onPopContext();
     if (result == null) {
       _view?.onRegisterFailed();
