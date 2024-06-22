@@ -12,6 +12,7 @@ import 'package:rental_room_app/Models/User/user_model.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
+import 'package:rental_room_app/Views/new_receipt_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
@@ -71,8 +72,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       });
 
       _loadTenant();
-    } else
+    } else {
       rental = null;
+    }
   }
 
   Future<void> _loadRentalID() async {
@@ -169,17 +171,18 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
           .doc(widget.room.roomId)
           .update({'isAvailable': true});
       SharedPreferences _prefs = await SharedPreferences.getInstance();
-      _prefs.remove('yourRoomId');
+      await _prefs.remove('yourRoomId');
+      Navigator.of(context, rootNavigator: true).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      );
     } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop();
       print("Lỗi khi check out phòng: $e");
     }
-    Navigator.of(context, rootNavigator: true).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(),
-      ),
-    );
   }
 
   Future<void> deleteRoom() async {
@@ -325,7 +328,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   color: widget.room.isAvailable
                                       ? Colors.greenAccent.withOpacity(0.8)
                                       : Colors.orangeAccent.withOpacity(0.8),
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(10),
                                   ),
                                 ),
@@ -1088,7 +1091,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   Container(
                     alignment: Alignment.center,
                     child: ModelButton(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => NewReceipt(
+                              room: widget.room,
+                              tenantID: rentalID,
+                            ),
+                          ),
+                        );
+                      },
                       name: 'New Receipt',
                       color: ColorPalette.primaryColor.withOpacity(0.75),
                       width: 150,
