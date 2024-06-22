@@ -10,6 +10,7 @@ abstract class UserRepository {
       String email, String password);
   String? get userId;
   Future<Users> getUserById(String userId);
+  void updateLatestTappedRoom(String roomId);
 }
 
 class UserRepositoryIml implements UserRepository {
@@ -60,5 +61,13 @@ class UserRepositoryIml implements UserRepository {
     } else {
       throw Exception('User data not found');
     }
+  }
+
+  @override
+  void updateLatestTappedRoom(String roomId) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({"latestTappedRoomId": roomId});
   }
 }

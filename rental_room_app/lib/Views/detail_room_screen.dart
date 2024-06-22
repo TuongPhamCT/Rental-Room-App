@@ -80,6 +80,10 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
       _loadTenant();
     } else
       rental = null;
+    if (!user!.isOwner) {
+      _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
+      _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+    }
   }
 
   Future<void> _loadTenant() async {

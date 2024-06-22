@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:http/http.dart' as http;
 import 'package:rental_room_app/Models/Room/room_model.dart';
@@ -80,6 +81,14 @@ class RoomRepositoryIml implements RoomRepository {
     UserRepository userRepo = UserRepositoryIml();
     Users user = await userRepo.getUserById(userId);
 
+    if (user.latestTappedRoomId == "None") {
+      return recommendForNewUsers(user);
+    } else {
+      return recommendForOldUsers(user);
+    }
+  }
+
+  Future<List<Room>> recommendForNewUsers(Users user) async {
     http.Response response = await http.post(
       Uri.parse('${apiUrl}recommend/'),
       headers: <String, String>{
@@ -90,6 +99,43 @@ class RoomRepositoryIml implements RoomRepository {
         "desiredPrice": user.desiredPrice,
         "desiredLocation_Long": user.desiredLocation_Long,
         "desiredLocation_Lat": user.desiredLocaiton_Lat
+      }),
+    );
+    List<String> recommendedRoomIds = [];
+    try {
+      recommendedRoomIds =
+          json.decode(response.body)['recommend'].cast<String>();
+    } catch (e) {
+      print("unavailable server!");
+    }
+    List<Room> recommendedRooms = [];
+    for (String id in recommendedRoomIds) {
+      Room r = await getRoomById(id);
+      recommendedRooms.add(r);
+    }
+    return recommendedRooms;
+  }
+
+  Future<List<Room>> recommendForOldUsers(Users user) async {
+    final roomRepository = RoomRepositoryIml();
+    Room tappedRoom = await roomRepository.getRoomById(user.latestTappedRoomId);
+
+    List<Location> locations = await locationFromAddress(tappedRoom.location);
+    if (locations.isEmpty) {
+      return recommendForNewUsers(user);
+    }
+    Location location = locations.first;
+
+    http.Response response = await http.post(
+      Uri.parse('${apiUrl}recommend/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "gender": user.gender,
+        "desiredPrice": tappedRoom.price.roomPrice,
+        "desiredLocation_Long": location.longitude,
+        "desiredLocation_Lat": location.latitude
       }),
     );
     List<String> recommendedRoomIds = [];

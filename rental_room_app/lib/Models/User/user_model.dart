@@ -11,6 +11,7 @@ class Users {
   String desiredPrice;
   String desiredLocation_Long;
   String desiredLocaiton_Lat;
+  String latestTappedRoomId;
 
   Users(
       {required this.userID,
@@ -22,7 +23,8 @@ class Users {
       required this.isOwner,
       this.desiredPrice = "0",
       this.desiredLocation_Long = "None",
-      this.desiredLocaiton_Lat = "None"});
+      this.desiredLocaiton_Lat = "None",
+      this.latestTappedRoomId = "None"});
 
   // Phương thức để chuyển đổi dữ liệu thành một Map để lưu trữ trên Firestore
   Map<String, dynamic> toJson() {
@@ -36,7 +38,8 @@ class Users {
       'isOwner': isOwner,
       'desiredPrice': desiredPrice,
       'desiredLocation_Long': desiredLocation_Long,
-      'desiredLocaiton_Lat': desiredLocaiton_Lat
+      'desiredLocaiton_Lat': desiredLocaiton_Lat,
+      'latestTappedRoomId': latestTappedRoomId
     };
   }
 
@@ -52,7 +55,8 @@ class Users {
         isOwner: data['isOwner'],
         desiredPrice: data['desiredPrice'],
         desiredLocation_Long: data['desiredLocation_Long'],
-        desiredLocaiton_Lat: data['desiredLocation_Lat']);
+        desiredLocaiton_Lat: data['desiredLocation_Lat'],
+        latestTappedRoomId: data['latestTappedRoomId']);
   }
 
   String get getUserName => userName;
@@ -64,4 +68,5 @@ class Users {
   String get getDesiredPrice => desiredPrice;
   String get getDesiredLocation_Long => desiredLocation_Long;
   String get getDesiredLocation_Lat => desiredLocaiton_Lat;
+  String get getLatestRoomId => latestTappedRoomId;
 }
