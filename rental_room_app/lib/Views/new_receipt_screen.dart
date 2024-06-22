@@ -810,10 +810,10 @@ class _NewReceiptState extends State<NewReceipt> implements NewReceiptContract {
                       color: ColorPalette.redColor,
                     ),
                   ),
-                  const Gap(150),
+                  const Gap(50),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
