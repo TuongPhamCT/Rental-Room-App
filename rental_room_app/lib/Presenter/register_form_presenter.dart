@@ -170,7 +170,8 @@ class RegisterFormPresenter {
         'desiredLocation_Long':
             isOwner ? 'None' : desiredLocation?.longitude.toString(),
         'desiredLocation_Lat':
-            isOwner ? 'None' : desiredLocation?.latitude.toString()
+            isOwner ? 'None' : desiredLocation?.latitude.toString(),
+        'latestTappedRoomId': 'None',
       });
       return userCredential;
     } catch (e) {

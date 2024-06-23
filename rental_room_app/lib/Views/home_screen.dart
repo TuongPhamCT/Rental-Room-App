@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rental_room_app/Contract/home_contract.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
+import 'package:rental_room_app/Models/User/user_model.dart';
 import 'package:rental_room_app/Presenter/home_presenter.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
@@ -56,9 +56,7 @@ class _HomeScreenState extends State<HomeScreen>
   String? valueSearch;
   String? dropdownKindValue;
 
-
   String _recommendTextError = "Service Unavailable!";
-
 
   List<Room> loadListOwnerRoom(List<Room> list) {
     List<Room> newList = List.from(list);
@@ -318,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   )),
             ),
-            const Gap(20),
+            const Gap(10),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
@@ -457,91 +455,72 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-            const Gap(20),
+            const Gap(10),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: !_isOwner,
+                visible: !_isOwner && valueSearch == '',
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Suggestion For You',
-                          style: TextStyles.titleHeading,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            GoRouter.of(context).go('/home/all_room');
-                          },
-                          child: const Row(
-                            children: [
-                              Text(
-                                'See All',
-                                style: TextStyles.seeAll,
-                              ),
-                              Gap(10),
-                              Icon(
-                                FontAwesomeIcons.angleRight,
-                                size: 12,
-                                color: ColorPalette.grayText,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                    const Text(
+                      'Suggestion For You',
+                      style: TextStyles.titleHeading,
                     ),
                     const Gap(10),
-                    FutureBuilder(
-                      future: _roomRepository.getRecommendedRooms(
-                          FirebaseAuth.instance.currentUser!.uid),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Container();
-                        } else if (snapshot.hasData) {
-                          if (snapshot.data!.isEmpty) {
-                            return Center(
-                              child: Text(
-                                "Empty list",
-                                style: TextStyles.titleHeading
-                                    .copyWith(color: ColorPalette.errorColor),
-                              ),
-                            );
-                          }
-                          List<Room> recommendedRooms = snapshot.data!;
-                          return Container(
-                            height: 250,
-                            width: size.width,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: recommendedRooms
-                                  .map((room) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Container(
-                                            height: 250,
-                                            width: 170,
-                                            child: RoomItem(room: room)),
-                                      ))
-                                  .toList(),
-                            ),
-                          );
-                        } else {
-                          return Center(
-                            child: Text(
-                              "Loading",
-                              style: TextStyles.titleHeading
-                                  .copyWith(color: ColorPalette.errorColor),
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                    _isOwner
+                        ? Container()
+                        : FutureBuilder(
+                            future: _roomRepository.getRecommendedRooms(
+                                FirebaseAuth.instance.currentUser!.uid),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Container();
+                              } else if (snapshot.hasData) {
+                                if (snapshot.data!.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      "Empty list",
+                                      style: TextStyles.titleHeading.copyWith(
+                                          color: ColorPalette.errorColor),
+                                    ),
+                                  );
+                                }
+                                List<Room> recommendedRooms = snapshot.data!;
+                                return SizedBox(
+                                  height: 250,
+                                  width: size.width,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: recommendedRooms
+                                        .map((room) => Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              child: SizedBox(
+                                                  height: 250,
+                                                  width: 170,
+                                                  child: RoomItem(room: room)),
+                                            ))
+                                        .toList(),
+                                  ),
+                                );
+                              } else {
+                                return Center(
+                                  child: Text(
+                                    "Loading",
+                                    style: TextStyles.titleHeading.copyWith(
+                                        color: ColorPalette.errorColor),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                   ],
                 ),
               ),
             ),
+            const Gap(15),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
@@ -558,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
-            const Gap(20),
+            const Gap(10),
             Expanded(
               child: StreamBuilder<List<Room>>(
                 stream: _roomRepository.getRooms(),

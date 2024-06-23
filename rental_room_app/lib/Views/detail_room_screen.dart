@@ -5,10 +5,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:rental_room_app/Contract/detail_room_contract.dart';
+import 'package:rental_room_app/Models/Comment/comment_model.dart';
+import 'package:rental_room_app/Models/Comment/comment_repo.dart';
 import 'package:rental_room_app/Models/Rental/rental_model.dart';
 import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
+import 'package:rental_room_app/Presenter/detail_room_presenter.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
@@ -18,6 +22,7 @@ import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
 import 'package:rental_room_app/widgets/border_container.dart';
+import 'package:rental_room_app/widgets/comment.dart';
 import 'package:rental_room_app/widgets/model_button.dart';
 import 'package:rental_room_app/widgets/sub_image_frame.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +36,12 @@ class DetailRoomScreen extends StatefulWidget {
   State<DetailRoomScreen> createState() => _DetailRoomScreenState();
 }
 
-class _DetailRoomScreenState extends State<DetailRoomScreen> {
+class _DetailRoomScreenState extends State<DetailRoomScreen>
+    implements DetailRoomContract {
+  DetailRoomPresenter? _detailRoomPresenter;
+  final CommentRepository _commentRepository = CommentRepositoryIml();
+  final _formKey = GlobalKey<FormState>();
+
   bool isPressed = false;
   final PageController _pageController = PageController();
   int _currenImage = 0;
@@ -54,9 +64,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String status = 'PTT';
 
+  final _commentTextController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+    _detailRoomPresenter = DetailRoomPresenter(this);
     _loadInfor();
     _beginProgram();
   }
@@ -76,6 +89,10 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       _loadTenant();
     } else {
       rental = null;
+      if (!user!.isOwner) {
+        _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
+        _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+      }
     }
   }
 
@@ -940,8 +957,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   ),
                                 ),
                                 Text(
-                                  (rental?.duration.toString() ?? '12') +
-                                      ' months',
+                                  '${rental?.duration.toString() ?? '12'} months',
                                   style: TextStyles.descriptionRoom,
                                   textAlign: TextAlign.justify,
                                 ),
@@ -959,9 +975,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                                   ),
                                 ),
                                 Text(
-                                  (rental?.deposit.toStringAsFixed(0) ??
-                                          '1000000') +
-                                      ' VNĐ',
+                                  '${rental?.deposit.toStringAsFixed(0) ?? '1000000'} VNĐ',
                                   style: TextStyles.descriptionRoom,
                                   textAlign: TextAlign.justify,
                                 ),
@@ -1209,207 +1223,325 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     ),
                   ),
                 const Gap(10),
-                BorderContainer(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Rating',
-                        style: TextStyles.detailTitle,
-                      ),
-                      const Gap(5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: 130,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  '4,8',
-                                  style: TextStyles.ratingNumb,
-                                ),
-                                RatingBar.builder(
-                                  initialRating: 4.8,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemSize: 18,
-                                  unratedColor: const Color(0xffDADADA),
-                                  itemBuilder: (context, _) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
+                FutureBuilder(
+                    future: _commentRepository
+                        .getAllCommentsbyRoomId(widget.room.roomId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Comment>? comments = snapshot.data;
+                        comments?.sort((a, b) => a.time.compareTo(b.time));
+
+                        double avgRating = comments!.isEmpty
+                            ? 0
+                            : comments
+                                    .map((m) => m.rating)
+                                    .reduce((a, b) => a + b) /
+                                comments.length;
+                        return Column(
+                          children: [
+                            BorderContainer(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Rating',
+                                    style: TextStyles.detailTitle,
                                   ),
-                                  onRatingUpdate: (value) {},
-                                  ignoreGestures: true,
-                                ),
-                                const Text(
-                                  '123.456',
-                                  style: TextStyles.ratingText,
-                                ),
-                              ],
+                                  const Gap(5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        height: 130,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              avgRating.toStringAsFixed(1),
+                                              style: TextStyles.ratingNumb,
+                                            ),
+                                            RatingBar.builder(
+                                              initialRating: avgRating,
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemSize: 18,
+                                              unratedColor:
+                                                  const Color(0xffDADADA),
+                                              itemBuilder: (context, _) =>
+                                                  const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (value) {},
+                                              ignoreGestures: true,
+                                            ),
+                                            Text(
+                                              comments.length.toString(),
+                                              style: TextStyles.ratingText,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Gap(15),
+                                      SizedBox(
+                                        height: 100,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '5',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                      4)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '4',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          3 &&
+                                                                      e.rating <
+                                                                          4)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '3',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          2 &&
+                                                                      e.rating <
+                                                                          3)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '2',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          1 &&
+                                                                      e.rating <
+                                                                          2)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: size.width - 180,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    '1',
+                                                    style:
+                                                        TextStyles.ratingText,
+                                                  ),
+                                                  SizedBox(
+                                                    width: size.width - 190,
+                                                    child:
+                                                        LinearProgressIndicator(
+                                                      value: comments!.isEmpty
+                                                          ? 0
+                                                          : comments
+                                                                  .where((e) =>
+                                                                      e.rating >=
+                                                                          0 &&
+                                                                      e.rating <
+                                                                          1)
+                                                                  .toList()
+                                                                  .length /
+                                                              comments.length,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xffDADADA),
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              ColorPalette
+                                                                  .primaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      minHeight: 11,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const Gap(15),
-                          SizedBox(
-                            height: 100,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '5',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.8,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '4',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.2,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '3',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.1,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '2',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0.05,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: size.width - 180,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        '1',
-                                        style: TextStyles.ratingText,
-                                      ),
-                                      SizedBox(
-                                        width: size.width - 190,
-                                        child: LinearProgressIndicator(
-                                          value: 0,
-                                          backgroundColor:
-                                              const Color(0xffDADADA),
-                                          valueColor:
-                                              const AlwaysStoppedAnimation<
-                                                      Color>(
-                                                  ColorPalette.primaryColor),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          minHeight: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                            Container(
+                                constraints:
+                                    const BoxConstraints(maxHeight: 300),
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: comments
+                                      .map((e) => CommentWidget(
+                                          comment: e, isOwner: isOwner))
+                                      .toList(),
+                                ))
+                          ],
+                        );
+                      } else {
+                        print(snapshot.data);
+                        return Container();
+                      }
+                    }),
                 if (!isOwner)
                   BorderContainer(
                     child: Column(
@@ -1454,26 +1586,32 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           'Write your review:',
                           style: TextStyles.detailTitle,
                         ),
-                        TextField(
-                          maxLines: null,
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          textAlign: TextAlign.justify,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: ColorPalette.primaryColor,
+                        Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            maxLines: null,
+                            controller: _commentTextController,
+                            validator: _detailRoomPresenter?.validateComment,
+                            onTapOutside: (event) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            textAlign: TextAlign.justify,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: ColorPalette.primaryColor,
+                                ),
                               ),
-                            ),
-                            hintText: 'Write your review',
-                            hintStyle: TextStyles.descriptionRoom.copyWith(
-                                color: ColorPalette.rankText.withOpacity(0.5)),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: ColorPalette.rankText.withOpacity(0.1),
+                              hintText: 'Write your review',
+                              hintStyle: TextStyles.descriptionRoom.copyWith(
+                                  color:
+                                      ColorPalette.rankText.withOpacity(0.5)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: ColorPalette.rankText.withOpacity(0.1),
+                                ),
                               ),
                             ),
                           ),
@@ -1482,7 +1620,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                         Container(
                           alignment: Alignment.center,
                           child: ModelButton(
-                            onTap: () {},
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                _detailRoomPresenter?.postCommentButtonPressed(
+                                    widget.room.roomId,
+                                    _commentTextController.text,
+                                    rating);
+                              }
+                            },
                             name: 'POST',
                             color: ColorPalette.primaryColor.withOpacity(0.75),
                             width: 150,
@@ -1510,5 +1655,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
         color: isActive ? const Color(0xffE5E5E5) : ColorPalette.detailBorder,
       ),
     );
+  }
+
+  @override
+  void onCommentPosted() {
+    _commentTextController.clear();
+    rating = 0;
+    setState(() {});
   }
 }
