@@ -106,7 +106,7 @@ class RoomRepositoryIml implements RoomRepository {
       recommendedRoomIds =
           json.decode(response.body)['recommend'].cast<String>();
     } catch (e) {
-      print("unavailable server!");
+      print("unavailable server! $e");
     }
     List<Room> recommendedRooms = [];
     for (String id in recommendedRoomIds) {
