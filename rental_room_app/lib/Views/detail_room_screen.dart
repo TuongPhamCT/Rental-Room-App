@@ -265,13 +265,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
       Navigator.of(context, rootNavigator: true).pop();
       print("Lỗi khi check out phòng: $e");
     }
-    Navigator.of(context, rootNavigator: true).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const HomeScreen(),
-      ),
-    );
   }
 
   Future<void> deleteRoom() async {

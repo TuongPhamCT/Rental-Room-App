@@ -21,7 +21,7 @@ abstract class RoomRepository {
 }
 
 class RoomRepositoryIml implements RoomRepository {
-  String apiUrl = 'https://26db-34-42-117-136.ngrok-free.app/';
+  String apiUrl = 'https://b766-34-123-161-170.ngrok-free.app/';
   @override
   Future<void> uploadRoom(Room room) async {
     DocumentReference docRef =

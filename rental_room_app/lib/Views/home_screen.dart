@@ -56,9 +56,7 @@ class _HomeScreenState extends State<HomeScreen>
   String? valueSearch;
   String? dropdownKindValue;
 
-
   String _recommendTextError = "Service Unavailable!";
-
 
   List<Room> loadListOwnerRoom(List<Room> list) {
     List<Room> newList = List.from(list);
@@ -318,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                   )),
             ),
-            const Gap(20),
+            const Gap(10),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
@@ -457,40 +455,17 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-            const Gap(20),
+            const Gap(10),
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: !_isOwner,
+                visible: !_isOwner && valueSearch == '',
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Suggestion For You',
-                          style: TextStyles.titleHeading,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            GoRouter.of(context).go('/home/all_room');
-                          },
-                          child: const Row(
-                            children: [
-                              Text(
-                                'See All',
-                                style: TextStyles.seeAll,
-                              ),
-                              Gap(10),
-                              Icon(
-                                FontAwesomeIcons.angleRight,
-                                size: 12,
-                                color: ColorPalette.grayText,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                    const Text(
+                      'Suggestion For You',
+                      style: TextStyles.titleHeading,
                     ),
                     const Gap(10),
                     _isOwner
@@ -545,6 +520,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
+            const Gap(15),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
@@ -561,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
-            const Gap(20),
+            const Gap(10),
             Expanded(
               child: StreamBuilder<List<Room>>(
                 stream: _roomRepository.getRooms(),
