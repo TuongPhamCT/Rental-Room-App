@@ -12,6 +12,7 @@ import 'package:rental_room_app/Models/Rental/rental_model.dart';
 import 'package:rental_room_app/Models/Rental/rental_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:rental_room_app/Presenter/detail_room_presenter.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
 import 'package:rental_room_app/Views/edit_room_screen.dart';
@@ -71,7 +72,18 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
     super.initState();
     _detailRoomPresenter = DetailRoomPresenter(this);
     _loadInfor();
+    _updateLatestTappedRoom();
     _beginProgram();
+  }
+
+  Future<void> _updateLatestTappedRoom() async {
+    UserRepository userRepository = UserRepositoryIml();
+    Users currentU = await userRepository
+        .getUserById(FirebaseAuth.instance.currentUser!.uid);
+    if (!currentU.isOwner) {
+      _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
+      _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+    }
   }
 
   Future<void> _beginProgram() async {
@@ -89,10 +101,6 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
       _loadTenant();
     } else {
       rental = null;
-      if (!user!.isOwner) {
-        _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
-        _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
-      }
     }
   }
 
