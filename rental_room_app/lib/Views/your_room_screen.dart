@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
+import 'package:rental_room_app/widgets/border_container.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,8 +55,9 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
         centerTitle: true,
         toolbarHeight: kToolbarHeight * 1.5,
       ),
-      body: Center(
-        child: Text('You need to rental a room for use this function!!!'),
+      body: const Center(
+        child: BorderContainer(
+            child: Text('You need to rental a room for use this function!!!')),
       ),
       bottomNavigationBar: SalomonBottomBar(
         backgroundColor: ColorPalette.backgroundColor,
