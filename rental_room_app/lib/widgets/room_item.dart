@@ -70,7 +70,7 @@ class _RoomItemState extends State<RoomItem> {
               room: widget.room,
             ),
           ),
-        );
+        ).then((_) => setState(() {}));
       },
       child: Container(
         padding: const EdgeInsets.only(bottom: 10),
@@ -82,7 +82,7 @@ class _RoomItemState extends State<RoomItem> {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -114,7 +114,7 @@ class _RoomItemState extends State<RoomItem> {
                           ),
                         ),
                         Expanded(child: Container()),
-                        Icon(
+                        const Icon(
                           Icons.location_pin,
                           size: 20,
                         ),

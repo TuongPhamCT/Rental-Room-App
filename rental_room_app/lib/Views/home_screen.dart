@@ -204,7 +204,9 @@ class _HomeScreenState extends State<HomeScreen>
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('yourRoomId', rentalID);
-      yourRoom = await RoomRepositoryIml().getRoomById(rentalID);
+      if (rentalID.isNotEmpty) {
+        yourRoom = await RoomRepositoryIml().getRoomById(rentalID);
+      }
     } catch (e) {
       print('Error getting document: $e');
     }

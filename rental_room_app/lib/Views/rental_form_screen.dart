@@ -219,7 +219,7 @@ class _RentalFormScreenState extends State<RentalFormScreen>
                       child: Row(
                         children: [
                           Text(
-                            "Duration",
+                            "Duration (Month)",
                             style: TextStyles.timenotifi.medium
                                 .copyWith(color: ColorPalette.darkBlueText),
                           ),
