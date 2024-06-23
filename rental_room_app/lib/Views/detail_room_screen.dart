@@ -207,8 +207,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
 
   Future<bool> isHaveRoom() async {
     try {
+      String? uID = await FirebaseAuth.instance.currentUser?.uid;
       DocumentReference userDocRef =
-          FirebaseFirestore.instance.collection('users').doc(rentalID);
+          FirebaseFirestore.instance.collection('users').doc(uID);
       CollectionReference roomCollectionRef =
           userDocRef.collection('rentalroom');
       QuerySnapshot roomSnapshot = await roomCollectionRef.limit(1).get();
