@@ -152,13 +152,13 @@
 <div id="CaiDat"></div>
 
 ## III. Hướng dẫn cài đặt
-### Requirements
+### Yêu cầu
 
 * Flutter SDK
 * Dart SDK
 * A code editor (e.g. Visual Studio Code, IntelliJ IDEA)
 
-### Installation
+### Cài đặt
 
 1. Cài đặt Flutter SDK từ [the Flutter website](https://flutter.dev/sdk/).
 2. Cài đặt Dart SDK từ [the Dart website](https://dart.dev/get-dart).
