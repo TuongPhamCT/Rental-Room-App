@@ -82,7 +82,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
         .getUserById(FirebaseAuth.instance.currentUser!.uid);
     if (!currentU.isOwner) {
       _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
-      _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+      // _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
     }
   }
 

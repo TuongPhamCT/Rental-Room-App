@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rental_room_app/Contract/rental_form_contract.dart';
+import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:string_validator/string_validator.dart';
 
 class RentalFormPresenter {
@@ -85,6 +86,7 @@ class RentalFormPresenter {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       final String rentalID = FirebaseAuth.instance.currentUser!.uid;
+      final _userRepo = UserRepositoryIml();
 
       // Reference to the room document
       DocumentReference roomRef = firestore.collection('Rooms').doc(roomId);
@@ -110,7 +112,7 @@ class RentalFormPresenter {
       await userRef.collection('rentalroom').doc(roomId).set({
         'roomID': roomId,
       });
-
+      _userRepo.updateLatestTappedRoom(roomId);
       _view?.onPopContext();
       _view?.onRentalSucceed();
     } catch (e) {
