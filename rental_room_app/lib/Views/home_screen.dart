@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool isVisiable = false;
   bool isVisibleFilter = false;
   int soLuongPhongCoSan = 6;
+  bool show = true;
 
   late List<Room> roomAvailable;
   String rentalID = '';
@@ -464,58 +465,90 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Suggestion For You',
-                      style: TextStyles.titleHeading,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Suggestion For You',
+                          style: TextStyles.titleHeading,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              show = !show;
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                show ? 'Hide' : 'Show',
+                                style: TextStyles.seeAll.copyWith(fontSize: 14),
+                              ),
+                              Gap(3),
+                              Icon(
+                                show
+                                    ? FontAwesomeIcons.angleUp
+                                    : FontAwesomeIcons.angleDown,
+                                size: 15,
+                                color: ColorPalette.grayText,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     const Gap(10),
                     _isOwner
                         ? Container()
-                        : FutureBuilder(
-                            future: _roomRepository.getRecommendedRooms(
-                                FirebaseAuth.instance.currentUser!.uid),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return Container();
-                              } else if (snapshot.hasData) {
-                                if (snapshot.data!.isEmpty) {
+                        : Visibility(
+                            visible: show,
+                            child: FutureBuilder(
+                              future: _roomRepository.getRecommendedRooms(
+                                  FirebaseAuth.instance.currentUser!.uid),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Container();
+                                } else if (snapshot.hasData) {
+                                  if (snapshot.data!.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        "Empty list",
+                                        style: TextStyles.titleHeading.copyWith(
+                                            color: ColorPalette.errorColor),
+                                      ),
+                                    );
+                                  }
+                                  List<Room> recommendedRooms = snapshot.data!;
+                                  return SizedBox(
+                                    height: 250,
+                                    width: size.width,
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: recommendedRooms
+                                          .map((room) => Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: SizedBox(
+                                                    height: 250,
+                                                    width: 170,
+                                                    child:
+                                                        RoomItem(room: room)),
+                                              ))
+                                          .toList(),
+                                    ),
+                                  );
+                                } else {
                                   return Center(
                                     child: Text(
-                                      "Empty list",
+                                      "Loading",
                                       style: TextStyles.titleHeading.copyWith(
                                           color: ColorPalette.errorColor),
                                     ),
                                   );
                                 }
-                                List<Room> recommendedRooms = snapshot.data!;
-                                return SizedBox(
-                                  height: 250,
-                                  width: size.width,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: recommendedRooms
-                                        .map((room) => Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: SizedBox(
-                                                  height: 250,
-                                                  width: 170,
-                                                  child: RoomItem(room: room)),
-                                            ))
-                                        .toList(),
-                                  ),
-                                );
-                              } else {
-                                return Center(
-                                  child: Text(
-                                    "Loading",
-                                    style: TextStyles.titleHeading.copyWith(
-                                        color: ColorPalette.errorColor),
-                                  ),
-                                );
-                              }
-                            },
+                              },
+                            ),
                           ),
                   ],
                 ),
