@@ -55,9 +55,27 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
         centerTitle: true,
         toolbarHeight: kToolbarHeight * 1.5,
       ),
-      body: const Center(
-        child: BorderContainer(
-            child: Text('You need to rental a room for use this function!!!')),
+      body: Column(
+        children: [
+          Expanded(child: Container()),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              margin: const EdgeInsets.all(10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ColorPalette.backgroundColor,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: ColorPalette.primaryColor,
+                  width: 2,
+                ),
+              ),
+              child: Text('You need to rental a room for use this function!!!'),
+            ),
+          ),
+          Expanded(child: Container()),
+        ],
       ),
       bottomNavigationBar: SalomonBottomBar(
         backgroundColor: ColorPalette.backgroundColor,
