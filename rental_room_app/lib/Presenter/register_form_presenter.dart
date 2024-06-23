@@ -94,12 +94,17 @@ class RegisterFormPresenter {
   }
 
   Future<bool> isValidLocation(String value) async {
-    List<Location> locations = await locationFromAddress(value);
+    List<Location> locations = [];
+    try {
+      locations = await locationFromAddress(value);
+    } catch (e) {
+      return false;
+    }
     if (locations.isEmpty) {
-      return true;
+      return false;
     }
     desiredLocation = locations.first;
-    return false;
+    return true;
   }
 
   String? validateDesiredLocation(String? value) {
@@ -107,11 +112,7 @@ class RegisterFormPresenter {
     if (value == null || value.isEmpty) {
       return "Please enter your desired location!";
     } else {
-      String? returnString;
-      isValidLocation(value).then((val) => {
-            if (!val) {returnString = "Invalid Location"}
-          });
-      return returnString;
+      return null;
     }
   }
 

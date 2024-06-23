@@ -523,20 +523,36 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 38),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            _registerFormPresenter?.doneButtonPressed(
-                                widget.email,
-                                _accountPasswordTextController.text,
-                                _fullnameTextController.text,
-                                _phoneNumTextController.text,
-                                _gender,
-                                birthday,
-                                _isOwner,
-                                _imageFile,
-                                _isOwner
-                                    ? 'None'
-                                    : _desiredPriceController.text);
+                            bool? locationResult =
+                                await _registerFormPresenter?.isValidLocation(
+                                    _desiredLocationController.text);
+                            if (locationResult == true) {
+                              _registerFormPresenter?.doneButtonPressed(
+                                  widget.email,
+                                  _accountPasswordTextController.text,
+                                  _fullnameTextController.text,
+                                  _phoneNumTextController.text,
+                                  _gender,
+                                  birthday,
+                                  _isOwner,
+                                  _imageFile,
+                                  _isOwner
+                                      ? 'None'
+                                      : _desiredPriceController.text);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: ColorPalette.greenText,
+                                  content: Text(
+                                    'Invalid location! Try again',
+                                    style: TextStyle(
+                                        color: ColorPalette.errorColor),
+                                  ),
+                                ),
+                              );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
