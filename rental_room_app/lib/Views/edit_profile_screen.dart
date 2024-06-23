@@ -8,6 +8,7 @@ import 'package:rental_room_app/Contract/edit_profile_contract.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Presenter/edit_profile_presenter.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Views/home_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
@@ -320,6 +321,12 @@ class _EditProfileScreenState extends State<EditProfileScreen>
           ],
         );
       },
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(),
+      ),
     );
   }
 
