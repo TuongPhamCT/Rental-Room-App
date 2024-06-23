@@ -459,7 +459,8 @@ class _HomeScreenState extends State<HomeScreen>
             Container(
               alignment: Alignment.centerLeft,
               child: Visibility(
-                visible: !_isOwner && valueSearch == '',
+                visible:
+                    !_isOwner && (valueSearch == '' || valueSearch == null),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
