@@ -14,7 +14,9 @@ import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/User/user_model.dart';
 import 'package:rental_room_app/Presenter/detail_room_presenter.dart';
 import 'package:rental_room_app/Views/edit_form_screen.dart';
+import 'package:rental_room_app/Views/edit_room_screen.dart';
 import 'package:rental_room_app/Views/home_screen.dart';
+import 'package:rental_room_app/Views/new_receipt_screen.dart';
 import 'package:rental_room_app/Views/rental_form_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
@@ -58,8 +60,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
   Rental? rental;
   Users? user;
   final RentalRepository _rentalRepository = RentalRepositoryIml();
-  final String rentalID = FirebaseAuth.instance.currentUser!.uid;
+  String rentalID = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String status = 'PTT';
 
   final _commentTextController = TextEditingController();
 
@@ -68,7 +71,13 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
     super.initState();
     _detailRoomPresenter = DetailRoomPresenter(this);
     _loadInfor();
+    _beginProgram();
+  }
+
+  Future<void> _beginProgram() async {
     if (!widget.room.isAvailable) {
+      await _loadRentalID();
+      await _loadReceiptStatus();
       _rentalRepository
           .getRentalData(rentalID, widget.room.roomId)
           .then((value) {
@@ -78,11 +87,95 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
       });
 
       _loadTenant();
-    } else
+    } else {
       rental = null;
-    if (!user!.isOwner) {
-      _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
-      _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+      if (!user!.isOwner) {
+        _detailRoomPresenter?.logTappedRoomEvent(widget.room.roomId);
+        _detailRoomPresenter?.updateLatestTappedRoom(widget.room.roomId);
+      }
+    }
+  }
+
+  Future<void> _loadReceiptStatus() async {
+    try {
+      DateTime now = DateTime.now();
+
+      CollectionReference receiptCollection =
+          FirebaseFirestore.instance.collection('Receipts');
+
+      // Query to filter and sort documents by 'createdDay' in descending order
+      Query query = receiptCollection
+          .where('roomID', isEqualTo: widget.room.roomId)
+          .where('tenantID', isEqualTo: rentalID)
+          .orderBy('createdDay', descending: true);
+
+      QuerySnapshot querySnapshot;
+      try {
+        querySnapshot = await query.limit(1).get(); // Get the first document
+      } catch (e) {
+        print('Error fetching query snapshot: $e');
+        setState(() {
+          status = 'Error fetching data';
+        });
+        return;
+      }
+
+      if (querySnapshot.docs.isEmpty) {
+        setState(() {
+          status = 'No receipt';
+        });
+        return;
+      }
+
+      DocumentSnapshot closestDoc = querySnapshot.docs.first;
+
+      // Check the distance from today to the closest document's day
+      Timestamp closestDayTimestamp = closestDoc['createdDay'];
+      DateTime closestDay = closestDayTimestamp.toDate();
+      int daysInMonth = DateTime(closestDay.year, closestDay.month + 1, 0)
+          .day; // Get number of days in the month of the closest day's month
+      Duration durationToClosestDay =
+          closestDay.difference(now).abs(); // Absolute difference from today
+
+      // Check if the duration exceeds the limit (number of days in the month)
+      if (durationToClosestDay.inDays > daysInMonth) {
+        setState(() {
+          status = 'No receipt';
+        });
+      } else {
+        // Check the status of the closest document
+        bool sta = closestDoc['status'];
+        setState(() {
+          status = sta ? 'PAID' : 'UNPAID';
+        });
+      }
+    } catch (e, stackTrace) {
+      // Handle errors if needed
+      print('Error loading receipt status: $e');
+      print('StackTrace: $stackTrace');
+      setState(() {
+        status = 'Error loading receipt status';
+      });
+    }
+  }
+
+  Future<void> _loadRentalID() async {
+    CollectionReference collection = FirebaseFirestore.instance
+        .collection('Rooms')
+        .doc(widget.room.roomId)
+        .collection('tenant');
+    QuerySnapshot querySnapshot = await collection.limit(1).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        rentalID = querySnapshot.docs[0].id;
+        print('RentalID: $rentalID \n');
+      });
+    } else {
+      print('Không tìm thấy rentalID');
+      setState(() {
+        rentalID = '';
+      });
     }
   }
 
@@ -159,9 +252,17 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
           .collection('Rooms')
           .doc(widget.room.roomId)
           .update({'isAvailable': true});
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.remove('yourRoomId');
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      await _prefs.remove('yourRoomId');
+      Navigator.of(context, rootNavigator: true).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      );
     } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop();
       print("Lỗi khi check out phòng: $e");
     }
     Navigator.of(context, rootNavigator: true).pop();
@@ -292,8 +393,9 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            alignment: Alignment.topRight,
-                            width: 21 * 4,
+                            alignment: Alignment.center,
+                            width: 21 *
+                                (room.secondaryImgUrls.length + 1).toDouble(),
                             child: ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               scrollDirection: Axis.horizontal,
@@ -710,7 +812,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                   ),
                 ),
                 const Gap(10),
-                if (!room.isAvailable && !isOwner)
+                if (!room.isAvailable)
                   Column(
                     children: [
                       BorderContainer(
@@ -909,53 +1011,80 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                         ),
                       ),
                       const Gap(10),
-                      ModelButton(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => EditFormScreen(
-                                room: widget.room,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Receipt Status:',
+                            style: TextStyles.receiptStatus,
+                          ),
+                          Text(
+                            status,
+                            style: TextStyles.descriptionRoom
+                                .copyWith(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const Gap(10),
+                    ],
+                  ),
+                if (!room.isAvailable && !isOwner)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => EditFormScreen(
+                                  room: widget.room,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        name: 'EDIT FORM',
-                        color: ColorPalette.primaryColor.withOpacity(0.75),
-                        width: 150,
+                            );
+                          },
+                          name: 'EDIT FORM',
+                          color: ColorPalette.primaryColor.withOpacity(0.75),
+                          width: 150,
+                        ),
                       ),
                       const Gap(5),
-                      ModelButton(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Notification'),
-                                content: const Text(
-                                    'Are you sure you want to check out this room?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('CANCEL'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      checkOutRoom();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        name: 'CHECK OUT',
-                        color: ColorPalette.redColor,
-                        width: 150,
+                      Container(
+                        alignment: Alignment.center,
+                        child: ModelButton(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Notification'),
+                                  content: const Text(
+                                      'Are you sure you want to check out this room?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('CANCEL'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        checkOutRoom();
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          name: 'CHECK OUT',
+                          color: ColorPalette.redColor,
+                          width: 150,
+                        ),
                       ),
                     ],
                   ),
@@ -1006,7 +1135,16 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                       Container(
                         alignment: Alignment.center,
                         child: ModelButton(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => EditRoomScreen(
+                                  room: widget.room,
+                                ),
+                              ),
+                            );
+                          },
                           name: 'Edit room',
                           color: ColorPalette.primaryColor.withOpacity(0.75),
                           width: 150,
@@ -1054,7 +1192,38 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                   Container(
                     alignment: Alignment.center,
                     child: ModelButton(
-                      onTap: () {},
+                      onTap: () {
+                        if (status != 'No receipt') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Notification'),
+                                content: const Text(
+                                    'You have already created a receipt. Please wait before creating another receipt!'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NewReceipt(
+                                room: widget.room,
+                                tenantID: rentalID,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                       name: 'New Receipt',
                       color: ColorPalette.primaryColor.withOpacity(0.75),
                       width: 150,

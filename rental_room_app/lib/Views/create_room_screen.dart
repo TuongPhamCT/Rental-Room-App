@@ -42,9 +42,6 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
   final _waterPriceController = TextEditingController();
   final _electricPriceController = TextEditingController();
   final _otherControler = TextEditingController();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
   final _facebookController = TextEditingController();
   final _addressController = TextEditingController();
 
@@ -317,7 +314,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                     ),
                   ],
                 ),
-                const Gap(5),
+                const Gap(15),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: RichText(
@@ -720,175 +717,10 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                     ]),
                 const Gap(30),
                 const Text(
-                  'Owner Information',
+                  'Additional Owner Information',
                   style: TextStyles.detailTitle,
                 ),
                 const Gap(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                          text: 'Name',
-                          style: TextStyles.roomProps,
-                          children: [
-                            TextSpan(
-                                text: ' *',
-                                style: TextStyles.roomProps
-                                    .copyWith(color: ColorPalette.redColor))
-                          ]),
-                    ),
-                    SizedBox(
-                      width: size.width - 140,
-                      child: TextFormField(
-                        controller: _nameController,
-                        validator: _createRoomPresenter?.validateName,
-                        keyboardType: TextInputType.name,
-                        cursorColor: Colors.black,
-                        style: TextStyles.roomPropsContent,
-                        scrollPadding: const EdgeInsets.all(0),
-                        maxLines: null,
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textAlign: TextAlign.justify,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.detailBorder,
-                            ),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.primaryColor,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                            left: 0,
-                            right: 0,
-                            top: 5,
-                            bottom: 0,
-                          ),
-                          hintText: 'Example: Nguyen Chu Tro',
-                          hintStyle: TextStyles.descriptionRoom.copyWith(
-                              color: ColorPalette.rankText.withOpacity(0.5)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Gap(5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                          text: 'Phone',
-                          style: TextStyles.roomProps,
-                          children: [
-                            TextSpan(
-                                text: ' *',
-                                style: TextStyles.roomProps
-                                    .copyWith(color: ColorPalette.redColor))
-                          ]),
-                    ),
-                    SizedBox(
-                      width: size.width - 140,
-                      child: TextFormField(
-                        controller: _phoneController,
-                        validator: _createRoomPresenter?.validatePhone,
-                        keyboardType: TextInputType.phone,
-                        cursorColor: Colors.black,
-                        style: TextStyles.roomPropsContent,
-                        scrollPadding: const EdgeInsets.all(0),
-                        maxLines: null,
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textAlign: TextAlign.justify,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.detailBorder,
-                            ),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.primaryColor,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                            left: 0,
-                            right: 0,
-                            top: 5,
-                            bottom: 0,
-                          ),
-                          hintText: 'Example: 0123456789',
-                          hintStyle: TextStyles.descriptionRoom.copyWith(
-                              color: ColorPalette.rankText.withOpacity(0.5)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Gap(5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                          text: 'Email',
-                          style: TextStyles.roomProps,
-                          children: [
-                            TextSpan(
-                                text: ' *',
-                                style: TextStyles.roomProps
-                                    .copyWith(color: ColorPalette.redColor))
-                          ]),
-                    ),
-                    SizedBox(
-                      width: size.width - 140,
-                      child: TextFormField(
-                        controller: _emailController,
-                        validator: _createRoomPresenter?.validateEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        cursorColor: Colors.black,
-                        style: TextStyles.roomPropsContent,
-                        scrollPadding: const EdgeInsets.all(0),
-                        maxLines: null,
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textAlign: TextAlign.justify,
-                        decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.detailBorder,
-                            ),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: ColorPalette.primaryColor,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                            left: 0,
-                            right: 0,
-                            top: 5,
-                            bottom: 0,
-                          ),
-                          hintText: 'Example: abcd@gmail.com',
-                          hintStyle: TextStyles.descriptionRoom.copyWith(
-                              color: ColorPalette.rankText.withOpacity(0.5)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Gap(5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1011,9 +843,6 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
                             _waterPriceController.text,
                             _electricPriceController.text,
                             _otherControler.text,
-                            _nameController.text,
-                            _phoneController.text,
-                            _emailController.text,
                             _facebookController.text,
                             _addressController.text);
                       }
@@ -1075,9 +904,6 @@ class _CreateRoomScreenState extends State<CreateRoomScreen>
       _waterPriceController.clear();
       _electricPriceController.clear();
       _otherControler.clear();
-      _nameController.clear();
-      _phoneController.clear();
-      _emailController.clear();
       _facebookController.clear();
       _addressController.clear();
       _images.clear();

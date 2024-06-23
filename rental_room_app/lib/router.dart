@@ -73,11 +73,6 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const AllRoom(key: Key('all_room')),
         ),
         GoRoute(
-          path: 'report',
-          name: 'report',
-          builder: (context, state) => const ReportScreen(key: Key('report')),
-        ),
-        GoRoute(
           path: 'create_room',
           name: 'create_room',
           builder: (context, state) =>
@@ -86,26 +81,20 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/edit_room',
-      name: 'edit_room',
-      builder: (context, state) => const EditRoomScreen(key: Key('edit_room')),
-    ),
-    GoRoute(
       path: '/your_room',
       name: 'your_room',
       builder: (context, state) => const YourRoomScreen(key: Key('your_room')),
-    ),
-    GoRoute(
-      path: '/receipt_detail',
-      name: 'receipt_detail',
-      builder: (context, state) =>
-          const ReceiptDetailScreen(key: Key('receipt_detail')),
     ),
     GoRoute(
       path: '/notification_list',
       name: 'notification_list',
       builder: (context, state) =>
           const ListNotificationScreen(key: Key('notification_list')),
+    ),
+    GoRoute(
+      path: '/report',
+      name: 'report',
+      builder: (context, state) => const ReportScreen(key: Key('report')),
     ),
     GoRoute(
       path: '/setting',

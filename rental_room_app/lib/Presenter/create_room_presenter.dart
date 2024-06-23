@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rental_room_app/Contract/create_room_contract.dart';
 import 'package:rental_room_app/Models/Price/price_model.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
+import 'package:rental_room_app/Models/User/user_model.dart';
 import 'package:rental_room_app/Models/User/user_repo.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -24,7 +27,7 @@ class CreateRoomPresenter {
     value = value?.trim();
 
     if (value == null || value == "") {
-      return "Please enter a Room ID";
+      return "Please enter a Room Name";
     }
     return null;
   }
@@ -158,43 +161,6 @@ class CreateRoomPresenter {
     return null;
   }
 
-  String? validateName(String? value) {
-    value = value?.trim();
-    List<String>? nameParts = value?.split(" ");
-    RegExp regex = RegExp(r'\d');
-
-    if (value == null || value.isEmpty) {
-      return "Please enter your full name!";
-    } else if (regex.hasMatch(value)) {
-      return "Name must not contain numbers!";
-    } else if (value.length < 2) {
-      return "Full name must contain at least 2 characters!";
-    } else if (nameParts!.length < 2) {
-      return "Full name should contain at least 2 parts (first name and last name)!";
-    }
-    return null;
-  }
-
-  String? validatePhone(String? value) {
-    value = value?.trim();
-    if (value == null || value.isEmpty) {
-      return "Please enter your phone number!";
-    } else if (value.length > 11 || value.length < 8) {
-      return "Phone number must have 8 to 11 digits!";
-    }
-    return null;
-  }
-
-  String? validateEmail(String? value) {
-    value = value?.trim();
-    if (value == null || value.isEmpty) {
-      return "Please enter your email!";
-    } else if (!isEmail(value)) {
-      return "Email is not in the correct format!";
-    }
-    return null;
-  }
-
   String? validateFacebook(String? value) {
     value = value?.trim();
     if (value == null || value.isEmpty) {
@@ -243,9 +209,6 @@ class CreateRoomPresenter {
       String waterPrice,
       String electricPrice,
       String otherPrice,
-      String ownerName,
-      String ownerPhone,
-      String ownerEmail,
       String ownerFacebook,
       String ownerAddress) async {
     //create data model
@@ -265,6 +228,20 @@ class CreateRoomPresenter {
     List<String> imageUrls = await _roomRepository.uploadImages(
         imagesData, _userRepository.userId ?? "owner_id", roomName);
 
+    String oID = FirebaseAuth.instance.currentUser!.uid;
+    Users? user;
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    DocumentSnapshot docUser =
+        await _firestore.collection('users').doc(oID).get();
+    if (docUser.exists) {
+      user = Users.fromFirestore(docUser);
+    }
+
+    String ownerName = user!.userName;
+    String ownerPhone = user.phone;
+    String ownerEmail = user.email;
+
     //Upload room Data
     String primaryImgUrl = imageUrls.first;
     List<String> secondaryImgUrls = imageUrls.sublist(1);
@@ -278,7 +255,7 @@ class CreateRoomPresenter {
         primaryImgUrl: primaryImgUrl,
         secondaryImgUrls: secondaryImgUrls,
         price: price,
-        ownerId: _userRepository.userId ?? '',
+        ownerId: oID,
         ownerName: ownerName,
         ownerPhone: ownerPhone,
         ownerEmail: ownerEmail,

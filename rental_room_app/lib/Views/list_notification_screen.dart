@@ -1,13 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rental_room_app/Contract/shared_preferences_presenter.dart';
+import 'package:rental_room_app/Models/Receipt/receipt_model.dart';
+import 'package:rental_room_app/Models/Receipt/receipt_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Models/Room/room_repo.dart';
 import 'package:rental_room_app/Presenter/shared_preferences_presenter.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/themes/color_palete.dart';
 import 'package:rental_room_app/themes/text_styles.dart';
+import 'package:rental_room_app/widgets/receipt_item.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +30,10 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
 
   late String rentalID;
   late Room yourRoom;
+  String? uID = FirebaseAuth.instance.currentUser?.uid;
+
+  final ReceiptRepository _receiptRepository = ReceiptRepositoryIml();
+  late List<Receipt> receipts;
 
   @override
   void initState() {
@@ -41,6 +49,14 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
     if (rentalID.isNotEmpty) {
       yourRoom = await RoomRepositoryIml().getRoomById(rentalID);
     }
+  }
+
+  List<Receipt> loadListReceipt(List<Receipt> list) {
+    List<Receipt> newList = List.from(list);
+
+    newList = list.where((element) => element.tenantID == uID).toList();
+    newList.sort((a, b) => b.createdDay.compareTo(a.createdDay));
+    return newList;
   }
 
   @override
@@ -63,9 +79,31 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
           ),
         ),
       ),
-      body: const Center(
-        child: Text('Notification Screen'),
-      ),
+      body: _isOwner
+          ? const Center(
+              child: Text('Notification Screen'),
+            )
+          : Expanded(
+              child: StreamBuilder<List<Receipt>>(
+                stream: _receiptRepository.getReceipts(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Something went wrong! ${snapshot.error}'),
+                    );
+                  } else if (snapshot.hasData) {
+                    receipts = snapshot.data!;
+                    return ListView(
+                      children: loadListReceipt(receipts)
+                          .map((e) => ReceiptItem(receipt: e))
+                          .toList(),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            ),
       bottomNavigationBar: SalomonBottomBar(
           backgroundColor: ColorPalette.backgroundColor,
           currentIndex: _selectedIndex,
@@ -79,7 +117,7 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
                 break;
               case 1:
                 if (_isOwner) {
-                  GoRouter.of(context).go('/statistic');
+                  GoRouter.of(context).go('/report');
                 } else {
                   if (rentalID.isNotEmpty) {
                     Navigator.push(

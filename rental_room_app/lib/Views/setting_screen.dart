@@ -322,7 +322,7 @@ class _SettingScreenState extends State<SettingScreen>
                 break;
               case 1:
                 if (_isOwner) {
-                  GoRouter.of(context).go('/statistic');
+                  GoRouter.of(context).go('/report');
                 } else {
                   if (rentalID.isNotEmpty) {
                     Navigator.push(
