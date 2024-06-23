@@ -21,7 +21,7 @@ abstract class RoomRepository {
 }
 
 class RoomRepositoryIml implements RoomRepository {
-  String apiUrl = 'https://c779-34-27-244-98.ngrok-free.app/';
+  String apiUrl = 'https://1a48-34-41-82-207.ngrok-free.app/';
   @override
   Future<void> uploadRoom(Room room) async {
     DocumentReference docRef =
@@ -106,7 +106,7 @@ class RoomRepositoryIml implements RoomRepository {
       recommendedRoomIds =
           json.decode(response.body)['recommend'].cast<String>();
     } catch (e) {
-      print("unavailable server!");
+      print("unavailable server! $e");
     }
     List<Room> recommendedRooms = [];
     for (String id in recommendedRoomIds) {
