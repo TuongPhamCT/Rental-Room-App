@@ -349,12 +349,24 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                               fit: BoxFit.cover,
                               height: 250,
                               width: size.width,
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                                return Container(
+                                  height: 250,
+                                );
+                              },
                             )
                           : Image.network(
                               room.secondaryImgUrls[index - 1],
                               fit: BoxFit.cover,
                               height: 250,
                               width: size.width,
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                                return Container(
+                                  height: 250,
+                                );
+                              },
                             ),
                     );
                   },
@@ -498,6 +510,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                   child: Image.network(
                                     room.secondaryImgUrls[0],
                                     fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return Container();
+                                    },
                                   ),
                                 ),
                               if (room.secondaryImgUrls.length > 1)
@@ -505,6 +522,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                   child: Image.network(
                                     room.secondaryImgUrls[1],
                                     fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return Container();
+                                    },
                                   ),
                                 ),
                               if (room.secondaryImgUrls.length > 2)
@@ -512,6 +534,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
                                   child: Image.network(
                                     room.secondaryImgUrls[2],
                                     fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return Container();
+                                    },
                                   ),
                                 ),
                             ],

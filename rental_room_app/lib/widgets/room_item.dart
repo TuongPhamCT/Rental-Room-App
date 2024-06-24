@@ -91,6 +91,12 @@ class _RoomItemState extends State<RoomItem> {
                 width: double.infinity,
                 height: 105,
                 fit: BoxFit.fitWidth,
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return Container(
+                    height: 105,
+                  );
+                },
               ),
             ),
             Expanded(

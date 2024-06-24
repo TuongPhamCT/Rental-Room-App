@@ -35,6 +35,9 @@ class _HomeScreenState extends State<HomeScreen>
   SharedPreferencesPresenter? _preferencesPresenter;
   HomePresenter? _homePresenter;
   final RoomRepository _roomRepository = RoomRepositoryIml();
+  final docRef = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid);
 
   int _selectedIndex = 0;
   String _userName = "nguyen van a";
@@ -168,6 +171,11 @@ class _HomeScreenState extends State<HomeScreen>
     _homePresenter = HomePresenter(this);
     _loadRentalRoom();
     requestLocationPermission();
+
+    docRef.snapshots().listen(
+          (event) => setState(() {}),
+          onError: (error) => print("Listen failed: $error"),
+        );
   }
 
   Future<void> requestLocationPermission() async {
