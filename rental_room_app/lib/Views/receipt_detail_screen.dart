@@ -644,20 +644,21 @@ class _ReceiptDetailScreenState extends State<ReceiptDetailScreen> {
               ),
             ),
             const Gap(20),
-            Container(
-              alignment: Alignment.center,
-              child: ModelButton(
-                onTap: () async {
-                  _updateStatus();
-                  setState(() {
-                    status = 'Paid';
-                  });
-                },
-                name: 'Paid The Bill',
-                color: ColorPalette.primaryColor.withOpacity(0.75),
-                width: 180,
+            if (status == 'Unpaid')
+              Container(
+                alignment: Alignment.center,
+                child: ModelButton(
+                  onTap: () async {
+                    _updateStatus();
+                    setState(() {
+                      status = 'Paid';
+                    });
+                  },
+                  name: 'Paid The Bill',
+                  color: ColorPalette.primaryColor.withOpacity(0.75),
+                  width: 180,
+                ),
               ),
-            ),
             const Gap(30),
           ],
         ),

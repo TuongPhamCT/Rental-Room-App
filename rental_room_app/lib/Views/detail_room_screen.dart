@@ -63,7 +63,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen>
   final RentalRepository _rentalRepository = RentalRepositoryIml();
   String rentalID = '';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  String status = 'PTT';
+  String status = 'Loading ...';
 
   final _commentTextController = TextEditingController();
 
