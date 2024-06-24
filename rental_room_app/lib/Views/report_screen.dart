@@ -69,222 +69,225 @@ class _ReportScreenState extends State<ReportScreen> implements ReportContract {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.black,
-                          width: 1,
+          : _totalRoom == 0
+              ? Container()
+              : Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Standard',
+                                  style: TextStyles.noInternetTitle.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              totalRooms['Standard Room']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        Text('${totalRooms['Standard Room']}'),
+                                      ],
+                                    ),
+                                    const Gap(5),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              occupiedRooms['Standard Room']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                        Text(
+                                            '${occupiedRooms['Standard Room']}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            // Loft Room
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Loft',
+                                  style: TextStyles.noInternetTitle.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              totalRooms['Loft Room']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        Text('${totalRooms['Loft Room']}'),
+                                      ],
+                                    ),
+                                    const Gap(5),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              occupiedRooms['Loft Room']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                        Text('${occupiedRooms['Loft Room']}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            // House
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'House',
+                                  style: TextStyles.noInternetTitle.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const Gap(10),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              totalRooms['House']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        Text('${totalRooms['House']}'),
+                                      ],
+                                    ),
+                                    const Gap(5),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: ((size.height * 0.6 - 50) /
+                                                  _totalRoom) *
+                                              occupiedRooms['House']!,
+                                          width: size.width / 12,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                        Text('${occupiedRooms['House']}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              'Standard',
-                              style: TextStyles.noInternetTitle.copyWith(
-                                fontSize: 16,
+                            Container(
+                              height: size.width / 12,
+                              width: size.width / 12,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
                               ),
                             ),
-                            const Gap(10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          totalRooms['Standard Room']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    Text('${totalRooms['Standard Room']}'),
-                                  ],
-                                ),
-                                const Gap(5),
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          occupiedRooms['Standard Room']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    Text('${occupiedRooms['Standard Room']}'),
-                                  ],
-                                ),
-                              ],
+                            const Gap(15),
+                            Text(
+                              'Total Room',
+                              style: TextStyles.noInternetDes
+                                  .copyWith(fontSize: 18),
                             ),
                           ],
                         ),
-
-                        // Loft Room
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              'Loft',
-                              style: TextStyles.noInternetTitle.copyWith(
-                                fontSize: 16,
+                            Container(
+                              height: size.width / 12,
+                              width: size.width / 12,
+                              decoration: const BoxDecoration(
+                                color: Colors.orange,
                               ),
                             ),
-                            const Gap(10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          totalRooms['Loft Room']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    Text('${totalRooms['Loft Room']}'),
-                                  ],
-                                ),
-                                const Gap(5),
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          occupiedRooms['Loft Room']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    Text('${occupiedRooms['Loft Room']}'),
-                                  ],
-                                ),
-                              ],
+                            const Gap(15),
+                            Text(
+                              'Rented Room',
+                              style: TextStyles.noInternetDes
+                                  .copyWith(fontSize: 18),
                             ),
                           ],
                         ),
-
-                        // House
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'House',
-                              style: TextStyles.noInternetTitle.copyWith(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const Gap(10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          totalRooms['House']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    Text('${totalRooms['House']}'),
-                                  ],
-                                ),
-                                const Gap(5),
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: ((size.height * 0.6 - 50) /
-                                              _totalRoom) *
-                                          occupiedRooms['House']!,
-                                      width: size.width / 12,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    Text('${occupiedRooms['House']}'),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: size.width / 12,
-                          width: size.width / 12,
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
-                          ),
-                        ),
-                        const Gap(15),
-                        Text(
-                          'Total Room',
-                          style:
-                              TextStyles.noInternetDes.copyWith(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: size.width / 12,
-                          width: size.width / 12,
-                          decoration: const BoxDecoration(
-                            color: Colors.orange,
-                          ),
-                        ),
-                        const Gap(15),
-                        Text(
-                          'Rented Room',
-                          style:
-                              TextStyles.noInternetDes.copyWith(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
       bottomNavigationBar: SalomonBottomBar(
         backgroundColor: ColorPalette.backgroundColor,
         currentIndex: _selectedIndex,

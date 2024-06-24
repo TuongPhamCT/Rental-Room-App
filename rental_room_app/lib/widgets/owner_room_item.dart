@@ -5,6 +5,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rental_room_app/Models/Comment/comment_model.dart';
+import 'package:rental_room_app/Models/Comment/comment_repo.dart';
 import 'package:rental_room_app/Models/Room/room_model.dart';
 import 'package:rental_room_app/Views/detail_room_screen.dart';
 import 'package:rental_room_app/config/asset_helper.dart';
@@ -21,6 +23,7 @@ class OwnerRoomItem extends StatefulWidget {
 
 class _OwnerRoomItemState extends State<OwnerRoomItem> {
   double? _distance;
+  final _commentRepo = CommentRepositoryIml();
 
   @override
   void initState() {
@@ -208,36 +211,54 @@ class _OwnerRoomItemState extends State<OwnerRoomItem> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RatingBar.builder(
-                          initialRating: 4.5,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemSize: 13,
-                          unratedColor: const Color(0xffDADADA),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          onRatingUpdate: (value) {},
-                          ignoreGestures: true,
-                        ),
-                        Text(
-                          '4.5',
-                          style: TextStyles.nameRoomItem.copyWith(
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          '(123,456)',
-                          style: TextStyles.desFunction,
-                        ),
-                      ],
-                    ),
+                    FutureBuilder(
+                        future: _commentRepo
+                            .getAllCommentsbyRoomId(widget.room.roomId),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<Comment>? comments = snapshot.data;
+                            comments?.sort((a, b) => a.time.compareTo(b.time));
+
+                            double avgRating = comments!.isEmpty
+                                ? 0
+                                : comments
+                                        .map((m) => m.rating)
+                                        .reduce((a, b) => a + b) /
+                                    comments.length;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RatingBar.builder(
+                                  initialRating: avgRating,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemSize: 13,
+                                  unratedColor: const Color(0xffDADADA),
+                                  itemBuilder: (context, _) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (value) {},
+                                  ignoreGestures: true,
+                                ),
+                                Text(
+                                  avgRating.toStringAsFixed(1),
+                                  style: TextStyles.nameRoomItem.copyWith(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  '(${comments.length})',
+                                  style: TextStyles.desFunction,
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
                   ],
                 ),
               ),
