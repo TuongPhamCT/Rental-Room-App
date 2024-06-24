@@ -71,7 +71,7 @@ class _YourRoomScreenState extends State<YourRoomScreen> {
                   width: 2,
                 ),
               ),
-              child: Text('You need to rental a room for use this function!!!'),
+              child: const Text('You need to rental a room to use this function!!!'),
             ),
           ),
           Expanded(child: Container()),

@@ -37,6 +37,9 @@ class DetailRoomPresenter {
     FirebaseAnalytics.instance.logEvent(
         name: "user_rated_room",
         parameters: {"roomId": roomId, "rating": rating});
+    if (rating >= 4) {
+      _userRepository.updateLatestTappedRoom(roomId);
+    }
     _view?.onCommentPosted();
   }
 
