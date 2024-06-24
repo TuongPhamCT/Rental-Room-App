@@ -61,6 +61,7 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -80,8 +81,23 @@ class _ListNotificationScreenState extends State<ListNotificationScreen>
         ),
       ),
       body: _isOwner
-          ? const Center(
-              child: Text('Notification Screen'),
+          ? Center(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                margin: EdgeInsets.symmetric(
+                    horizontal: 15, vertical: size.height * 0.37),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: ColorPalette.backgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: ColorPalette.primaryColor,
+                    width: 2,
+                  ),
+                ),
+                child: const Text('You have no Notifications!!!'),
+              ),
             )
           : Expanded(
               child: StreamBuilder<List<Receipt>>(
