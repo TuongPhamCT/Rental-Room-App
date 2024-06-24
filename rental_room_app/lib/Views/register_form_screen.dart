@@ -528,7 +528,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen>
                             bool? locationResult =
                                 await _registerFormPresenter?.isValidLocation(
                                     _desiredLocationController.text);
-                            if (locationResult == true) {
+                            if (locationResult == true || _isOwner) {
                               _registerFormPresenter?.doneButtonPressed(
                                   widget.email,
                                   _accountPasswordTextController.text,
