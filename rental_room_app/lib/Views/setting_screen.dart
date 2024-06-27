@@ -313,9 +313,12 @@ class _SettingScreenState extends State<SettingScreen>
           backgroundColor: ColorPalette.backgroundColor,
           currentIndex: _selectedIndex,
           onTap: (id) {
-            setState(() {
-              _selectedIndex = id;
-            });
+            if (!_isOwner && rentalID.isNotEmpty) {
+            } else {
+              setState(() {
+                _selectedIndex = id;
+              });
+            }
             switch (id) {
               case 0:
                 GoRouter.of(context).go('/home');
