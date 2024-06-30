@@ -198,15 +198,10 @@ class _NotificationScreenState extends State<NotificationScreen>
                                     width: 1, color: ColorPalette.primaryColor),
                                 borderRadius: BorderRadius.circular(20)),
                           ),
-                          initialSelection: "adu",
+                          initialSelection: "under develop",
                           dropdownMenuEntries: const <DropdownMenuEntry<
                               String>>[
-                            DropdownMenuEntry(value: "adu", label: "Adu"),
-                            DropdownMenuEntry(value: "vailon", label: "Vailon"),
-                            DropdownMenuEntry(
-                                value: "anhban", label: "Anh Ban"),
-                            DropdownMenuEntry(
-                                value: "nay hai vai", label: "Nay Hai Vai")
+                            DropdownMenuEntry(value: "under develop", label: "under develop"),
                           ]),
                     ),
                     const Gap(50),
