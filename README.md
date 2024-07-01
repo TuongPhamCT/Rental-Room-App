@@ -113,18 +113,20 @@
 *	Người dùng được quản lí, phân loại tài khoản thành 2 loại là chủ trọ và người thuê, cần phải đăng nhập để truy cập.
 
 *	Chủ trọ:
+<img src="https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/4dfd4b98-8ff3-40da-8310-feef3c3348cf" alt="Logo LIKE HOUSE" width="250"/>
 
     * Quản lý, theo dõi tình trạng cho thuê của các phòng trọ.
   
     *	Xem thông tin của người thuê.
   
-    * Quản lý các hóa đơn.
+    * 	Quản lý các hóa đơn.
   
     *	Thống kê phòng trọ.
   
     *	Xem các phản ánh của người dùng.
   
 *	Người thuê:
+<img src="https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/f07c1989-76b7-4ad6-b7c9-a96a72962de7" alt="Logo LIKE HOUSE" width="250"/>
 
     *	Xem thông tin cho thuê của các phòng trọ.
   
@@ -166,7 +168,18 @@
 4. Mở dự án và chạy lệnh sau để cài đặt các thư viện:
 
 + flutter pub get
-5. Chạy ứng dụng bằng cách bấm nút "Run" trong IDE.
+
+5. Chạy server để có thể kích hoạt chức năng gợi ý bằng cách:
+   
+	5.1. Truy cập trang web [RecommnederAPI](https://replit.com/@HungLe43/RentalRoomRecommenderApi).
+   
+   	5.2. Bấm nút Run ở thanh trạng thái để khởi chạy API: ![RUN](https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/9c529265-35bd-478c-857f-6c55db393a3b)
+
+   	5.3 Sao chép đường dẫn server ở console để sử dụng: ![Link Server](https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/4da24595-1186-42a4-b798-76e1cb6c05f2)
+
+	5.4 Thay đổi đường dẫn server ở file room_repo.dart bằng được dẫn vừa được tạo ![Room_repo.dart](https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/585aaa09-db67-473d-949e-ec7653f4e01b)
+
+7. Chạy ứng dụng bằng cách bấm nút "Run" trong IDE.
   Ứng dụng sẽ được chạy trên thiết bị của bạn (thật hoặc ảo).
 
 <div id="Tacgia"></div>
