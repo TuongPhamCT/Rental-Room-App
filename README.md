@@ -136,7 +136,7 @@
   
     *	Thuê phòng trọ.
   
-    * Xem thông tin các hóa đơn.
+    *	Xem thông tin các hóa đơn.
   
     *	Đánh giá phòng trọ.
   
