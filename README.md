@@ -171,7 +171,7 @@
 
 5. Chạy server để có thể kích hoạt chức năng gợi ý bằng cách:
    
-	5.1. Truy cập trang web [RecommnederAPI](https://replit.com/@HungLe43/RentalRoomRecommenderApi).
+	5.1. Truy cập trang web [RecommnederAPI](https://replit.com/join/iorljuvlwd-hungle43).
    
    	5.2. Bấm nút Run ở thanh trạng thái để khởi chạy API: ![RUN](https://github.com/TuongPhamCT/Rental-Room-App/assets/110316749/9c529265-35bd-478c-857f-6c55db393a3b)
 
